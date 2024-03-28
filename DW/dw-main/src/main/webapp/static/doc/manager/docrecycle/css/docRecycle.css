@@ -1,0 +1,21 @@
+.background{height: 100%}
+.content{background: #fff;padding: 10px;height: 100%}
+.layui-table td,.layui-table-box{border-right: 0 !important;border-left: 0 !important;}
+.layui-table-box {
+    border: 0 !important;border-bottom: 1px solid #e6e6e6;
+}
+.layui-table thead tr{background: #fff !important}
+.layui-table th{border-width: 0}
+.layui-table-view .layui-table th {
+    font-weight: 400;
+    padding: 1px 0;
+}
+.jstree-default .jstree-closed>.jstree-ocl{background:url(../../../../resources/img/fsfile/right.png) no-repeat   center !important;}
+.jstree-default  .jstree-open>.jstree-ocl{background:url(../../../../resources/img/fsfile/down.png) no-repeat   center !important;}
+.jstree-children li:first-child.jstree-closed>.jstree-ocl{background: url(../../../../resources/img/fsfile/right.png) no-repeat   center !important;}
+.jstree-children li:first-child.jstree-open>.jstree-ocl{background: url(../../../../resources/img/fsfile/down.png) no-repeat   center !important;}
+.jstree-children li:last-child.jstree-closed>.jstree-ocl{background:url(../../../../resources/img/fsfile/right.png)  no-repeat   center  !important;}
+.jstree-children li:last-child.jstree-open>.jstree-ocl{background:url(../../../../resources/img/fsfile/down.png)  no-repeat   center  !important;}
+.jsTree>ul.jstree-container-ul>li.jstree-open>.jstree-ocl{background:url(../../../../resources/img/fsfile/down.png) no-repeat   center !important;}
+.jsTree>ul.jstree-container-ul>li.jstree-closed>.jstree-ocl{background: url(../../../../resources/img/fsfile/right.png)  no-repeat   center  !important;}
+.layui-laypage .layui-laypage-skip{color: black;!important;}

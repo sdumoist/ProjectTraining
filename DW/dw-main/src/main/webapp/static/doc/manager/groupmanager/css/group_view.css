@@ -1,0 +1,15 @@
+.con-full-l .layui-input-inline{margin-bottom: 7px}
+.pims-tree .layui-form-item {
+    margin-bottom: 3px;
+}
+button#saveBtn{background:#27b7b0 !important;float: none !important;}
+.layui-input-inline.search{width: 100%}
+#marg .layui-form-item{margin-bottom: 0}
+.tableBox{padding-top: 0}
+.search-wrapper{float: left;margin-top: 10px;}
+.search-wrapper input{display: inline-block;margin-right: 8px;margin-left: 10px;width: 220px;}
+.toolBar{float: right}
+.layui-form-item .layui-input-inline.search-btn{width: auto}
+.search-btn {height:24px;width:24px;position: relative;right: 0;top: 0;background: none;cursor: pointer;}
+.jsTree>ul{margin: 0 10px 0!important;}
+.layui-laypage .layui-laypage-skip{color: black;!important;}

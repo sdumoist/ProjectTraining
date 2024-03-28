@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>统计分析</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/doc/manager/statistics/css/component-count.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-table tbody tr:hover {
+            background: #F9FBFF!important;
+        }
+        .layui-layer-btn .layui-layer-btn0{
+            background-color:#2980ff!important;
+            border-color: #2980ff!important;
+            background-color: #2980ff!important;
+            color: #fff;
+        }
+    </style>
+
+
+</head>
+<body>
+<div id="uploadList">
+<div class=" analysis-box">
+    <!--统计数据-->
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-sm3">
+
+            <div class="analysis-item"  id="analysis-visit">
+                <span  class="total"><span class="amount"></span><span class="times">份</span></span> <em>今日发布</em>
+            </div>
+</div>
+        <div class="layui-col-sm3">
+            <div class="analysis-item" id="analysis-visit-today">
+                <span class="total"><span class="amount"></span><span class="times">份</span></span> <em>累计发布</em>
+            </div>
+        </div>
+        <div class="layui-col-sm3">
+            <div class="analysis-item" id="analysis-doc">
+                <span  class="total"><span class="amount"></span><span class="times">次</span></span> <em>今日复用</em>
+            </div>
+        </div>
+        <div class="layui-col-sm3"> <div class="analysis-item"  id="analysis-doc-today">
+            <span  class="total"><span class="amount"></span><span class="times">次</span></span> <em>累计复用</em>
+        </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="analysis-box">
+    <div class="analysis-box-in layui-col-space30 clearfix">
+        <div class="analysis-title">成果统计
+            <!--<button class="layui-btn" style="float: right;margin-right: 30px;width: 60px;height: 28px;line-height: 28px;" id="html2canvas">截图</button>-->
+        </div>
+        <div class="analysis-panel layui-col-md12">
+            <div class="analysis-panel-head"><span>部门成果统计</span></div>
+
+            <div class="analysis-panel-body" style="margin-top: 5px">
+
+                <div class="switch clearfix">
+                    <div class="all active" value="">全部</div>
+                    <div class="today " value="1">今天</div>
+                    <div class="threeDay" value="3">三天</div>
+                    <div class="week" value="7">一周</div>
+                    <div class="month" value="30">一月</div>
+                </div>
+                <div class="state clearfix">
+                    <div class="all active" value="">全部</div>
+                    <div class="apply " value="1">未发布</div>
+                    <div class="publish" value="2">已发布</div>
+                </div>
+                <div class="syb clearfix">
+                    <div class="BU active" value="0">BU</div>
+                    <div class="BG" value="1">BG</div>
+                </div>
+                <div class="dept clearfix">
+                    <div class="dept active" value="dept">部门</div>
+                    <div class="account " value="account">数量</div>
+
+                </div>
+                <div id="firchart" class="main-chart"></div>
+            </div>
+        </div>
+        <div class="analysis-panel layui-col-md6">
+            <div class="analysis-panel-head"><span>个人成果统计</span></div>
+            <div class="analysis-panel-table">
+                <table class="layui-table" lay-skin="line" id="firTable" lay-filter="firTable">
+
+                </table>
+            </div>
+        </div>
+        <div class="analysis-panel layui-col-md6">
+            <div class="analysis-panel-head"><span>复用统计</span></div>
+            <div class="analysis-panel-table">
+                <table class="layui-table" lay-skin="line" id="secTable" lay-filter="secTable">
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<div class="analysis-box">
+    <div class="analysis-box-in clearfix" style="height: 504px;margin-bottom:16px">
+
+        <div class="analysis-title">复用统计</div>
+        <div class="analysis-panel layui-col-md12" style="    padding: 30px 15px 15px;">
+        <div class="analysis-panel-head" ><span>部门复用统计</span></div>
+
+        <div class="analysis-panel-body">
+            <div class="date clearfix">
+                <div class="all active" value="">全部</div>
+                <div class="today " value="1">今天</div>
+                <div class="threeDay" value="3">三天</div>
+                <div class="week" value="7">一周</div>
+                <div class="month" value="30">一月</div>
+            </div>
+
+            <div class="bg clearfix">
+                <div class="BU active" value="0">BU</div>
+                <div class="BG" value="1">BG</div>
+            </div>
+            <div class="dept2 clearfix">
+                <div class="dept active" value="dept">部门</div>
+                <div class="account" value="account">数量</div>
+            </div>
+            <div id="reuse" class="main-chart"></div>
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="html2canvasDiv" style="display: none"></div>
+<script src="${ctxPath}/static/resources/js/common/echarts.common.min.js?v=${h_version}"></script>
+<script charset="utf-8"  src="${ctxPath}/static/doc/manager/componentmanager/js/component_count.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/html2canvas.min.js"></script>
+<script src="${ctxPath}/static/js/canvas2image.js"></script>
+<script src="${ctxPath}/static/js/base64.js"></script>
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#uploadList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+
+</script>
+
+</body>
+</html>

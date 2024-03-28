@@ -1,0 +1,79 @@
+@charset "utf-8";
+html,body{height: 100%;padding: 0;margin: 0;overflow: hidden}
+/**/
+.wk-info{height: 100%}
+.wk-img{background: url(../../js/img/main1.png) no-repeat center;height: 100%;margin-top:0;}
+.logo{position: absolute;top:20px;left: 30px;width: 200px;height: 45px;background: url(../../js/img/loginlogo.png) no-repeat center; }
+.submit-btn .login-btn{box-shadow:none;font-weight:normal;height: 50px;width: 190px;border-radius: 25px;background: #3c91fd;color: #fff;text-align: center;border: 0;margin-top: 50px;cursor: pointer}
+.login-input {height: 34px;line-height: 34px;font-size: 14px}
+.login-input:focus{border: 0;border-bottom: 1px solid #3c91fd!important;}
+.wk-box,.login-box{display:block!important;float: left;height: 100%;position: relative}
+.wk-box{width: 62%;background-size: 100% 100%;}
+.wk-info,.login{width:100%;text-align: center;}
+.login-box{width: 38%;background: #f7f7f7;text-align: center}
+.loginLeft-info,.login{width:100%;text-align: center; position: absolute;top: 50%;transform: translateY(-50%);}
+.title{color: #424859 !important;font-size: 32px;margin-bottom: 30px;font-weight:normal !important;}
+.sub-title,.sub-title-1{color: #6a6d70;font-size: 16px;line-height: 30px;text-align: center;}
+.sub-title-1{letter-spacing: 0.15em;}
+.login .title{font-size: 20px;margin-bottom: 85px}
+.login-form{width: 330px;margin: auto;text-align: left;font-size: 14px;line-height: 30px}
+.login-form label{display: block ;margin-bottom: 2px;font-weight: normal;}
+.login-input{border: 0;border-bottom: 1px solid #a1a5ac;background: transparent;height: 30px;width: 100%;color: #999;margin-bottom: 8px;line-height: 30px}
+.login-input:focus{border: 0;border-bottom: 1px solid #26b7b0; }
+.login-input-1{margin-bottom: 35px}
+input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px #f7f7f7 inset !important; }
+.layui-form-checkbox[lay-skin=primary] i{text-align: center;   }
+.layui-form-checkbox[lay-skin=primary]:hover i{border-color: #3c91fd;}
+.layui-form-checked[lay-skin=primary] i{ border-color: #3c91fd;background-color: #3c91fd;}
+.layui-form-checked[lay-skin=primary] i{
+    border: none;
+}
+@media screen and (max-width:600px){
+    .wk-info, .login{padding: 0 1rem;box-sizing: border-box;}
+    .wk-info{display: none}
+    .wk-box{
+        padding: 2rem !important;
+        width: 100% !important;
+        height: 3rem !important;
+    }
+    /*.wk-box{
+        display: block !important;
+        position: relative !important;
+        float: none !important;
+        height: 5rem !important;
+       !* width: 100%;
+        background: #fff;*!
+    }*/
+    .login{margin-top: 0rem;}
+    .logo{position: inherit;top: 0;left: 0;width: 9rem;height: 45px;background-size: 100%;}
+    .login-form{width: 100%}
+    .login-box {display: block;position: relative;float: inherit;text-align: center;width: 100%;height: calc(100% - 5rem)}
+    .login .title {font-size: 26px;margin: 40px 0;}
+    .login-box{background: #fff}
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px){
+    .wk-box,.logo{display: none!important;}
+    .login .title{color: transparent;background: url(../../js/img/loginlogo.png) no-repeat center;height: 44px;margin: 50px 0}
+    .login-box{width: 100%;background:#F4F8FC url(../../js/img/ipad-loginbg.png) no-repeat  center bottom ;background-size:100% auto}
+    .login {transform: scale(1) translateY(-80%);}
+    .login-form {padding: 60px 60px 40px;background: #fff;border-radius: 4px;box-shadow: 0 0 20px 0 rgba(150, 174, 206, 0.5);}
+    .submit-btn .login-btn{margin-top: 30px;box-shadow: none !important;font-weight: normal !important;}
+    .login-form label{position: absolute}
+    .login-input{padding-left: 40px;width: 290px;border-radius: 0}
+    .layui-form-checkbox[lay-skin=primary] i{font-size: 16px}
+}
+@media screen
+and (min-device-width :768px)
+and (max-device-width :1024px)
+and (orientation : landscape){
+    .login {transform: scale(1) translateY(-75%)!important;}
+    .login-box{background-size: 90% auto}
+}
+@media screen and (min-width: 1600px){
+    .login {transform: translateY(-50%)  scale(1.15);}
+}
+
+@media screen and (min-width: 1900px){
+    .login{transform: scale(1.2)  translateY(-41.6%);}
+}
+

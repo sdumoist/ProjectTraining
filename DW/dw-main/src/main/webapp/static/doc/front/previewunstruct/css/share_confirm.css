@@ -1,0 +1,247 @@
+.btn-confirm button{
+    min-width: 60px;
+    width: auto!important;
+}
+.file-name{
+    font-size: large;
+    color: #0b7cdf;
+    line-height: 27px;
+    padding-left: 5px;
+}
+.btn-confirm{
+    bottom: 10px!important;
+    position: absolute;
+    padding-right: 10px !important;
+    right: 0px;
+}
+/*.share-success-div{padding-top: 47px!important;}*/
+.share-success-div .layui-form-item .layui-form-label{width: 170px!important;}
+.layui-form-radio{padding-right: 0 !important;}
+.layui-form-radio>i{font-size: 15px!important;}
+.font-grey{color: #B2C2D5;padding-left: 5px}
+.layui-input-inline{width: auto!important;}
+.layui-form-label{text-align: right!important;padding-right: 15px!important;color: #8796AB!important;}
+#mapping_url{width: 425px!important;position: relative;left: 40px;float: left}
+#pwd{width: 73px!important}
+#share_result{position: relative;left: 40px;font-size: 14px;color: #344051;padding-bottom: 10px}
+#share_result i{border-radius: 10px;font-size: 37px;}
+p{height: 30px}
+
+.layui-input-inline span{padding-right: 22px;}
+.layui-form-radio>i{margin-right: 5px!important;animation: none}
+#saveBtn，#copyBtn{border: 1px solid #5AA3FF!important;}
+.layui-btn{background-color: #3C91FD!important;}
+button#cancel{border: 1px solid #5AA3FF!important;color: #5AA3FF!important;}
+.bot-btns button{border:1px solid #5AA3FF!important;}
+.layui-form-radio>i:hover, .layui-form-radioed>i{color: #3C91FD!important;}
+.share-header{text-align: center;border-bottom: 1px solid rgba(245,247,251,1);height: 27px;}
+.layui-form{padding-top: 20px}
+.return{position: absolute;left:-5px;cursor: pointer}
+.return i{color: #222}
+.valid-time {font-family: PingFang SC;color: #8796AB;padding-left: 40px;margin-top: 10px}
+.valid-time span{margin-right: 20px}
+#pwd_div .layui-form-label{width: 95px!important}
+.layui-input-inline div{height: 38px}
+.layui-input{color:#344051!important;width:73px!important;height:38px!important;background:rgba(250,252,255,1)!important;border:1px solid rgba(223,231,241,1)!important;opacity:1!important;border-radius:2px!important;}
+.layui-form-label{line-height: 37px!important;padding-right: 6px!important;}
+.copy-msg{color:#5AA3FF!important}
+.layui-input-inline div>.layui-input:focus, .layui-textarea:focus {
+    border-color: #d1deed!important;
+}
+.layui-input-inline div>.layui-input:hover, .layui-textarea:hover {
+    border-color:  #d1deed!important;
+}
+i.closeBtn.layui-icon.layui-icon-close {
+    cursor: pointer;
+}
+.weadmin-body {
+    padding: 0 !important;
+}
+.share-header {
+    text-align: left;
+    border-bottom: 1px solid #E9EAEB;
+    line-height: 52px;
+    height: 52px;
+    text-indent: 25px;
+    font-size: 18px;
+}
+.share-header span{
+    font-weight: 400;
+    color: #222;
+    font-size: 16px;
+    font-weight: bold;
+}
+.layui-layer-setwin .layui-layer-close2{
+    display: none;
+}
+span.share-warn {
+    margin: 0 30px;
+    width: calc(100% - 60px);
+    display: block;
+    text-indent: 26px;
+    font-size: 12px;
+    color: #f00;
+}
+div#share_name {
+    width: 100%;
+    height: 90px;
+    box-sizing: border-box;
+    padding: 20px 40px;
+}
+span.fileType {
+    width: 50px;
+    height: 40px;
+    display: inline-block;
+}
+img.folder-img {
+    width: 40px !important;
+    height: auto !important;
+}
+span.fileType img{
+    width: auto;
+    height: 100%;
+}
+span.fileName {
+    color: #222;
+    width: 80%;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 22%;
+}
+.layui-input-inline div>.layui-input:hover,.layui-input-inline div>.layui-input, .layui-textarea:hover {
+    border: 0 !important;
+    background-color: #F4F7FD !important;
+}
+.bot-btns.nofolder {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: 15px;
+    right: 5px;
+}
+button#saveBtn, #copyBtn, .pass-btn, .reject-btn {
+    width: auto !important;
+    height: 32px !important;
+    line-height: 31px !important;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    padding: 0;
+    text-align: center;
+    float: right;
+    padding: 0 10px;
+}
+.weadmin-body {
+    height: 100%;
+}
+@media only screen and (max-width:530px) {
+    .share-header {
+        line-height: 37px;
+        height: 37px;
+        font-size: 13px;
+    }
+    /*.share-header span{*/
+    /*    font-weight: bold !important;*/
+    /*}*/
+    button#saveBtn, #copyBtn, .pass-btn, .reject-btn {
+        width: auto !important;
+        height: 26px !important;
+        line-height: 25px !important;
+    }
+    div#share_name{
+        height: 70px;
+    }
+    .layui-form *,.share-success-div *{
+        font-size: 12px !important;
+    }
+    .share-header span{
+        font-size: 13px;
+    }
+    span.fileType {
+        width: 40px;
+        height: 30px;
+    }
+}
+.layui-input{
+    background-color: #fff !important;
+}
+.personInput{
+    width: 180px !important;
+    height: 25px !important;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.layui-input:focus, .layui-textarea:focus {
+    border-color: #a3dad7!important;
+}
+.layui-layer-btn a {
+    width: 26px !important;
+    height: 26px !important;
+    line-height: 27px !important;
+    font-size: 12px;
+}
+.tree-class .layui-layer-btn0 {
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+}
+.tree-class .layui-layer-btn1 {
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222 !important;
+}
+.jstree-default .jstree-clicked, .jstree-default .jstree-hovered {
+    color: #3C91FD!important;border: 0;box-shadow: none;background: transparent;
+}
+/*.tree-class .jstree-default .jstree-node, .jstree-default .jstree-icon.jstree-ocl{*/
+/*background: url(../../../../resources/img/fsfile/authority/line.svg) no-repeat center 0;*/
+/*background-position-x: 9px;*/
+/*}*/
+/*.tree-class .jstree-default .jstree-node, .jstree-default .jstree-icon {*/
+/*background-image: url(../../../../resources/img/32px.png) !important;*/
+/*}*/
+
+
+div#treeArea {
+    height: 100%;
+    width: 100%;
+    padding: 10px 20px 0px;
+    box-sizing: border-box;
+}
+#treeArea input{
+    /*width: 100%;*/
+}
+#personTree{
+    /*height: calc(100% - 34px);*/
+    width: 100%;
+    /*margin-top: 5px;*/
+    overflow: auto;
+}
+#personTree::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+
+@media screen  and (max-width: 1400px) {
+    #personTreeSearch{
+        width: 220px;
+        margin-left: 7%;
+    }
+}
+@media screen and (min-width: 1400px){
+    #personTreeSearch{
+        width: 180px;
+        margin-left: 4%;
+    }
+}
+/*jsTree复选框样式*/
+.jstree-anchor i.jstree-icon.jstree-checkbox{background-image: url("../../../../resources/img/32px.png");background-position-y: 0;}
+.jstree-anchor i.jstree-icon.jstree-checkbox:hover{background-position-y: 0;}
+.layui-input.personInput{width: 325px !important;}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>在线编辑</title>
+    <link rel="shortcut icon" href="${ctxPath}/static/resources/img/front/favicon.ico" type="image/x-icon">
+    <link href="${ctxPath}/static/resources/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/animate.css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        html{height: 100%}
+        .gray-bg{height: 100%;display: flex;
+            align-items: center;
+            justify-content: center;}
+        .gray-bg .middle-box{
+            width: 100%;
+        }
+        .gray-bg .middle-box img{width: 24%;height: auto}
+        .gray-bg .middle-box h1{margin: 0;
+            font-size: 33px;
+            font-weight: 600;
+            color: #959595;
+            line-height: 46px;}
+        .gray-bg .middle-box .font-bold{
+            margin: 0;
+            font-size: 22px;
+            color: #AFAFAF;
+            line-height: 30px;
+            letter-spacing: 5px;
+            margin-top: 10px;
+        }
+        .gray-bg .middle-box button{width: 130px;
+            height: 46px;
+            background: #2090FF;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #FFFFFF;
+            line-height: 22px;
+            border: 0;
+            margin-top: 52px;
+        }
+
+    </style>
+</head>
+
+
+<body class="gray-bg png423">
+
+
+    <div class="middle-box text-center animated fadeInDown">
+        <img src="../../../../static/img/edit_error.png" alt="">
+        <h1>权限不足</h1>
+        <h3 class="font-bold">您无权编辑此文档</h3>
+        <!--<button class="layui-btn" onclick="window.close();">返回上一级</button>-->
+    </div>
+
+    <!-- 全局js -->
+    <script src="${ctxPath}/static/resources/js/common/jquery.min.js?v=2.1.4"></script>
+    <script src="${ctxPath}/static/resources/js/common/bootstrap.min.js?v=3.3.6"></script>
+
+</body>
+<link rel="stylesheet" href="${ctxPath}/static/resources/css/project_ext.css">
+</html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.commonFolderManager.dao.FsCommonFolderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.commonFolderManager.model.FsCommonFolder">
+        <id column="common_folder_id" property="commonFolderId" />
+        <result column="common_folder_name" property="commonFolderName" />
+        <result column="folder_id" property="folderId" />
+        <result column="folder_name" property="folderName" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="show_order" property="showOrder" />
+        <result column="file_type" property="fileType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        common_folder_id AS commonFolderId, common_folder_name AS commonFolderName, folder_id AS folderId, folder_name AS folderName,
+         create_user_id AS createUserId, create_time AS createTime, show_order AS showOrder, file_type AS fileType
+    </sql>
+
+    <!--查询常用目录表所有数据-->
+    <select id="selectAllCommonFold" resultType="FsCommonFolder">
+        select
+          cf.common_folder_id commonFolderId,
+          cf.common_folder_name commonFolderName,
+          cf.folder_id folderId,
+          cf.folder_name folderName,
+          cf.create_user_id createUserId,
+          cf.create_time createTime,
+          cf.show_order showOrder
+        from fs_common_folder cf
+        where cf.create_user_id = #{userId}
+        order by cf.file_type desc
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    , cf.folder_name desc
+                </if>
+                <if test="order == 1">
+                    , cf.folder_name asc
+                </if>
+                <if test="order == 2">
+                    , cf.common_folder_name asc
+                </if>
+                <if test="order == 3">
+                    , cf.common_folder_name desc
+                </if>
+                <if test="order == 4">
+                    , cf.create_time asc
+                </if>
+                <if test="order == 5">
+                    , cf.create_time desc
+                </if>
+            </when>
+            <otherwise>
+                , cf.show_order desc
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="getMaxOrder" resultType="java.lang.Integer">
+        select max(show_order)
+        from fs_common_folder;
+    </select>
+
+    <select id="moveFolder">
+        UPDATE fs_common_folder AS tab1 JOIN fs_common_folder AS tab2 ON (tab1.common_folder_id = #{idOne} AND tab2.common_folder_id = #{idTwo})
+        OR (tab1.common_folder_id =  #{idTwo}  AND tab2.common_folder_id = #{idOne} )
+        SET tab1.show_order = tab2.show_order,tab2.show_order=tab1.show_order
+    </select>
+
+</mapper>

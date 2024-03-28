@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-fastdfs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-fastdfs/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-kms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-kms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-main" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-main/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-manager" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-manager/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-mobile" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-mobile/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-yyzc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dw-yyzc/src/main/java" charset="UTF-8" />
+  </component>
+</project>

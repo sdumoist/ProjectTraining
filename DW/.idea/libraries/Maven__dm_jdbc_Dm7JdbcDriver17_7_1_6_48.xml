@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: dm.jdbc:Dm7JdbcDriver17:7.1.6.48">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/dm/jdbc/Dm7JdbcDriver17/7.1.6.48/Dm7JdbcDriver17-7.1.6.48.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/dm/jdbc/Dm7JdbcDriver17/7.1.6.48/Dm7JdbcDriver17-7.1.6.48-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/dm/jdbc/Dm7JdbcDriver17/7.1.6.48/Dm7JdbcDriver17-7.1.6.48-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

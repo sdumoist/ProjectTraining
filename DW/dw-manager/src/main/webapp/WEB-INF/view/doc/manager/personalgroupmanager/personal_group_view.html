@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>群组管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>-->
+    <!--<link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folderAuthority.css?v=${h_version}">-->
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/personalgroupmanager/css/group_view_per.css?v=${h_version}"/>
+    <style>
+        .layui-layer-btn.layui-layer-btn-{text-align: center !important;}
+        .confirm-class .layui-layer-btn .layui-layer-btn1{color: #333!important;}
+        .confirm-class .layui-layer-btn .layui-layer-btn0{float: none}
+    </style>
+</head>
+<body>
+@if(shiro.hasPermission("roleManager:addRole")){
+<input id="shiroAdd" value="add" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:editRole")){
+<input id="shiroEdit" value="edit" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:delRole")){
+<input id="shiroDel" value="del" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:reclaimPerm")){
+<input id="shiroRec" value="rec" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:saveGroup")){
+<input id="saveGroup" value="saveGroup" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:editGroup")){
+<input id="editGroup" value="editGroup" type="hidden">
+@}
+@if(shiro.hasPermission("roleManager:delGroup")){
+<input id="delGroup" value="delGroup" type="hidden">
+@}
+
+<div class="background">
+    <div class="content">
+        <div class="layui-col-md3 layui-col-sm3 con-full-l leftArea">
+            <div class="pims-tree">
+                <div class="layui-form-item con-full-l" >
+                    <div class="layui-input-inline search" style="display:none;">
+                        <input type="text" id="txtIndustryArea" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--添加检索结果-->
+                <div class="search-results"></div>
+                <div id="roleInfo" class="tree-box">
+                    <div id="powerTree" class="jsTree" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg">
+                <div class="layui-form-item clearfix">
+
+                    <div class="search-wrapper">
+                        <input class="layui-input" id="searchName" placeholder="请输入人员名称" value="">
+                        <button class="layui-btn"  id="searchBtn"><i class="layui-icon">&#xe615;</i>查询</button>
+                    </div>
+                    <div class="toolBar">
+                        <input  type="hidden" class="hide"  id="loginId" value="${loginId}">
+                        <input  type="hidden" class="hide"  id="usersId" >
+                        <input  type="hidden" class="hide"  id="groupId" >
+                        <input  type="hidden" class="layui-input"  id="isSort" >
+                        <input  type="hidden" class="hide"  id="groupName">
+                        <button type="button" class="layui-btn" id="addSortBtn" data-type="addGroup"><i class="layui-icon">&#xe654;</i>新增分组</button>
+                        <button type="button" class="layui-btn" id="addBtn" data-type="addGroup"><i class="layui-icon">&#xe654;</i>新增用户组</button>
+                        <button type="button" class="layui-btn" id="upBtn" data-type="upGroup"><i class="layui-icon">&#xe642;</i>修改</button>
+                        <button type="button" class="layui-btn" id="delBtn" data-type="delGroup"><i class="layui-icon">&#xe640;</i>删除</button>
+                    </div>
+                </div>
+                <div class="weadmin-body tableBox">
+                    <table class="layui-table" id="groupList" lay-filter="groupList"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="sortadd" style="display: none;text-align:right" class="addFont">
+    <div class="weadmin-body" style="padding-top: 15px">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class=" layui-inline">
+                    <label for="sortName" class="layui-form-label">
+                        <span class="we-red">*</span>分组名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sortName" name="sortName" maxlength="40" autocomplete="off" class="layui-input">
+                        <input type="hidden" id="sortId" name="sortId">
+                    </div>
+                </div>
+                <div class=" layui-inline">
+                    <label  class="layui-form-label">
+                        <span class="we-red">*</span>所属分组
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="parentSortName" name="parentSortName"  readonly="readonly"  unselectable="on" class="layui-input">
+                        <input type="hidden" id="parentSortId" name="parentSortId" >
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="${ctxPath}/static/doc/manager/personalgroupmanager/js/personal_groupView.js?v=${h_version}"></script>
+</body>
+</html>

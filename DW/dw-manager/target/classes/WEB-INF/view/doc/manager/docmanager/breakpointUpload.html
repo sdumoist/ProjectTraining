@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>断点续传demo</title>
+
+    <!--外部css和js开始-->
+    @include("/common/plugins_ext.html"){}
+    @include("/common/plugins.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script src="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.nolog.js"></script>
+    <!--外部css和js结束-->
+    <style type="text/css">
+        #dndArea {
+            width: 200px;
+            height: 100px;
+            border-color: red;
+            border-style: dashed;
+        }
+    </style>
+
+</head>
+<body>
+<input id="jindutiao" type="hidden" />
+<div id="uploader" class="wu-example">
+    <div id="dndArea"></div>
+    <div class="btns">
+        <div id="picker" class="webuploader-container">
+            <div class="webuploader-pick">选择文件</div>
+            <div id="rt_rt_1bchdejhrarjdvd11h41eoh1nt1"
+                 style="position: absolute; top: 0px; left: 0px; width: 88px; height: 35px; overflow: hidden; bottom: auto; right: auto;">
+                <input id="file_bp" name="file" multiple="multiple"
+                       class="webuploader-element-invisible" type="file" /> <label
+                    style="opacity: 0; width: 100%; height: 100%; display: block; cursor: pointer; background: rgb(255, 255, 255) none repeat scroll 0% 0%;"></label>
+            </div>
+        </div>
+        <!-- 文件列表：选择文件后在该div显示 -->
+
+        <div id="thelist"
+             class="uploader-list list-group-item clearfix ng-hide">
+
+
+        </div>
+        <label class="text-right"
+               style="font-weight: 100; float: left; margin-left: 15px; width: 144px; margin-right: 15px;"></label>
+        <button class="btn m-b-xs btn-sm btn-info btn-addon"
+                id="startOrStopBtn" style="padding: 7px 50px; margin-top: 20px;">开始上传</button>
+    </div>
+</div>
+</body>
+<script src="${ctxPath}/static/doc/manager/docmanager/js/breakpointUpload.js?v=${h_version}"></script>
+</html>

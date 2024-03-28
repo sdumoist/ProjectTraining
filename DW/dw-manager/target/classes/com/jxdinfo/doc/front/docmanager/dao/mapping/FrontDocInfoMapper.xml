@@ -1,0 +1,1688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docmanager.dao.FrontDocInfoMapper">
+    <select id="getDocDetail" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+       SELECT
+            D.DOC_ID docId,
+            D.FILE_ID fileId,
+            D.FOLD_ID foldId,
+            D.USER_ID userId,
+            D.TAGS tags,
+            U.USER_NAME userName,
+            D.AUTHOR_ID authorId,
+            D.SHARE_FLAG shareFlag,
+        U.USER_NAME authorName,
+            D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+            D.TITLE title,
+            D.DOC_ABSTRACT docAbstract,
+            D.DOC_TYPE docType,
+            D.WATERMARK_USER watermarkUser,
+            D.WATERMARK_COMPANY watermarkCompany,
+            ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+            ifnull(D.READ_NUM,0) readNum,
+            D.CREATE_TIME createTime,
+            D.UPDATE_TIME updateTime,
+            D.VISIBLE_RANGE visibleRange,
+            CASE
+            WHEN D.author_id =#{userId} THEN
+            '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+            ELSE
+            T1.authority
+            END authority,
+            D.VALID_FLAG validFlag,
+            F.FILE_PATH filePath,
+            F.FILE_SIZE fileSize,
+            F.FILE_PDF_PATH filePdfPath
+            FROM
+            DOC_INFO D
+            LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+             LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+            LEFT JOIN SYS_USERS  U ON U.USER_ID = D.USER_ID
+
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = D.doc_id
+            WHERE
+            D.DOC_ID = #{ids}
+    </select>
+
+    <select id="getDocInfo" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        ( SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        U.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+        U.USER_NAME authorName,
+        D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.share_flag shareFlag,
+        FFD.folder_name folderName,
+        jxd7.path url,
+        SS.ORGAN_ALIAS deptName,
+        CASE
+        WHEN D.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        LEFT JOIN SYS_USERS U ON U.USER_ID = D.USER_ID
+        LEFT JOIN SYS_STRU SS ON U.DEPARTMENT_ID = SS.STRU_ID
+        LEFT JOIN jxd7_xt_headpicture jxd7 on  jxd7.userID = U.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = D.doc_id
+        WHERE
+        D.DOC_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        )
+        UNION (SELECT
+        D.component_id doc_Id,
+        D.component_id fileId,
+        D.component_id foldId,
+        D.USER_ID userId,
+        U.USER_NAME userName,
+        D.USER_ID authorId,
+        U.USER_NAME authorName,
+        D.USER_ID contactsId,
+        '' contactsName,
+        '' mobile,
+        D.component_name title,
+        D.component_desc docAbstract,
+        '.component' docType,
+        '' downloadNum,
+        '' readNum,
+        D.create_time createTime,
+        D.update_time updateTime,
+        '' visibleRange,
+       '' shareFlag,
+        '' folderName,
+        '' url,
+        SS.ORGAN_ALIAS deptName,
+        '1' authority,
+        '' validFlag,
+        '' filePath,
+        '' filePdfPath
+        from component_apply D
+        LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.USER_ID
+        LEFT JOIN SYS_STRU SS ON U.DEPARTMENT_ID = SS.STRU_ID
+        where D.component_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        )
+       <!-- UNION (SELECT
+        D.QUE_ID doc_Id,
+        D.QUE_ID fileId,
+        D.QUE_ID foldId,
+        D.QUE_USER_ID userId,
+          D.QUE_USER_NAME userName,
+        D.QUE_USER_ID authorId,
+        D.QUE_USER_ID  authorName,
+        D.QUE_USER_ID contactsId,
+        '' contactsName,
+        '' mobile,
+        D.TITLE title,
+        D.SUPPLEMENT docAbstract,
+        '.aq' docType,
+        '' downloadNum,
+        D.READ_NUM readNum,
+        '' collectNum,
+        D.QUE_TIME createTime,
+        D.QUE_TIME updateTime,
+        '' visibleRange,
+        '' shareFlag,
+        '' folderName,
+        '' url,
+        SS.ORGAN_ALIAS deptName,
+        '' authority,
+        '' validFlag,
+        '' filePath,
+        '' filePdfPath
+        from qa_question D
+        LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.QUE_USER_ID
+        LEFT JOIN SYS_STRU SS ON U.DEPARTMENT_ID = SS.STRU_ID
+        where D.QUE_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        )-->
+    </select>
+
+
+    <select id="getFolderIMG" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        U.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+        U.USER_NAME authorName,
+        D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        CASE
+        WHEN D.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        FIT.SOURCE_PATH thumbPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN DOC_IMG_THUMB FIT ON F.FILE_ID = FIT.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON d.doc_id = COL.RESOURCEID
+
+        LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.USER_ID
+
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+        OR dgu.Group_ID IN
+        <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = D.doc_id
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY createTime desc
+        LIMIT #{startIndex},#{size}
+    </select>
+
+    <select id="getFolderIMGCount" resultType="int">
+        SELECT
+          COUNT(*)
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        U.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+        U.USER_NAME authorName,
+        D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        CASE
+        WHEN D.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.USER_ID
+
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = D.doc_id
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+    </select>
+    <select id="getFolderImgForShare" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        D.CONTACTS_ID contactsId,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getFolderImgForShareCount" resultType="Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        D.CONTACTS_ID contactsId,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+    </select>
+
+    <select id="getFolderIMGByAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        D.AUTHOR_ID authorId,
+        D.CONTACTS_ID contactsId,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+           ifnull(COL.collectNum,0) collectNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        FIT.SOURCE_PATH thumbPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        LEFT JOIN DOC_IMG_THUMB FIT ON F.FILE_ID = FIT.FILE_ID
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON d.doc_id = COL.RESOURCEID
+
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+        ORDER BY createTime desc
+        LIMIT #{startIndex},#{size}
+    </select>
+
+    <select id="getFolderIMGByAdminCount" resultType="int">
+        SELECT
+          COUNT(*)
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        D.AUTHOR_ID authorId,
+        D.CONTACTS_ID contactsId,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id  = FFD.folder_id
+        WHERE
+        D.FOLD_ID=#{folderId}
+        AND F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND D.VALID_FLAG='1'
+        )tt
+    </select>
+    <!--获取推荐的图片信息集合-->
+    <select id="getRecommendIMG" resultType="java.util.Map">
+        select
+        *
+        from
+        (
+        SELECT
+        @r:=@r+1 ROW_NUM,
+        TEM.*
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        ifnull(T3.DONWLOADNUM,0) downloadNum,
+        ifnull(T2.PREVIEWNUM,0) readNum,
+        D.TITLE title,
+        D.DOC_TYPE docType
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id = FFD.folder_id
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS PREVIEWNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='3'
+        GROUP BY RESOURCE_ID
+        ) T2
+        ON D.FILE_ID = T2.RESOURCE_ID
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS DONWLOADNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='4'
+        GROUP BY RESOURCE_ID
+        ) T3
+        ON D.FILE_ID = T3.RESOURCE_ID
+        WHERE
+        D.DOC_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        AND FFD.folder_id != #{folderId}
+        ORDER BY (downloadNum * 4 + readNum * 1) DESC
+        ) TEM,
+        (
+        SELECT @r:=0
+        ) R
+        ) t
+        WHERE ROW_NUM &lt;=8
+    </select>
+
+    <select id="getPopularImg" resultType="java.util.Map">
+        select
+        *
+        from
+        (
+        SELECT
+        @r:=@r+1 ROW_NUM,
+        TEM.*
+        FROM
+        (
+        SELECT * FROM
+        (SELECT
+        DFA.author_id,
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.VALID_FLAG validFlag,
+        FF.FILE_PATH filePath,
+        FF.FILE_PDF_PATH filePdfPath,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+		D.CREATE_TIME createTime
+        FROM doc_file_authority DFA
+        LEFT JOIN fs_file FF ON FF.FILE_ID=DFA.file_id
+        LEFT JOIN (select doc_id,valid_flag,file_id,fold_id,title,doc_type,create_time from DOC_INFO where FOLD_ID != #{folderId}) D ON D.FILE_ID=FF.FILE_ID
+        WHERE DFA.author_id='allpersonflag'
+				)T1
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS PREVIEWNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='3'
+        GROUP BY RESOURCE_ID
+        ) T2
+        ON T1.docId = T2.RESOURCE_ID
+        WHERE
+        T1.docType IN ('.jpg','.png','.bmp','.gif','.jpeg')
+        AND T1.validFlag = '1'
+        GROUP BY T1.DOCID
+        ORDER BY PREVIEWNUM desc,createTime desc
+        )TEM,
+        (
+        SELECT @r:=0
+        ) R
+        ) t
+        WHERE ROW_NUM &lt;=8
+    </select>
+    <select id="getConfigure" resultType="map">
+        SELECT
+        CONFIG_VALUE AS configValue ,
+        CONFIG_VALID_FLAG AS configValidFlag
+        FROM
+        DOC_CONFIGURE
+        <if test="key != null and key != ''">
+            WHERE
+            CONFIG_KEY = #{key}
+        </if>
+    </select>
+
+    <select id="getListByAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        ff.FILE_PATH filePath,
+        ff.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        left join fs_file ff on d.DOC_ID=FF.FILE_ID
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+
+
+        WHERE d.valid_flag='1'
+        order by    D.CREATE_TIME desc
+        limit  0,#{pageSize}
+    </select>
+
+    <select id="getList" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+             ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+          ff.FILE_PATH filePath,
+        ff.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        left join fs_file ff on d.DOC_ID=FF.FILE_ID
+       LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+
+
+        WHERE d.valid_flag='1' and dfa.author_id='allpersonflag'
+         order by    D.CREATE_TIME desc
+        limit  0,#{pageSize}
+    </select>
+
+    <select id="getNewList" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        ifnull(D.DOWNLOAD_NUM, 0) downloadNum,
+        ifnull(D.READ_NUM, 0) readNum,
+        ifnull(COL.collectNum, 0) collectNum,
+        ff.FILE_PATH filePath,
+        ff.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN SYS_USERS A ON A.USER_ID = D.AUTHOR_ID
+        LEFT JOIN doc_file_authority dfa ON dfa.file_id = d.doc_id
+        LEFT JOIN fs_file ff ON d.DOC_ID = FF.FILE_ID
+        LEFT JOIN fs_folder fd ON D.fold_id = fd.folder_id
+        LEFT JOIN (
+        SELECT
+        COUNT(1) collectNum,
+        RESOURCE_ID RESOURCEID
+        FROM
+        doc_resource_log
+        GROUP BY
+        RESOURCE_ID
+        ) COL ON D.doc_id = COL.RESOURCEID
+        WHERE
+        d.valid_flag = '1'
+        AND (DFA.AUTHOR_ID IN (
+            SELECT TUA.A FROM (
+                SELECT
+                dgu.group_id A
+                FROM
+                doc_group_user dgu
+                WHERE
+                1 = 2
+                <if test="groupList != null and groupList.size() >0">
+                    OR dgu.Group_ID IN
+                    <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                        #{idItem}
+                    </foreach>
+                </if>
+                UNION ALL
+                SELECT
+                ur.GRANTED_ROLE A
+                FROM
+                sys_user_role ur
+                WHERE
+                1 = 2
+                <if test="roleList != null and roleList.size() >0">
+                    OR ur.GRANTED_ROLE IN
+                    <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                        #{idItem}
+                    </foreach>
+                </if>
+                UNION ALL
+                SELECT #{userId} A FROM DUAL
+                UNION ALL
+                SELECT 'allpersonflag' A FROM DUAL
+            ) TUA
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR fd.level_code in ${levelCodeString})
+        ORDER BY
+        D.CREATE_TIME DESC
+        LIMIT 0,#{pageSize}
+    </select>
+
+    <select id="getListByFolderId" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime
+        FROM
+        doc_top_file dtf
+        left join    DOC_INFO  D  on d.doc_id=dtf.doc_id
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        WHERE d.valid_flag='1' and dfa.author_id='allpersonflag'
+        order by  dtf.show_order
+
+    </select>
+    <select id="getTopList" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime
+        FROM
+        doc_top_file dtf
+        left join    DOC_INFO  D  on d.doc_id=dtf.doc_id
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        LEFT JOIN fs_folder fd ON D.fold_id = fd.folder_id
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        WHERE d.valid_flag='1'
+        AND (DFA.AUTHOR_ID IN (
+            SELECT TUA.A FROM (
+                SELECT
+                dgu.group_id A
+                FROM
+                doc_group_user dgu
+                WHERE
+                1 = 2
+                <if test="groupList != null and groupList.size() >0">
+                    OR dgu.Group_ID IN
+                    <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                        #{idItem}
+                    </foreach>
+                </if>
+                UNION ALL
+                SELECT
+                ur.GRANTED_ROLE A
+                FROM
+                sys_user_role ur
+                WHERE
+                1 = 2
+                <if test="roleList != null and roleList.size() >0">
+                    OR ur.GRANTED_ROLE IN
+                    <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                        #{idItem}
+                    </foreach>
+                </if>
+                UNION ALL
+                SELECT #{userId} A FROM DUAL
+                UNION ALL
+                SELECT 'allpersonflag' A FROM DUAL
+            ) TUA
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR fd.level_code in ${levelCodeString})
+        order by  dtf.show_order
+
+    </select>
+    <select id="getTopListByAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime
+        FROM
+        doc_top_file dtf
+        left join    DOC_INFO  D  on d.doc_id=dtf.doc_id
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        WHERE d.valid_flag='1'
+        order by  dtf.show_order
+
+    </select>
+    <select id="getListByType" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+        D.DOC_ID fileId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME createUserName,
+        D.TITLE fileName,
+        D.DOC_TYPE fileType,
+        D.CREATE_TIME createTime,
+        ff.file_size fileSize ,
+        d.read_num readNum,
+        d.download_num downloadNum
+        FROM
+        DOC_INFO D
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        left join fs_file ff on d.doc_id = ff.file_id
+        left join fs_folder ffr on d.fold_id=ffr.folder_id
+        WHERE d.valid_flag='1' and dfa.author_id='allpersonflag' and ffr.level_code LIKE CONCAT(#{folderId},'%')
+        order by d.read_num desc,   D.CREATE_TIME  desc
+        limit  0,6
+    </select>
+
+    <select id="getRecommendArticle" resultType="java.util.Map">
+        select
+        *
+        from
+        (
+        SELECT
+        @r:=@r+1 ROW_NUM,
+        TEM.*
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        ifnull(T3.DONWLOADNUM,0) downloadNum,
+        ifnull(T2.PREVIEWNUM,0) readNum,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        DATE_FORMAT(D.CREATE_TIME, '%Y-%m-%d') createTime
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN SYS_USERS  A ON A.USER_ID = D.USER_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id = FFD.folder_id
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS PREVIEWNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='3'
+        GROUP BY RESOURCE_ID
+        ) T2
+        ON D.FILE_ID = T2.RESOURCE_ID
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS DONWLOADNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='4'
+        GROUP BY RESOURCE_ID
+        ) T3
+        ON D.FILE_ID = T3.RESOURCE_ID
+        WHERE 1=2
+        <if test="idList != null and idList.size != 0">
+        OR D.DOC_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        </if>
+        ORDER BY (downloadNum * 4 + readNum * 1) DESC
+        ) TEM,
+        (
+        SELECT @r:=0
+        ) R
+        ) t
+        WHERE ROW_NUM &lt;=5
+    </select>
+
+    <select id="guessYouLike" resultType="java.util.Map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        @r:=@r+1 ROW_NUM,
+        TEM.*
+        FROM
+        (
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        DATE_FORMAT(D.CREATE_TIME, '%Y-%m-%d') createTime,
+        T1.times times
+        FROM
+        (
+        SELECT
+          CHILD_DOC_ID childId,
+          TIMES times
+        FROM
+          DOC_PREVIEW_RELATION
+        WHERE
+          CURRENT_DOC_ID = #{currentId}
+        )T1
+        LEFT JOIN DOC_INFO D ON D.DOC_ID=T1.childId
+        LEFT  JOIN doc_file_authority dfa ON dfa.file_id = d.doc_id
+        LEFT JOIN fs_file F ON D.DOC_ID=F.FILE_ID
+        LEFT JOIN  SYS_USERS A ON A.USER_ID = D.USER_ID
+        WHERE D.valid_flag='1' and dfa.author_id='allpersonflag' AND D.DOC_TYPE IN ('.ceb','.doc','.docx','.pdf','.ppt','.pptx','.txt','.xls','.xlsx')
+        ORDER BY times DESC
+        ) TEM,
+        (
+        SELECT @r:=0
+        ) R
+        ) t
+        WHERE ROW_NUM &lt;=3
+    </select>
+    <select id="getArticleByReadNum" resultType="java.util.Map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        @r:=@r+1 ROW_NUM,
+        TEM.*
+        FROM
+        (
+		SELECT
+		D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        ifnull(T2.PREVIEWNUM,0) readNum,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        DATE_FORMAT(D.CREATE_TIME, '%Y-%m-%d') createTime
+		FROM
+		doc_info D
+		LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.USER_ID
+        LEFT JOIN fs_folder FFD ON D.fold_id = FFD.folder_id
+        LEFT JOIN
+        (
+        SELECT
+        RESOURCE_ID,
+        COUNT(DOCLOG.RESOURCE_ID) AS PREVIEWNUM
+        FROM
+        DOC_RESOURCE_LOG DOCLOG
+        WHERE DOCLOG.OPERATE_TYPE='3'
+        GROUP BY RESOURCE_ID
+        ) T2
+        ON D.FILE_ID = T2.RESOURCE_ID
+        WHERE D.DOC_TYPE IN ('.ceb','.doc','.docx','.pdf','.ppt','.pptx','.txt','.xls','.xlsx')
+        <if test="docList != null and docList.size != 0">
+            AND D.DOC_ID NOT IN
+            <foreach collection="docList" item="doc" open="(" separator="," close=")">
+                #{doc.docId}
+            </foreach>
+        </if>
+
+        <if test="currentId != null and currentId != ''">
+            AND D.DOC_ID != #{currentId}
+        </if>
+        and D.valid_flag = '1'
+		ORDER BY
+		D.READ_NUM
+		DESC
+		) TEM,
+        (
+        SELECT @r:=0
+        ) R
+        ) t
+        WHERE ROW_NUM &lt;=#{size}
+    </select>
+
+    <select id="getDocByHash" resultType="java.util.Map">
+        SELECT
+          D.author_id authorId,
+          A.USER_NAME author,
+          D.create_time createTime,
+          D.title title,
+          D.download_num downloadNum,
+          D.read_num readNum,
+          D.doc_type fileSuffixName,
+          F.file_size fileSize,
+          S.DOC_ID docId
+        FROM
+        DOC_SHARE_RESOURCE S
+        LEFT JOIN DOC_INFO D ON S.DOC_ID=D.DOC_ID
+        LEFT JOIN FS_FILE F ON D.DOC_ID=F.FILE_ID
+        LEFT JOIN SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        WHERE
+          S.MAPPING_URL=#{hash}
+    </select>
+    <select id="getDocByFileIdApi" resultType="java.util.Map">
+        SELECT
+        D.author_id authorId,
+        A.USER_NAME author,
+        D.create_time createTime,
+        D.title title,
+        D.download_num downloadNum,
+        D.read_num readNum,
+        D.doc_type fileSuffixName,
+        F.file_size fileSize,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON D.DOC_ID=F.FILE_ID
+        LEFT JOIN  SYS_USERS A ON A.USER_ID = D.AUTHOR_ID
+        WHERE
+        f.file_ID=#{fileId}
+    </select>
+    <select id="getListByTimeCount" resultType="int">
+        SELECT
+      count(*)
+        FROM
+        doc_info D
+        LEFT JOIN fs_folder ff ON D.fold_id = ff.folder_id
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        WHERE
+        ff.level_code LIKE CONCAT(#{levelCode},'%')
+        <if test="levelCodeString != null">
+            and      ff.level_code IN ${levelCodeString}
+        </if>
+        <if test="keyword != null and keyword != ''">
+
+            and D.title LIKE  CONCAT('%',#{keyword},'%')
+        </if>
+        and D.doc_type in('.png','.jpg','.jpeg','.gif','.bmp') and D.valid_flag='1'  ${sql}
+        ORDER BY D.CREATE_TIME DESC  ;
+
+    </select>
+    <select id="getListByTime" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        su.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+
+        D.CONTACTS_ID contactsId,
+
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        doc_info D
+        LEFT JOIN fs_folder ff ON D.fold_id = ff.folder_id
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN  sys_users su on D.user_id=su.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+        WHERE
+        ff.level_code LIKE CONCAT(#{levelCode},'%')
+        <if test="levelCodeString != null">
+            and     ff.level_code IN ${levelCodeString}
+                </if>
+        and D.doc_type in('.png','.jpg','.jpeg','.gif','.bmp')
+        and D.valid_flag='1'  ${sql}
+        <if test="keyword != null and keyword != ''">
+
+        and D.title LIKE  CONCAT('%',#{keyword},'%')
+        </if>
+          ORDER BY D.CREATE_TIME DESC
+        limit #{pageSize},#{pageNumber};
+
+    </select>
+
+    <select id="getPdfPathById" resultType="String">
+        SELECT FILE_PDF_PATH FROM FS_FILE
+        WHERE FILE_ID = #{docId}
+    </select>
+
+    <update id="updatePdfPathByMd5">
+        UPDATE FS_FILE SET FILE_PDF_PATH =
+        (
+            select a.pdfPath from
+            (
+                SELECT
+                    FILE_PDF_PATH pdfPath
+                FROM
+                    FS_FILE
+                WHERE
+                    MD5=(
+                        SELECT
+                            MD5
+                        FROM
+                            FS_FILE
+                        WHERE
+                            FILE_ID=#{docId}
+                        LIMIT 1
+                    ) AND FILE_PDF_PATH != '' AND FILE_ID != #{docId}
+                LIMIT 1
+            ) a
+        ),PDF_KEY=
+            (
+                select b.pdfKey from
+                (
+                SELECT
+                    PDF_KEY pdfKey
+                FROM
+                    FS_FILE
+                WHERE
+                    MD5=(
+                        SELECT
+                            MD5
+                        FROM
+                            FS_FILE
+                        WHERE
+                            FILE_ID=#{docId}
+                        LIMIT 1
+                    ) AND PDF_KEY != '' AND FILE_ID != #{docId}
+                LIMIT 1
+            )b
+        )
+        WHERE
+          FILE_ID=#{docId}
+    </update>
+
+    <select id="createThumbList" resultType="java.util.Map">
+        SELECT F.FILE_ID fileId, F.file_path filePath,F.file_type suffix, F.source_key sourceKey FROM FS_FILE F LEFT JOIN doc_img_thumb FIT ON F.FILE_ID = FIT.file_id WHERE F.FILE_TYPE IN ('.jpg','.png','.bmp','.gif','.jpeg') and FIT.source_path is null
+    </select>
+
+    <select id="selectDocId" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFile">
+        SELECT F.FILE_ID fileId, F.file_path filePath,F.file_type fileType, F.md5 md5 FROM FS_FILE F  WHERE F.FILE_ID =#{docId}
+    </select>
+
+    <select id="selectKey" resultType="String">
+         SELECT
+                    PDF_KEY pdfKey
+                FROM
+                    FS_FILE
+                WHERE
+                    MD5=#{md5} AND PDF_KEY != '' AND FILE_ID != #{docId}
+    </select>
+    <select id="selectPdfPath" resultType="String">
+    SELECT
+                    FILE_PDF_PATH pdfPath
+                FROM
+                    FS_FILE
+                WHERE
+                    MD5=#{md5} AND FILE_PDF_PATH != '' AND FILE_ID != #{docId}
+    </select>
+
+    <update id="updatePdfPath">
+        UPDATE FS_FILE SET FILE_PDF_PATH =#{pdfPath}
+        ,PDF_KEY=#{pdfKey}
+        WHERE
+          FILE_ID=#{docId}
+    </update>
+    <insert id="setNewThumbInfo">
+        INSERT INTO DOC_IMG_THUMB(
+            source_id,
+            file_id,
+            source_path,
+            source_level,
+            source_height,
+            source_width,
+            source_size,
+            source_key
+        ) VALUE (
+            #{sourceId},
+            #{fileId},
+            #{sourcePath},
+            #{sourceLevel},
+            #{height},
+            #{width},
+            #{sourceSize},
+            #{sourceKey}
+        )
+    </insert>
+
+    <select id="getThumbByIdAndLevel" resultType="String">
+        SELECT
+          FIT.SOURCE_PATH sourcePath
+        FROM
+          DOC_IMG_THUMB FIT
+        WHERE
+          FIT.FILE_ID=#{fileId}
+        AND
+          FIT.SOURCE_LEVEL=#{sourceLevel}
+    </select>
+
+    <update id="updateNewThumbInfo">
+        UPDATE
+          DOC_IMG_THUMB FIT
+        SET FIT.FILE_ID=FIT.FILE_ID
+            <if test="sourcePath != null and sourcePath != ''">
+                ,FIT.SOURCE_PATH=#{sourcePath}
+            </if>
+            <if test="sourceLevel != null and sourceLevel != ''">
+                ,FIT.SOURCE_LEVEL=#{sourceLevel}
+            </if>
+            <if test="sourceHeight != null and sourceHeight != ''">
+                ,FIT.SOURCE_HEIGHT=#{sourceHeight}
+            </if>
+            <if test="sourceWidth != null and sourceWidth != ''">
+                ,FIT.SOURCE_SIZE=#{sourceSize}
+            </if>
+            <if test="sourceKey != null and sourceKey != ''">
+                ,FIT.SOURCE_KEY=#{sourceKey}
+            </if>
+        WHERE
+          FIT.FILE_ID=#{fileId}
+            <if test="sourceLevel != null and sourceLevel != ''">
+                AND FIT.SOURCE_LEVEL=#{sourceLevel}
+            </if>
+    </update>
+
+    <insert id="insertThumbInfoFast">
+    INSERT INTO doc_img_thumb
+    SELECT
+      #{sourceId},#{fileId},fit1.source_path,fit1.source_level,fit1.source_height,fit1.source_width,fit1.source_size,fit1.source_key
+    FROM doc_img_thumb fit1
+    WHERE FILE_ID = (
+      SELECT file_id FROM FS_FILE WHERE MD5=#{md5} and file_path is not null ORDER BY create_time ASC limit 1
+    ) limit 1,1
+    </insert>
+
+    <select id="getListByTimeCountAll" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info D
+        LEFT JOIN fs_folder ff ON D.fold_id = ff.folder_id
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        WHERE
+        ff.level_code LIKE CONCAT(#{levelCode},'%')
+        <if test="levelCodeString != null">
+            and      ff.level_code IN ${levelCodeString}
+        </if>
+        <if test="keyword != null and keyword != ''">
+
+            and D.title LIKE  CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND D.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ORDER BY D.CREATE_TIME DESC  ;
+
+    </select>
+    <select id="getListByTimeAll" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        su.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+
+        D.CONTACTS_ID contactsId,
+
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath
+        FROM
+        doc_info D
+        LEFT JOIN fs_folder ff ON D.fold_id = ff.folder_id
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN  sys_users su on D.user_id=su.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+        WHERE
+        ff.level_code LIKE CONCAT(#{levelCode},'%')
+        <if test="levelCodeString != null">
+            and     ff.level_code IN ${levelCodeString}
+        </if>
+
+        and D.valid_flag='1'  ${sql}
+        <if test="keyword != null and keyword != ''">
+
+            and D.title LIKE  CONCAT('%',#{keyword},'%')
+        </if>
+
+        <if test="typeArr != null and typeArr.length >0">
+            AND D.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ORDER BY D.CREATE_TIME DESC
+        limit #{pageSize},#{pageNumber};
+
+    </select>
+
+    <select id="getListByPermission" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT*FROM(
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        ff.FILE_PATH filePath,
+        ff.FILE_PDF_PATH filePdfPath,
+        CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority
+        FROM
+        DOC_INFO D
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        left join fs_file ff on d.DOC_ID=FF.FILE_ID
+        LEFT JOIN fs_folder FFD ON d.fold_id = FFD.folder_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL
+        ON D.doc_id = COL.RESOURCEID
+
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = D.doc_id
+
+        WHERE d.valid_flag='1'
+        order by    d.CREATE_TIME desc )tt WHERE
+        ( tt.authority != NULL
+        OR tt.authority != '')
+
+
+        limit  0,#{pageSize}
+    </select>
+    <select id="getListByPermissionSuper" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.AUTHOR_ID authorId,
+        A.USER_NAME authorName,
+        D.TITLE title,
+        D.DOC_TYPE docType,
+        D.WATERMARK_USER watermarkUser,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+             ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+          ff.FILE_PATH filePath,
+        ff.FILE_PDF_PATH filePdfPath
+        FROM
+        DOC_INFO D
+        LEFT JOIN  SYS_USERS  A ON A.USER_ID = D.AUTHOR_ID
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        left join fs_file ff on d.DOC_ID=FF.FILE_ID
+       LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+
+
+        WHERE d.valid_flag='1'
+         order by    D.CREATE_TIME desc
+        limit  0,#{pageSize}
+    </select>
+    <select id="hotWordCount" resultType="int">
+		SELECT
+	count(*)
+		FROM
+		doc_info D
+		      LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+
+		WHERE D.VALID_FLAG='1'
+		and dfa.author_id='allpersonflag'
+
+	</select>
+    <select id="hotWord" resultType="java.util.Map">
+        SELECT
+        D.TITLE TITLE,
+        D.DOC_ID DOCID,
+        D.DOC_TYPE DOCTYPE,
+        FF.folder_name folderName,
+            D.READ_NUM YLCOUNT,
+               D.download_num XZCOUNT,
+               D.user_id userId,
+               su.user_name userName,
+               d.create_time createTime,
+               ss.ORGAN_ALIAS deptName,
+               jxd7.path url,ff2.file_size fileSize
+
+        FROM
+        doc_info D
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        left join fs_folder ff on d.fold_id = ff.folder_id
+        left join fs_file ff2 on d.doc_id = ff2.file_id
+        LEFT  join sys_users su on su.user_id = d.user_id
+        LEFT  join sys_stru ss on su.DEPARTMENT_ID = ss.stru_id
+        LEFT JOIN jxd7_xt_headpicture jxd7 on  jxd7.userID = su.EMPLOYEE_ID
+        WHERE D.VALID_FLAG='1'
+          and dfa.author_id='allpersonflag'
+        ORDER BY
+            D.READ_NUM DESC, D.DOC_ID DESC
+ limit #{beginNum},#{endNum}
+    </select>
+
+    <!--手机端热门文档查询-->
+    <select id="hotWordMobile" resultType="java.util.Map">
+        SELECT
+        D.TITLE TITLE,
+        D.DOC_ID DOCID,
+        D.DOC_TYPE DOCTYPE,
+        FF.folder_name FOLDERNAME,
+        D.READ_NUM YLCOUNT,
+        D.download_num XZCOUNT,
+        D.user_id USERID,
+        su.user_name USERNAME,
+        d.create_time CREATETIME,
+        ss.ORGAN_ALIAS ORGNAME,
+        jxd7.path url,
+       	ff2.FILE_PATH PATH,
+		ff2.FILE_PDF_PATH PDFPATH
+        FROM
+        doc_info D
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+        left join fs_folder ff on d.fold_id = ff.folder_id
+        left join fs_file ff2 on d.doc_id = ff2.file_id
+        LEFT  join sys_users su on su.user_id = d.user_id
+        LEFT  join sys_stru ss on su.DEPARTMENT_ID = ss.stru_id
+        LEFT JOIN jxd7_xt_headpicture jxd7 on  jxd7.userID = su.EMPLOYEE_ID
+        WHERE D.VALID_FLAG='1'
+        and dfa.author_id='allpersonflag'
+        <if test="list != null and list.size() >0">
+            and D.fold_id in
+            <foreach item="folderId" collection="list" open="(" separator="," close=")">
+                #{folderId}
+            </foreach>
+        </if>
+        ORDER BY
+        D.READ_NUM
+        DESC
+    </select>
+
+    <select id="hotWordNum" resultType="int">
+        SELECT count(*)
+        FROM
+            doc_info D
+                LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+                left join fs_folder ff on d.fold_id = ff.folder_id
+                left join fs_file ff2 on d.doc_id = ff2.file_id
+                LEFT  join sys_users su on su.user_id = d.user_id
+                LEFT  join sys_stru ss on su.DEPARTMENT_ID = ss.stru_id
+                LEFT JOIN jxd7_xt_headpicture jxd7 on  jxd7.userID = su.EMPLOYEE_ID
+        WHERE D.VALID_FLAG='1'
+          and dfa.author_id='allpersonflag'
+    </select>
+    <select id="hotWordByLevelCode" resultType="java.util.Map">
+        SELECT
+        D.TITLE TITLE,
+        D.DOC_ID DOCID,
+        D.DOC_TYPE DOCTYPE,
+
+            D.READ_NUM YLCOUNT,
+           D.download_num XZCOUNT,
+               D.user_id userId,
+               su.user_name userName,
+               d.create_time createTime,
+               ss.ORGAN_ALIAS deptName,
+              jxd7.path url
+        FROM
+        doc_info D
+        LEFT  join doc_file_authority dfa on dfa.file_id = d.doc_id
+              LEFT  join sys_users su on su.user_id = d.user_id
+        LEFT  join sys_stru ss on su.DEPARTMENT_ID = ss.stru_id
+        LEFT JOIN  fs_folder ff on ff.folder_id = d.fold_id
+        LEFT JOIN jxd7_xt_headpicture jxd7 on  jxd7.userID = su.USER_ID
+        WHERE D.VALID_FLAG='1'
+        and dfa.author_id='allpersonflag'
+     and ff.level_code LIKE CONCAT(#{levelCode},'%')
+        ORDER BY
+            D.READ_NUM desc
+      limit 0,8
+    </select>
+</mapper>

@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docmanager.dao.DocInfoMapper">
+
+    <select id="getDocIdsByFoldIds" resultType="string">
+        select doc_id
+        from doc_info di
+        where di.valid_flag = '1'
+        and di.fold_id in
+        <foreach collection="allFoldIds" item="foldId" open="(" separator="," close=")">
+            #{foldId}
+        </foreach>
+    </select>
+
+    <delete id="deleteDocInfoByFileIds">
+        DELETE
+		FROM
+		    DOC_INFO
+		WHERE
+		    DOC_ID IN (
+		        SELECT
+		            DOC_ID
+		        FROM
+		            DOC_FILE
+		        WHERE
+		            FILE_ID IN (${ids})
+		    )
+    </delete>
+    <!--查询文件是否存在-->
+    <select id="checkFileExist" resultType="String" parameterType="java.util.List">
+        SELECT D.TITLE FROM DOC_INFO D  WHERE CONCAT(D.TITLE,D.DOC_TYPE) IN
+        <foreach collection="list" item="nameItem" open="(" separator="," close=")">
+            #{nameItem}
+        </foreach>
+        AND FOLD_ID = #{pid} AND VALID_FLAG = '1'
+    </select>
+    <select id="selectExistId" resultType="String" parameterType="java.util.List">
+        SELECT D.doc_id FROM DOC_INFO D  WHERE CONCAT(D.TITLE,D.DOC_TYPE) IN
+        <foreach collection="list" item="nameItem" open="(" separator="," close=")">
+            #{nameItem}
+        </foreach>
+        AND FOLD_ID = #{pid} AND VALID_FLAG = '1'
+    </select>
+    <select id="getDocDetail" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+       SELECT
+            D.DOC_ID docId,
+             D.TAGS tags,
+            D.FILE_ID fileId,
+            D.FOLD_ID foldId,
+            D.USER_ID userId,
+            U.USER_NAME userName,
+            D.AUTHOR_ID authorId,
+            U.USER_NAME authorName,
+            D.CONTACTS_ID contactsId,
+            U.USER_NAME contactsName,
+            U.MOBIlE mobile,
+            D.TITLE title,
+            D.DOC_ABSTRACT docAbstract,
+            D.DOC_TYPE docType,
+            D.WATERMARK_USER watermarkUser,
+            D.WATERMARK_COMPANY watermarkCompany,
+            ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+            ifnull(D.READ_NUM,0) readNum,
+               ifnull(COL.collectNum,0) collectNum,
+            D.CREATE_TIME createTime,
+            D.UPDATE_TIME updateTime,
+            D.VISIBLE_RANGE visibleRange,
+            D.AUTHORITY authority,
+            D.VALID_FLAG validFlag,
+            F.FILE_PATH filePath,
+            F.FILE_SIZE fileSize,
+            F.FILE_PDF_PATH filePdfPath,
+            D.SHARE_FLAG shareFlag
+            FROM
+            DOC_INFO D
+            LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+            LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.USER_ID
+
+          LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+
+            WHERE
+            D.DOC_ID = #{ids}
+    </select>
+
+    <select id="getDocInfo" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        U.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+        U.USER_NAME authorName,
+        D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        D.VISIBLE_RANGE visibleRange,
+        D.AUTHORITY authority,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        D.SHARE_FLAG shareFlag
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN  SYS_USERS U ON U.USER_ID = D.USER_ID
+
+        WHERE
+        D.DOC_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+    <select id="selectDocInfosByIdList" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        D.DOC_ID docId,
+        D.FILE_ID fileId,
+        D.FOLD_ID foldId,
+        D.USER_ID userId,
+        F.SIZE size,
+        U.USER_NAME userName,
+        D.AUTHOR_ID authorId,
+        U.USER_NAME authorName,
+        D.CONTACTS_ID contactsId,
+        U.USER_NAME contactsName,
+        U.MOBIlE mobile,
+        D.TITLE title,
+        D.DOC_ABSTRACT docAbstract,
+        D.DOC_TYPE docType,
+        ifnull(D.DOWNLOAD_NUM,0) downloadNum,
+        ifnull(D.READ_NUM,0) readNum,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        V.APPLY_TIME applyTime,
+        V.APPLY_USER_ID applyUserId,
+        V.VERSION_NUMBER versionNumber,
+        U.USER_NAME applyUserName,
+        D.VISIBLE_RANGE visibleRange,
+        D.AUTHORITY authority,
+        D.VALID_FLAG validFlag,
+        F.FILE_PATH filePath,
+        F.FILE_PDF_PATH filePdfPath,
+        F.FILE_SIZE fileSize,
+        D.SHARE_FLAG shareFlag
+        FROM
+        DOC_INFO D
+        LEFT JOIN DOC_VERSION V ON D.DOC_ID = V.DOC_ID
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        LEFT JOIN  SYS_USERS  U ON U.USER_ID = D.USER_ID
+
+        WHERE
+        D.DOC_ID IN
+        <foreach collection="idList" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        <if test="name != null and name != ''">
+            AND D.title like CONCAT('%',#{name},'%')
+        </if>
+        order by d.valid_flag desc
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ,D.title desc
+                </if>
+                <if test="order == 1">
+                    ,D.title asc
+                </if>
+                <if test="order == 2">
+                    ,D.CREATE_TIME asc
+                </if>
+                <if test="order == 3">
+                    ,D.CREATE_TIME desc
+                </if>
+            </when>
+            <otherwise>
+                ,D.CREATE_TIME DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="updateDocViewNum">
+        UPDATE doc_info set read_num = #{num}
+        WHERE doc_id = #{docId}
+    </update>
+
+    <update id="updateDocName">
+        UPDATE DOC_INFO set TITLE = #{title} WHERE DOC_ID = #{fsFileId};
+        UPDATE FS_FILE set FILE_NAME = #{title} WHERE FILE_ID = #{fsFileId};
+    </update>
+
+    <update id="updateOneDataDownloadNum" parameterType="com.jxdinfo.doc.manager.docmanager.model.DocResourceLog" >
+        UPDATE DOC_INFO SET
+        DOWNLOAD_NUM = ifnull(DOWNLOAD_NUM,0) + 1
+        WHERE DOC_ID = #{resourceId}
+    </update>
+
+    <insert id="insertResourceLog" parameterType="java.util.List">
+        insert into doc_resource_log
+        (
+        ID,
+        RESOURCE_ID,
+        RESOURCE_TYPE,
+        USER_ID,
+        OPERATE_TYPE,
+        OPERATE_TIME,
+        VALID_FLAG,
+        before_id,
+        after_id,
+        before_name,
+        after_name,
+        delete_path,
+        address_ip
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.resourceId},
+            #{item.resourceType},
+            #{item.userId},
+            #{item.operateType},
+            #{item.operateTime},
+            #{item.validFlag},
+            #{item.beforeId},
+            #{item.afterId},
+            #{item.beforeName},
+            #{item.afterName},
+            #{item.deletePath},
+            #{item.addressIp}
+
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateDownloadNum" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" separator=";">
+            UPDATE DOC_INFO SET
+            DOWNLOAD_NUM = ifnull(DOWNLOAD_NUM,0) + 1
+            WHERE DOC_ID = #{item.resourceId}
+        </foreach>
+    </update>
+
+    <update id="updateDownloadNumOne">
+        UPDATE DOC_INFO SET
+        DOWNLOAD_NUM = ifnull(DOWNLOAD_NUM,0) + 1
+        WHERE DOC_ID = #{resourceId}
+    </update>
+
+    <insert id="insertUploadLogList" parameterType="java.util.List">
+        insert into doc_upload
+        (
+        id,
+        doc_id ,
+        user_id,
+        upload_time
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.docId},
+            #{item.userId},
+            #{item.uploadloadTime}
+            )
+        </foreach>
+
+    </insert>
+
+    <insert id="insertUploadLog" parameterType="com.jxdinfo.doc.manager.docmanager.model.DocUpload">
+        insert into doc_upload
+            (id,doc_id ,user_id,upload_time)
+        values
+            (#{id},#{docId},#{userId},#{uploadTime,jdbcType=TIMESTAMP})
+    </insert>
+    <select id="getCount" resultType="int">
+        SELECT count(0) FROM DOC_INFO where fold_id in
+        (SELECT folder_id from FS_FOLDER  where level_code like  CONCAT(#{foldId},'%')) and valid_flag='1';
+    </select>
+
+     <update id="updateDocFolder" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" separator=";">
+            UPDATE DOC_INFO SET
+            FOLD_ID = #{item.foldId}
+            WHERE FILE_ID = #{item.fileId}
+        </foreach>
+    </update>
+    
+    
+    <select id="getChildrenBySuperAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        DF.doc_id docId, DF.title title, DF.fold_id foldId, DF.doc_type docType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,DF.user_id userId
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+
+    <select id="getChildren" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+        SELECT
+        DF.doc_id docId, DF.title title, DF.fold_id foldId, DF.doc_type docType,DF.create_time createTime,DF.authority authority
+        ,FF.FILE_SIZE fileSize,DF.user_id userId
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.file_id = DF.doc_id
+        )
+        or DF.visible_range = 0
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY DF.${orderResult}
+        </if>
+
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    
+    
+    <select id="getDocReadNum" resultType="java.lang.Integer">
+        SELECT
+        ifnull(read_num,0) readNum
+        FROM
+        DOC_INFO DF
+        WHERE
+            DF.doc_id = #{docId}
+
+    </select>
+    
+     <select id="getTopicReadNum" resultType="java.lang.Integer">
+        SELECT
+        ifnull(view_num,0) readNum
+        FROM
+        doc_special_topic DF
+        WHERE
+            DF.topic_id = #{topicId}
+
+    </select>
+    <update id="updateValidFlag">
+        update doc_info set valid_flag = #{validFlag} where doc_id = #{docId}
+    </update>
+    <select id="getListByFolderId" resultType="com.jxdinfo.doc.manager.docmanager.model.DocInfo">
+ select di.title title ,di.doc_id docId ,di.fold_id foldId ,ffr.level_code levelCode ,di.doc_type fileType,ff.md5 md5 ,'0' operateType,ff.file_size fileSize,ff.size size ,substring(ffr.folder_path,#{length}+1) localPath ,MD5(UUID()) recordId from doc_info di
+     left join fs_file ff on ff.file_id = di.doc_id
+     left join fs_folder  ffr on  di.fold_id = ffr.folder_id
+     where di.valid_flag = '1' and ffr.level_code like CONCAT(#{folderLevelCode},'%')
+    </select>
+    <select id="getChangeFile" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        select * from
+        (
+        (  SELECT
+        di.title title,
+        di.doc_id fileId,
+        ffr.level_code levelCode,
+        di.doc_type fileType,
+        ff.md5 md5,
+        ff.file_size fileSize,
+        ff.size size,
+        drl.OPERATE_TYPE operateType,
+        drl.before_id beforeId,
+        drl.after_id afterId,
+        ffr1.level_code beforeLevelCode,
+        ffr2.level_code afterLevelCode,
+        di.valid_flag validFlag,
+        substring(
+        ffr.folder_path,
+        #{length}+1) localPath ,MD5(UUID()) recordId from doc_info di
+        LEFT JOIN fs_file ff ON ff.file_id = di.doc_id
+        LEFT JOIN doc_resource_log drl ON drl.RESOURCE_ID = ff.file_id
+        LEFT JOIN fs_folder ffr ON di.fold_id = ffr.folder_id
+        LEFT JOIN fs_folder ffr1 ON  drl.before_id = ffr1.folder_id
+        LEFT JOIN fs_folder ffr2 ON  drl.after_id = ffr2.folder_id
+        WHERE
+        1 = 1
+        AND ( ffr.level_code LIKE CONCAT(
+        #{folderLevelCode},'%') or  ffr1.level_code LIKE CONCAT(
+        #{folderLevelCode},'%')
+        )
+        AND drl.resource_type = '0'
+        <if test="startTime != '' and startTime != null">
+            AND drl.OPERATE_TIME &gt; #{startTime}
+        </if>
+        )
+        UNION all
+        (
+        SELECT
+        di.folder_name title,
+        di.folder_id fileId,
+        di.level_code levelCode,
+        'folder' fileType,
+        '' md5,
+        '' fileSize,
+        '' size,
+        drl.OPERATE_TYPE operateType,
+        drl.before_id beforeId,
+        drl.after_id afterId,
+        ffr1.level_code beforeLevelCode,
+        ffr2.level_code afterLevelCode,
+        '1' validFlag,
+        substring(
+        di.folder_path,
+        #{length}+1) localPath ,MD5(UUID()) recordId from fs_folder di
+        LEFT JOIN doc_resource_log drl ON drl.RESOURCE_ID = di.folder_id
+        LEFT JOIN fs_folder ffr1 ON  drl.before_id = ffr1.folder_id
+        LEFT JOIN fs_folder ffr2 ON  drl.after_id = ffr2.folder_id
+        WHERE
+        1 = 1
+        AND ( di.level_code LIKE CONCAT(
+        #{folderLevelCode},'%') or  ffr1.level_code LIKE CONCAT(
+        #{folderLevelCode},'%')
+        )
+        AND drl.resource_type = '1'
+        <if test="startTime != '' and startTime != null">
+            AND drl.OPERATE_TIME &gt; #{startTime}
+        </if>
+        )
+        UNION all
+        (
+        SELECT
+        '' title,
+        drl.resource_id fileId,
+      '' levelCode,
+        'folder' fileType,
+        '' md5,
+        '' fileSize,
+        '' size,
+        drl.OPERATE_TYPE operateType,
+        drl.before_id beforeId,
+        drl.after_id afterId,
+        '' beforeLevelCode,
+       '' afterLevelCode,
+        '1' validFlag,
+        substring(
+        drl.delete_path,
+        #{length}+1) localPath ,MD5(UUID()) recordId
+       from doc_resource_log drl
+        WHERE
+        1 = 1
+        AND drl.resource_type = '1'
+        and OPERATE_TYPE ='2'
+        <if test="startTime != '' and startTime != null">
+            AND drl.OPERATE_TIME &gt; #{startTime}
+        </if>
+        )
+        )T
+    </select>
+
+    <select id="checkAuditFileExist" resultType="String" parameterType="java.util.List">
+        SELECT D.TITLE FROM DOC_INFO D  WHERE CONCAT(D.TITLE,D.DOC_TYPE) IN
+        <foreach collection="list" item="nameItem" open="(" separator="," close=")">
+            #{nameItem}
+        </foreach>
+        AND FOLD_ID = #{pid} AND VALID_FLAG = '2'
+    </select>
+
+    <select id="selectAuditExistId" resultType="String" parameterType="java.util.List">
+        SELECT D.doc_id FROM DOC_INFO D  WHERE CONCAT(D.TITLE,D.DOC_TYPE) IN
+        <foreach collection="list" item="nameItem" open="(" separator="," close=")">
+            #{nameItem}
+        </foreach>
+        AND FOLD_ID = #{pid} AND VALID_FLAG = '2'
+    </select>
+</mapper>

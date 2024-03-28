@@ -1,0 +1,71 @@
+.filetype{width: 50%;}
+.bot-btns{padding: 10px 15px 8px;height: 52px;border-top: 1px solid #E3ECEC;}
+#watermark .layui-input-block,#watermark .layui-input-block{margin-left: 0;display: inline-block}
+.layui-form-checkbox{float: left}
+.more-div{padding-left: 103px}
+.layui-form-label{width: 15%}
+.company{width: 30%}
+.layui-unselect .layui-form-checkbox{ margin-left: 5px; margin-top: 7px;}
+#u2745_div {
+    border-width:0px;
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1096px;
+    height:40px;
+    background:inherit;
+    background-color:rgba(241, 245, 249, 1);
+    box-sizing:border-box;
+    border-width:5px;
+    border-style:solid;
+    border-color:rgba(39, 183, 176, 1);
+    border-top:0px;
+    border-right:0px;
+    border-bottom:0px;
+    border-radius:0px;
+    border-top-left-radius:0px;
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
+    border-bottom-left-radius:0px;
+    -moz-box-shadow:none;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+    font-size:12px;
+    text-align:left;
+}
+#u2745_text {
+    border-width:0px;
+    position:absolute;
+    left:20px;
+    top:12px;
+    width:1074px;
+    word-wrap:break-word;
+}
+#u2745 {
+    border-width:0px;
+    position:absolute;
+    left:25px;
+    top:26px;
+    width:1096px;
+    height:40px;
+    font-size:12px;
+    text-align:left;
+}
+.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+    margin-top: 0;
+}
+#saveBtn{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 16px;
+    border-radius: 3px;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 12px;
+    border: 0;
+    cursor: pointer;
+    border: 1px solid #27b7b0 !important;
+    background: #27b7b0!important;
+}

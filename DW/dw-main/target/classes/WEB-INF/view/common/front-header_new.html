@@ -1,0 +1,84 @@
+<head>
+    <script src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js?v=${h_version}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <link href="${ctxPath}/static/resources/css/front/front_header_new.css" rel="stylesheet" >
+</head>
+<div class="header-without-search"  >
+    <div class="container">
+        <div class="soundView">
+            <a href="${ctxPath}/" target="_blank"><img class="logo" src="${ctxPath}/static/logo/logo-search.png" style="width:130px"></a>
+        </div>
+        <ul class="fr">
+
+            <li class="user-wrapper" id="user">
+                <a target="_blank" href="${ctxPath}/personalcenter/" class="user-wrapper-new">
+                    @if(session.url==null||session.url==""){
+                    <img src="${ctxPath}/static/resources/img/front/index/photo.png " style="border-radius: 50%">
+                    @}else {
+                    <img src="${session.url}" style="border-radius: 50%">
+                    @}
+                    <span target="_blank" class="user-photo" id="loginName" href="#">
+                            ${userName}
+                </span>
+                    <i class="layui-icon layui-icon-triangle-d"></i>
+                </a>
+                <div class="user-dropdown">
+                    <div class="photo-area">
+                        @if(session.url==null||session.url==""){
+                        <img src="${ctxPath}/static/resources/img/front/index/photo.png " style="background:rgba(213,235,255,1);border-radius: 50%">
+                        @}else {
+                        <img src="${session.url}" style="border-radius: 50%">
+                        @}
+                        <div class="userName">${userName}</div>
+                        <a href="${ctxPath}/personalcenter?menu=6" onclick="void(0)" target="_blank">
+                            <div class="userPoint">积分&nbsp<span id="totalIntegral"></span></div>
+                        </a>
+                    </div>
+                    <div class="function-area">
+                        <a href="${ctxPath}/personalcenter/" target="_blank"><div  class="personal">个人中心</div></a>
+                        @if(shiro.hasPermission("sys:manager")){
+                        <a target="_blank"  href="${ctxPath}/jqwkmanager/" ><div class="management">后台管理</div></a>
+                        @}else{
+                        <a target="_blank"   class="dsiableManagement"><div class="management">后台管理</div></a>
+                        @}
+                    </div>
+                    <div class="logout-area"><a  id="loginout">退出登录</a></div>
+                    <s><i></i></s>
+                </div>
+
+            </li>
+            @if(session.projectFlag!=true){
+            <li class="user-wrapper2">
+                <a href="${ctxPath}/frontTopic/messageList?page=1&size=10" target="_blank">
+                    <div class="message">
+                        资讯印象
+                    </div>
+                </a>
+            </li>
+            @}
+        </ul>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'laypage', 'jquery','layer','laytpl','Hussar'], function(){
+        var $ = layui.jquery,
+            Hussar = layui.Hussar,
+            $ax = layui.HussarAjax;
+        var integral = 0;
+        var ajax = new $ax(Hussar.ctxPath + '/integral/getTotalIntegral', function(data) {
+            integral = parseInt(data);
+        }, function(data) {
+
+        });
+        ajax.start();
+        $("#totalIntegral").html(integral)
+    })
+</script>

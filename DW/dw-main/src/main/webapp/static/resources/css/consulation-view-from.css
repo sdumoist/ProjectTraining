@@ -1,0 +1,156 @@
+button[type="button"]:not(#saveBtn) {background-color: aliceblue;color: #3c91fd;}
+
+td {text-align: center;height: 20px;}
+td:nth-child(3) {text-align: left;}
+.layui-form-label {text-align: right;}
+.table-top {margin: 0 40px;background: #fff;border-bottom: 1px solid rgba(223, 231, 241, 1);height: 63px}
+#LAY_layedit_1 {height: 150px !important;}
+.layui-layedit-iframe body {min-height: 150px !important;}
+i:hover, .layui-form-radioed > i{color: #3c91fd !important;}
+.layui-form-label {width: 90px !important;padding: 0 20px 0 0 !important;}
+.textarea-div {width: calc(100% - 140px) !important;}
+.layui-form-radio {margin-left: 0 !important;}
+hr {margin: 20px 30px;}
+.layui-table {width: 95%;margin:auto;}
+.layui-table td{height: 55px;padding: 6px 30px 3px;border-width: 0 !important;}
+.layui-table tbody{border:1px solid #e8f1fb;}
+.layui-table td{border-width: 1px !important;border-style: solid;border-color:#e8f1fb; }
+.layui-table tr:last-child{border-bottom: 0 dashed #e8f1fb;}
+.div-title {padding-left: 8px;line-height: 24px;height: 24px;border-left: 5px solid deepskyblue;font-size: 18px;font-weight: bolder;margin-bottom: 24px;}
+.div-desc{font-size: 14px;color: #333;line-height: 30px;text-align: justify;width: 95%;margin: auto;}
+.div-accessor{line-height: 40px;}
+.font{color:darkgray;}
+.hr-top{margin: 10px 1px;}
+.component-top{font-size: 24px;font-weight: bold;color: #333;margin-bottom: 8px;}
+.img-top{margin-right: 8px;position: relative;top:-3px}
+.docView span {display: inline-block;height: 20px;line-height:23px;font-size: 14px;color: #757575;}
+.docView span.info {color: #333;margin-right: 10px;}
+.docView span:last-child{margin: 0;}
+.div-null{text-align: center;height: 80px;}
+.span-null{color: #dde2e9;font-size: 20px;}
+/*.attachment-list:first-child{ padding-top: 10px}*/
+/*.attachment-list:last-child{ padding-bottom: 10px}*/
+.attachment-list img{height: 40px}
+.title-box{top: 0;background-color:white;z-index:1;width:100%;text-align: left;color: #333333;padding-bottom: 10px;height:60px;border-bottom: 1px solid #CDCDCD;box-sizing: border-box;position: fixed;}
+.con-item{margin: 20px 0;}
+.item-info{width: 95%;margin: auto}
+.item-info span{line-height: 35px;;display: inline-block}
+.item-info span.font{width: 70px;text-align: left}
+.accessor-list{width: 95%;margin: auto;padding: 0px 30px;box-sizing: border-box}
+.accessor-list li a{color: #333;line-height: 30px}
+.layui-col-xs6{width: 100% !important;}
+.layui-6s{float: left;width: 50% !important;}
+.weadmin-body{padding: 0 0 20px !important;height: 100%;position: fixed;width: 100%;}
+.div-desc{font-size: 16px;font-family: Arial}
+.component-top{color: #3E5B82 !important;}
+.con-box{position: relative;height: calc(100% - 50px);overflow: auto;box-sizing: border-box;margin-top: 60px;}
+.docView span{color: #8796AB !important;}
+.docView{margin-top: 8px}
+.title-img{background: url(../img/front/file-icon/ic-consulation1.png) no-repeat left center;width: 100%;  padding-left: 30px;height: 25px;line-height: 25px;}
+.layui-form>:nth-child(1){margin-top: 10px !important;}
+.component-top{
+    font-size: 20px;
+}
+button.layui-btn.layui-btn-radius.reject-btn {
+    margin-right: 15px;
+}
+@media screen and (max-width: 780px) {
+    .component-top{
+        margin-bottom:8px;
+        font-size:24px!important;
+    }
+}
+.accessory:hover{
+    text-decoration:underline!important;
+}
+
+.accessory:hover{
+    text-decoration:underline!important;
+}
+.editor-img img{
+    max-width: 100%;
+}
+.layui-layer-btn .layui-layer-btn0{
+    background: #3C91FD!important;
+    border-color: #3C91FD!important;
+}
+.integral{
+    right: 30.5%;
+}
+
+::-webkit-scrollbar { /* è¡€æ§½å®½åº¦ */
+    width: 8px; height: 8px;
+    display: none;
+}
+
+::-webkit-scrollbar-thumb { /* æ‹–åŠ¨æ¡ */
+    background-color: rgba(0,0,0,.3);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-track { /* èƒŒæ™¯æ§½ */
+    background-color: #ddd;
+    border-radius: 6px;
+}
+.btn-div {
+    width: auto;
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
+#shareBtn span{margin-right:20px;margin-top: 5px;color: #3C91FD;cursor: pointer}
+#shareBtn span i{padding-right: 5px}
+::-webkit-scrollbar-thumb {
+    min-height: 20px;
+    background-clip: unset;
+    box-shadow: 0 0 0 5px rgba(0,0,0,.02) inset;
+}
+.examine-list{padding: 0 18px;}
+.examine-list li{padding-bottom: 10px;border-bottom: 1px solid #f8fafd;margin-bottom: 5px;height: 80px}
+.examine-top{font-size: 16px;line-height:80px;float: left;height: 100%;width: 100px;background: #e8f1fb;text-align: center}
+.examine-top span{float: right;color: #a8a8a8;letter-spacing: .2px}
+.examine-dec{border:1px solid #e8f1fb;color:#686868
+;font-size: 14px;float: left;height: 100%;width: calc(100% - 102px)}
+.lefts{float:left;width:55px;height: 100%;}
+.rights{float:left;width:55px;height: 100%;}
+.middles{width: calc(100% - 110px);height:100%;padding:20px 0;float: left;box-sizing: border-box}
+.middles div{width:100%;height: 40px;text-overflow: ellipsis}
+.rows{width: 100%;height: 50%;line-height: 23px;}
+.rows span{border-right: 1px solid #999999;padding: 0 10px}
+.rows span:last-child{border-right: 0;}
+.rows span:first-child{padding-left: 0}
+.rows:first-child{color: #333333;font-weight: 400;font-size: 14px;width: 65%;float: left;}
+.rows:last-child{color: #999999;width: 35%;float: right;font-size: 12px;text-align: right}
+/*ä¸Šä¼ è€…å¤´åƒ*/
+.userImg{padding: 0 10px 0 0 !important;}
+.imgUser{width: 16px;padding-bottom: 5px}
+.info{border-right: 1px solid #e8e8e8;padding: 0 10px}
+.info:nth-child(2){padding-left:0 ;margin-right: 0 !important;}
+.info:last-child{border-right: none}
+/*é™„ä»¶*/
+.accessor-list{border:1px solid #e8f1fb;padding: 10px 30px 25px }
+.annex-title{background: #e8f1fb url("../img/annex.png") left no-repeat;background-size:3%;background-position-x:30px;width: 95%;margin:auto;height: 40px;line-height: 40px;}
+.annex-title span{padding-left: 60px}
+.attachment-list{position: relative}
+.list-text{position: absolute;bottom: 20px;left: 50px}
+.list-title{position: absolute;bottom: -10px;left: 50px}
+.list-title span{padding: 0 10px}
+.list-title span a{color: #4471a6}
+.list-title span:first-child{padding-left: 0}
+.layui-table tbody tr:hover {
+    background: #eef5ff!important;
+}
+.share-class{
+    width: 550px !important;
+    height: 310px;
+}
+.share-class .layui-layer-setwin{
+    display: none;
+}
+
+
+.no-preview-dialog{position: fixed;top: 50%;left: 50%;transform: translate(-50%,-50%)}
+.examine-dec .title-set{height: 40px;line-height: 40px;display: flex;flex-flow: row nowrap;align-items: center}
+.examine-dec .title-set span{display: -webkit-box;position:relative;line-height: 20px;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis}
+/*
+.title-set table td{ text-align: left;text-overflow: ellipsis;position: relative;overflow: hidden;white-space: normal;word-wrap: break-word;-webkit-line-clamp: 2;word-break: break-all;height: 40px;-webkit-box-orient: vertical;}*/

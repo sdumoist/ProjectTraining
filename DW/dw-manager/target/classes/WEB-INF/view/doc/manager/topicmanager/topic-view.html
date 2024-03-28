@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息查看</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_view.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+
+</head>
+
+<body style="height: 100%">
+<div class="weadmin-body">
+    <input type="hidden" id="id" value="${specialTopic.topicId}">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="we-red">*</span>专题封面
+            </label>
+            <div class="layui-upload-list" >
+                <div class="img-div">
+                    <img class="layui-upload-img"  id="pic" src="${ctxPath}/preview/list?fileId=${specialTopic.topicCover}">
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label for="topicName" class="layui-form-label">
+                    <span class="we-red">*</span>专题名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="topicName" name="topicName" value="${specialTopic.topicName}" disabled  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class=" layui-inline">
+                <label  class="layui-form-label">
+                    <span class="we-red">*</span>专题作者
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="authorName" name="authorName" value="${users}"  disabled readonly="readonly" class="layui-input">
+                    <input type="hidden" id="authorId" name="authorId"  value="${specialTopic.authorId}">
+                </div>
+            </div>
+        </div>
+
+       <!-- <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>专题启用时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="startTime" name="startTime"  autocomplete="off"  disabled value="${specialTopic.enableTime,'yyyy-MM-dd HH:mm:ss'}" readonly="readonly"  class="layui-input">
+                </div>
+            </div>
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>专题失效时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="endTime" name="endTime"   autocomplete="off"  disabled  readonly="readonly"  value="${specialTopic.disableTime,'yyyy-MM-dd HH:mm:ss'}"   class="layui-input">
+                </div>
+            </div>
+        </div>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                专题描述
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="topicDesc" name="topicDesc" lay-verify="topicDesc" readonly="readonly"   disabled class="layui-textarea">${specialTopic.topicDesc}</textarea>
+            </div>
+        </div>
+        <!-- 人员树 -->
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/topicmanager/js/topic_view.js?v=${h_version}"></script>
+
+</body>
+</html>

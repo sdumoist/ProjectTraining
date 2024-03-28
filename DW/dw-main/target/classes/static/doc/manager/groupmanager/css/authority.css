@@ -1,0 +1,44 @@
+.weadmin-body{width: 100%;height: 100%;text-align: center}
+.layui-tab{height: calc(100% - 40px);box-sizing: border-box;margin: 0}
+.layui-tab-content{height: calc(100% - 40px) !important}
+.layui-tab-item{height: 100%}
+.personSearch{margin-bottom: 8px}
+.personSearch .layui-input{display: inline-block;width: 16%;}
+.one .personSearch .layui-input{width: 25%;}
+.cont{height: calc(100% - 50px);}
+.cont .tableBox{float: left;width: 43%;height: 100%;}
+.cont-center{float: left;padding-top: 20px;width: 14%;height: 100%;}
+.cont-center .layui-btn{display: block;margin: 0 auto 20px}
+
+.layui-table-page {
+     height: 80px !important;
+}
+/*组群新增*/
+.zq .layui-tab {
+     height: calc(100% - 88px);
+     text-align: center !important;
+}
+.zq .cont {
+     height: 100%;
+}
+.zq .searchBtn {
+     text-align: left;
+}
+
+#cancelBtn{
+     background: #EAEFF0;
+     border-color: #EAEFF0;
+     color: #333;
+}
+
+
+
+
+
+
+
+
+
+
+
+

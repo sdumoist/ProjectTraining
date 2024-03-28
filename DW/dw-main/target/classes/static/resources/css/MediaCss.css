@@ -1,0 +1,39 @@
+/*
+ *  bootstraptable 公共样式修改
+ *  author wanghui 2017-08-03
+ */
+table {
+    table-layout: auto;
+}
+/*电脑端时进行列的隐藏*/
+@media screen  and (min-width: 1024px) {
+    table td {
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        max-width: 100px;
+    }
+    table td div:not(.popover,.arrow) {
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+}
+/*当手机端时应跨行展示出内容*/
+@media screen  and (max-width: 1024px) {
+    table td {
+        max-width: 150px;
+    }
+}
+
+
+/*
+ * 左树右表 四个小图标样式
+ */
+@media screen  and (max-width: 1024px) {
+    .frame-left {
+        padding: 15px;
+        height: 30%;
+    }
+    .frame-right{height: 70%;}
+}

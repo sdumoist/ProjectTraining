@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.answer.dao.QaMessageMapper">
+
+    <select id="getMessageList" resultType="Map">
+        SELECT DISTINCT
+            qm.CONTENT AS content,
+            qm.TYPE AS type,
+            qm.DATA_ID AS dataId,
+            CASE
+            WHEN qq.QUE_ID IS NOT NULL THEN qq.QUE_ID
+            WHEN qqa.ANS_ID IS NOT NULL THEN qqa.QUE_ID
+            WHEN qcr.COMMENT_REPLY_ID IS NOT NULL THEN qcr.QUE_ID
+            WHEN qcqa.ID IS NOT NULL THEN qcqa.QUE_ID
+            ELSE ''
+            END AS queId,
+            qm.MESSAGE_TIME AS messageTime
+        FROM
+            qa_message qm
+        LEFT JOIN
+            qa_question qq
+        ON qq.QUE_ID = qm.DATA_ID
+        LEFT JOIN
+            qa_question_answer qqa
+        ON qqa.ANS_ID = qm.DATA_ID
+        LEFT JOIN
+            qa_comment_reply qcr
+        ON qcr.COMMENT_REPLY_ID = qm.DATA_ID
+        LEFT JOIN
+            qa_continue_q_a qcqa
+        ON qcqa.ID = qm.DATA_ID
+        WHERE
+            qm.STATE != 2
+        AND qm.USER_ID = #{userId}
+    </select>
+
+    <select id="getMessageListCount" resultType="int">
+        SELECT
+            COUNT(1) as msgNum
+        FROM
+            qa_message qm
+        WHERE
+            qm.STATE = 0
+        AND qm.USER_ID = #{userId}
+    </select>
+
+    <update id="setRead">
+        UPDATE qa_message
+        SET STATE = '1'
+        WHERE
+            STATE = '0'
+        AND USER_ID = #{userId}
+    </update>
+
+</mapper>

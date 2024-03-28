@@ -1,0 +1,66 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.system.dao.SysUserMapper">
+    <resultMap id="sysUserMap" type="SysUserInfo">
+        <id property="id" column="id"></id>
+        <result property="username" column="name"></result>
+        <result property="password" column="password"></result>
+        <result property="departId" column="dept_id"></result>
+        <result property="deptName" column="dept_name"></result>
+        <result property="employeeNo" column="emp_no"></result>
+        <result property="points" column="points"></result>
+        <result property="certified" column="certified"></result>
+        <result property="loginTime" column="login_time"></result>
+        <result property="lock" column="lock"></result>
+        <result property="ip" column="ip"></result>
+    </resultMap>
+
+
+
+    <select id="fetchById" parameterType="string" resultType="SysUserInfo">
+        SELECT POINTS FROM SYS_USER WHERE ID = #{id}
+    </select>
+
+    <select id="getEmp_no" parameterType="string" resultType="string">
+        SELECT   SHORT_NAME   FROM   SYS_ORGAN AS  ORGAN ,SYS_STRU AS
+        STRU, SYS_USERS  AS SYSUSERS WHERE   ORGAN.ORGAN_ID = STRU.ORGAN_ID
+        AND   SYSUSERS.EMPLOYEE_ID = STRU.STRU_ID AND SYSUSERS.USER_ID = #{userid}
+    </select>
+    <select id="selectByUserNum" parameterType="string" resultType="SysUserInfo">
+        SELECT
+		    SYSUSER.USER_ID AS id ,
+		    SYSUSER.USER_NAME AS username,
+		    SYSUSER.PASSWORD AS password,
+		    SYSUSER.DEPARTMENT_ID AS departId
+		FROM
+		    SYS_USERS SYSUSER
+		INNER JOIN SYS_ORGAN ORGAN ON SYSUSER.USER_ID = ORGAN.ORGAN_CODE
+		WHERE
+		    ORGAN.SHORT_NAME =#{usernum}
+    </select>
+    
+     <select id="getUserByNum" parameterType="string" resultType="SysUsers">
+        SELECT
+            SYSUSER.USER_ID  as userId,
+            SYSUSER.USER_NAME as userName,
+            SYSUSER.PASSWORD as password,
+            SYSUSER.DEPARTMENT_ID as departmentId,
+            SYSUSER.SECURITY_LEVEL as securityLevel,
+            SYSUSER.ACCOUNT_STATUS as accountStatus
+        FROM
+            SYS_USERS SYSUSER
+        INNER JOIN SYS_ORGAN ORGAN ON SYSUSER.USER_ID = ORGAN.ORGAN_CODE
+        WHERE
+            ORGAN.SHORT_NAME =#{usernum}
+    </select>
+    <select id="checkUser"  resultType="String">
+    SELECT
+        COUNT(1)
+    FROM
+        SYS_USERS USERS
+    WHERE
+        USERS.USER_ACCOUNT =  #{username}
+    AND USERS.PASSWORD = #{password}
+    and USERS.ACCOUNT_STATUS != 2
+    </select>
+</mapper>

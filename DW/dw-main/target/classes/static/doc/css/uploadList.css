@@ -1,0 +1,56 @@
+/*新增图标库*/
+@font-face {
+    font-family: wenku-font;
+    src:url(../font/fonteditor.eot)format('embedded-opentype'),
+    url(../font/fonteditor.woff) format('woff'),
+    url(../font/fonteditor.ttf) format('truetype'),
+    url(../font/fonteditor.svg) format('svg')
+}
+.wenku-font {
+    font-family: wenku-font !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+.wenku-font-revise:before{content:"\ea1a"}
+.wenku-font-download:before{content:"\e65f"}
+.wenku-font-restore:before{content:"\ea1b"}
+.layui-input:focus, .layui-textarea:focus {
+    border-color: #d1deed!important;
+}
+.layui-input:hover, .layui-textarea:hover {
+    border-color: #d1deed!important;
+}
+.layui-laypage>.layui-disabled:hover {
+    color: #d2d2d2!important;
+}
+/*加载中样式*/
+div#transLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+div#refreshList {
+    float: right;
+    margin-right: 26px;
+}
+#refreshList i:hover{
+    color: #2980FF !important;
+}
+@media screen  and (max-width: 1366px) {
+    div#refreshList {
+        margin-right: 20px;
+    }
+    div#refreshList i{
+        font-size: 13px !important;
+        line-height: 20px;
+    }
+}
+
+.rename .layui-layer-btn{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}

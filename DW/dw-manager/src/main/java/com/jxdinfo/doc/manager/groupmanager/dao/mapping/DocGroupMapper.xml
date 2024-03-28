@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.manager.groupmanager.dao.DocGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.groupmanager.model.DocGroup" >
+    <id column="GROUP_ID" property="groupId" jdbcType="VARCHAR" />
+    <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+    <result column="GROUP_LEVEL" property="groupLevel" jdbcType="INTEGER" />
+    <result column="PARENT_GROUP_ID" property="parenteGroupId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER_ID" property="createUserId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LEVEL_CODE" property="levelCode" jdbcType="VARCHAR" />
+    <result column="SORT_ID" property="sortId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    GROUP_ID, GROUP_NAME,GROUP_LEVEL, PARENT_GROUP_ID, CREATE_USER_ID, CREATE_TIME, LEVEL_CODE,SORT_ID
+  </sql>
+  <!--群组列表查询-->
+  <select id="groupList" resultType="com.jxdinfo.doc.manager.groupmanager.model.DocGroup">
+    SELECT
+    U.USER_ID  userId,
+    U.USER_NAME userName,
+    O.ORGAN_ID deptId,
+    O.ORGAN_NAME orgName,
+    ST.STAFF_POSITION userJob
+    FROM DOC_GROUP_USER GU
+    LEFT JOIN SYS_USERS U ON GU.USER_ID  =U.USER_ID
+    LEFT JOIN SYS_STRU ST ON U.EMPLOYEE_ID = ST.STRU_ID
+    LEFT JOIN SYS_STRU ST2 ON U.DEPARTMENT_ID = ST2.STRU_ID
+    LEFT JOIN SYS_ORGAN O ON ST2.ORGAN_ID = O.ORGAN_ID
+    WHERE u.user_id is not null
+    <if test="groupId != ''and groupId != null">
+      AND  GU.GROUP_ID=#{groupId,jdbcType=VARCHAR}
+    </if>
+    <if test="uerName != ''and uerName != null">
+      AND  U.USER_NAME LIKE CONCAT('%',#{uerName,jdbcType=VARCHAR},'%')
+    </if>
+    ORDER BY grouip_user_id
+    LIMIT #{startIndex}, #{pageSize}
+  </select>
+  <!--获取数据条数-->
+  <select id="getGroupListCount" resultType="int" >
+    SELECT count(0)
+    FROM DOC_GROUP_USER GU
+    LEFT JOIN SYS_USERS U ON GU.USER_ID  =U.USER_ID
+    WHERE u.user_id is not null
+    <if test="groupId != ''and groupId != null">
+      AND  GU.GROUP_ID=#{groupId,jdbcType=VARCHAR}
+    </if>
+    <if test="uerName != ''and uerName != null">
+      AND  U.USER_NAME LIKE CONCAT('%',#{uerName,jdbcType=VARCHAR},'%')
+    </if>
+  </select>
+  <!--查重-->
+  <select id="checkGroupExist" resultType="int" >
+    SELECT count(0) FROM DOC_GROUP WHERE  GROUP_NAME = #{groupName}
+    <if test="groupId != ''and groupId != null">
+      AND  GROUP_ID !=#{groupId,jdbcType=VARCHAR}
+    </if>
+    <choose>
+      <when test="groupFlag != null and groupFlag != ''">
+        AND group_flag=#{groupFlag}
+        AND create_user_id=#{loginId}
+      </when>
+      <otherwise>
+        AND (group_flag = 0 OR group_flag IS NULL)
+      </otherwise>
+    </choose>
+  </select>
+  <select id="selectGroupById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from doc_group
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectGroupByName" resultType="Map" parameterType="java.lang.String" >
+    SELECT G.GROUP_ID ID,'ROLE' AS CODE,G.GROUP_NAME TEXT,G.PARENT_GROUP_ID PARENT,'9' AS TYPE,CREATE_USER_ID USERID
+    FROM DOC_GROUP G
+    WHERE 1=1
+    <if test="groupId != ''and groupId != null">
+      AND G.GROUP_ID=#{groupId,jdbcType=VARCHAR}
+    </if>
+    ORDER  BY G.show_order
+  </select>
+  <select id="selectGroupUserById"  resultType="map" >
+      SELECT
+      gu.GROUP_ID groupId,
+      s.ORGAN_ALIAS deptName,
+      u.user_name personName,
+
+      s.organ_Id deptId,
+      u.user_id personId
+      FROM DOC_GROUP_USER gu
+      LEFT JOIN sys_users u on gu.USER_ID  =u.USER_ID
+
+      LEFT JOIN sys_stru s on u.department_id = s.STRU_ID
+
+    WHERE 1=1
+      <if test="groupId != ''and groupId != null">
+         AND  gu.GROUP_ID=#{groupId,jdbcType=VARCHAR}
+      </if>
+    and  u.user_name  is not null
+    <if test="pageSize != '' and pageSize != null">
+      LIMIT #{startIndex}, #{pageSize}
+    </if>
+  </select>
+  <!--批量删除-->
+  <delete id="delGroupUserById">
+    DELETE FROM DOC_GROUP_USER
+    WHERE GROUP_ID=#{groupId,jdbcType=VARCHAR}
+    AND USER_ID IN
+    <foreach collection="list" item="idItem" open="(" separator="," close=")">
+      #{idItem}
+    </foreach>
+  </delete>
+  <delete id="delGroupById" parameterType="java.lang.String" >
+    DELETE FROM DOC_GROUP WHERE GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertGroup" parameterType="com.jxdinfo.doc.manager.groupmanager.model.DocGroup" >
+    insert into doc_group (GROUP_ID,GROUP_NAME, GROUP_LEVEL, PARENT_GROUP_ID,
+      CREATE_USER_ID, CREATE_TIME, LEVEL_CODE ,SHOW_ORDER,SORT_ID,group_flag
+      )
+    values (#{groupId,jdbcType=VARCHAR},#{groupName,jdbcType=VARCHAR}, #{groupLevel,jdbcType=INTEGER}, #{parenteGroupId,jdbcType=VARCHAR},
+      #{createUserId,jdbcType=VARCHAR}, NOW(), #{levelCode,jdbcType=VARCHAR}, #{showOrder,jdbcType=INTEGER},#{sortId,jdbcType=VARCHAR},#{groupFlag,jdbcType=CHAR}
+      )
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from doc_group_user where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </delete>
+  <!--批量新增-->
+  <insert id="insertGroupUser" parameterType="com.jxdinfo.doc.manager.groupmanager.model.DocGroup" >
+    insert into doc_group_user (grouip_user_id,GROUP_ID, USER_ID)
+    VALUES
+      ((SELECT concat('GU',IFNULL(Lpad(Max(substring(temp.grouip_user_id, 3)) + 1,9,'0'),'000000001')) FROM doc_group_user temp),
+      #{groupId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jxdinfo.doc.manager.groupmanager.model.DocGroup" >
+    update doc_group
+    <set >
+      <if test="groupName != null" >
+        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupLevel != null" >
+        GROUP_LEVEL = #{groupLevel,jdbcType=INTEGER},
+      </if>
+      <if test="parenteGroupId != null" >
+        PARENT_GROUP_ID = #{parenteGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="levelCode != null" >
+        LEVEL_CODE = #{levelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sortId != null" >
+        SORT_ID = #{sortId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </update>
+  <select id="getPremission" resultType="String">
+    SELECT T.GROUP_ID groupId FROM DOC_GROUP_USER T WHERE T.USER_ID = #{userId}
+  </select>
+
+  <!-- 新增分组信息 -->
+  <insert id="insertGroupSort" parameterType="com.jxdinfo.doc.manager.groupmanager.model.DocGroupSort" >
+      INSERT INTO DOC_GROUP_SORT
+      (SORT_ID,SORT_NAME,PARENT_SORT_ID,LEVEL_CODE,SHOW_ORDER,CREATE_USER_ID,CREATE_TIME,group_flag)
+      VALUES (
+      #{sortId,jdbcType=VARCHAR},#{sortName,jdbcType=VARCHAR},#{parentSortId,jdbcType=VARCHAR},#{levelCode,jdbcType=VARCHAR},#{showOrder,jdbcType=INTEGER},#{createUserId,jdbcType=VARCHAR},now(),#{groupFlag,jdbcType=CHAR}
+      )
+  </insert>
+
+  <!-- 删除分组 -->
+  <delete id="deleteSort" parameterType="java.lang.String">
+      DELETE FROM DOC_GROUP_SORT WHERE SORT_ID = #{groupSortID}
+  </delete>
+
+  <!-- 查询需要删除的分组下是否存在分组或群组-->
+  <select id="getSortToGroup" resultType="int">
+      SELECT
+	      COUNT(1)
+      FROM
+          DOC_GROUP G,
+          DOC_GROUP_SORT S
+      WHERE
+        (
+          G.SORT_ID = #{groupSortID}
+          OR S.PARENT_SORT_ID = #{groupSortID}
+      )
+  </select>
+
+  <!-- 获取分组信息 -->
+  <select id="selectSortInfo" resultType="Map" parameterType="java.lang.String">
+    SELECT
+        SORT_ID sortId,
+        SORT_NAME sortName,
+        PARENT_SORT_ID parentSortId,
+        LEVEL_CODE levelCode,
+        SHOW_ORDER showOrder,
+        CREATE_USER_ID createUserId,
+        CREATE_TIME createTime
+    FROM
+        doc_group_sort
+    WHERE
+        sort_id = #{groupSortID}
+  </select>
+
+  <!-- 更新分组信息 -->
+  <update id="updateSortInfo" parameterType="com.jxdinfo.doc.manager.groupmanager.model.DocGroupSort" >
+    update doc_group_sort
+    <set >
+      <if test="sortName != null" >
+        sort_name = #{sortName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentSortId != null" >
+        parent_sort_id = #{parentSortId,jdbcType=VARCHAR},
+      </if>
+      <if test="levelCode != null" >
+        LEVEL_CODE = #{levelCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sort_id = #{sortId,jdbcType=VARCHAR}
+  </update>
+
+    <!-- 获取分组及群组树-->
+    <select id="getSortAndGroupTree" parameterType="java.lang.String" resultType="Map">
+        SELECT ID,CODE,TEXT,if(PARENT is null,'af9090a8fdfe487f9487df9cdc6e88',PARENT) as PARENT,TYPE,USERID,ISSORT FROM SORT_GROUP
+        WHERE 1=1
+        <if test="id != null">
+            AND PARENT = #{id,jdbcType=VARCHAR}
+        </if>
+        <choose>
+          <when test="flag != null and flag != ''">
+            AND FLAG = #{flag}
+            AND USERID = #{loginId}
+          </when>
+          <otherwise>
+            AND (FLAG = 0 OR FLAG IS NULL)
+          </otherwise>
+        </choose>
+      ORDER BY CODE DESC,SHOWORDER
+    </select>
+
+    <!-- 判断是否存在重名文件 -->
+    <select id="checkSortName" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(*) FROM DOC_GROUP_SORT WHERE SORT_NAME=#{sortName} AND parent_sort_id = #{parentSortId} AND SORT_ID != #{sortId}
+        <choose>
+          <when test="groupFlag != null and groupFlag != ''">
+            AND group_flag=#{groupFlag}
+            AND create_user_id=#{loginId}
+          </when>
+          <otherwise>
+            AND (group_flag = 0 OR group_flag IS NULL)
+          </otherwise>
+        </choose>
+    </select>
+
+  <!-- 获取分组树数据 -->
+  <select id="getSortTreeData" resultType="Map">
+    SELECT
+      SORT_ID AS ID,
+      SORT_NAME AS TEXT,
+      parent_sort_id AS PARENT
+    FROM
+	  doc_group_sort A
+	WHERE 1=1
+    <choose>
+      <when test="flag != null and flag != ''">
+        AND group_flag=#{flag}
+        AND create_user_id=#{loginId}
+      </when>
+      <otherwise>
+        AND (group_flag = 0 OR group_flag IS NULL)
+      </otherwise>
+    </choose>
+    ORDER BY
+	  show_order
+  </select>
+
+  <!-- 判断是否群组已经被目录授权 -->
+  <select id="getIsFolder" resultType="int">
+    SELECT
+      count(1)
+    from
+      doc_fold_authority
+    where
+      author_id=#{groupId}
+  </select>
+
+  <!-- 判断是否群组已经被文件授权 -->
+  <select id="getIsFile" resultType="int">
+    SELECT
+    count(1)
+    from
+    doc_file_authority
+    where
+    author_id=#{groupId}
+  </select>
+</mapper>

@@ -1,0 +1,138 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.topicmanager.dao.SpecialTopicFilesMapper">
+    <!--专题文档查询-->
+    <select id="searchTopicFilesDetail" resultType="Map">
+        SELECT
+            count(r.preview_record_id) previewNum,
+            count(p.point_record_id) downloadNum,
+            f.doc_id id,
+            d.doc_name fileName,
+            d.brief,
+            d.type fileSuffixName,
+            DATE_FORMAT(d.upload_time, '%Y-%m-%d') optTs,
+            u. NAME author,
+            u.id ownerId,
+            d.category_id categoryId,
+            d.path
+        FROM
+            doc_special_topic_files f
+            LEFT JOIN doc_detail d ON d.doc_id = f.doc_id
+            LEFT JOIN sys_user u ON u.id = d.user_id
+            LEFT JOIN doc_preview_record r ON r.doc_id = d.doc_id
+            LEFT JOIN doc_point_record p ON p.doc_id = f.doc_id
+                                            AND p.reason = '2'
+                                            AND p.direction = '-'
+        WHERE
+            f.special_topic_id = #{topicId}
+        <if test="fileType != null and fileType != '' ">
+            AND d.type IN
+            <foreach collection="array" item="idItem"  open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="keyWords != null and keyWords != '' ">
+            AND d.doc_name LIKE "%#{keyWords}%"
+        </if>
+        GROUP BY
+            f.doc_id
+        ORDER BY
+            f.show_order
+        LIMIT #{page},10
+    </select>
+    <!--统计专题文档-->
+    <select id="countTopicFilesDetail" resultType="int">
+        SELECT
+        count(f.doc_id)
+        FROM
+        doc_special_topic_files f
+        LEFT JOIN doc_detail d ON d.doc_id = f.doc_id
+        LEFT JOIN sys_user u ON u.id = d.user_id
+        WHERE
+        f.special_topic_id = #{topicId}
+        <if test="fileType != null and fileType != '' ">
+            AND d.type IN
+            <foreach collection="fileTypeArry" item="idItem"  open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="keyWords != null and keyWords != '' ">
+        AND d.doc_name LIKE "%#{keyWords}%"
+        </if>
+        ORDER BY
+        f.show_order
+    </select>
+    <select id="countTopicFiles" parameterType="String" resultType="int">
+        SELECT
+            count(f.doc_id)
+        FROM
+            doc_special_topic_files f
+        WHERE
+            f.special_topic_id =#{id}
+    </select>
+    <select id="countPreviewTopicFiles" parameterType="String" resultType="int">
+        SELECT
+            count(r.preview_record_id)
+        FROM
+            doc_special_topic_files f
+            LEFT JOIN doc_preview_record r on r.doc_id=f.doc_id
+        WHERE
+        f.special_topic_id =#{id}
+    </select>
+    <!--批量新增-->
+    <insert id="addSpecialTopicFiles" parameterType="list">
+        INSERT doc_special_topic_files(topic_file_id,doc_id,topic_id,show_order)
+                VALUES
+                    <foreach collection="list" item="specialTopicFiles"  separator=",">
+                        (#{specialTopicFiles.topicFileId},#{specialTopicFiles.docId},#{specialTopicFiles.topicId},#{specialTopicFiles.showOrder})
+                    </foreach>
+    </insert>
+    <!--批量更新-->
+    <update id="editSpecialTopicFiles" parameterType="list">
+        <foreach collection="list" item="specialTopicFiles" separator=";">
+            UPDATE doc_special_topic_files
+            SET show_order = #{specialTopicFiles.showOrder}
+            WHERE doc_id = #{specialTopicFiles.docId}
+            AND special_topic_id = #{specialTopicFiles.specialTopicId}
+        </foreach>
+    </update>
+    <!--删除专题下的文档-->
+    <delete id="delDocById" parameterType="list">
+        DELETE FROM doc_special_topic_files
+        WHERE topic_id = #{topicId}
+        AND doc_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--查询专题下的文档-->
+    <select id="getSpecialTopicFiles" resultType="Map">
+        SELECT
+            t.topic_name topicName,
+            t.id,
+            d.doc_id  docId,
+            d.doc_name docName
+        FROM
+            doc_special_topic_files f
+            LEFT JOIN doc_special_topic t ON t.id = f.special_topic_id
+            LEFT JOIN doc_detail d ON d.doc_id = f.doc_id
+        ORDER BY
+            t.show_order,
+            t.id,
+            f.show_order
+    </select>
+    <!--批量删除专题下的文档-->
+    <delete id="delDoc" parameterType="list">
+        DELETE FROM doc_special_topic_files
+        WHERE topic_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    
+    <select id="selectTopicsByDocId" resultType="SpecialTopicFiles">
+        SELECT stf.topic_id topicId,stf.doc_id docId,stf.show_order showOrder
+        FROM doc_special_topic_files stf
+        WHERE stf.doc_id = #{docId}
+    </select>
+</mapper>

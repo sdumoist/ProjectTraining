@@ -1,0 +1,101 @@
+﻿﻿@charset "UTF-8";
+/**
+ * @ClassName: base.css
+ * @Description: 公共样式表
+ * @Author: YoungMan
+ * @Date: 2018-06-19
+ */
+/*------------------ Reset ------------------*/
+html,body,.page{height:100%;}
+body{overflow-x: hidden;}
+html, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input { padding: 0; margin: 0;}
+article, aside, dialog, footer, header, section, footer, nav, figure, menu { display:block; }
+body{font:14px/20px arial,verdana,helvetica,'PingFang SC','HanHei SC',STHeitiSC-Light,Microsoft Yahei,sans-serif, 微软雅黑, Tahoma, Arial, sans-serif; color:#333;
+    font-family: arial,verdana,helvetica,'PingFang SC','HanHei SC',STHeitiSC-Light,Microsoft Yahei,sans-serif !important;
+    -webkit-font-smoothing: antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust: none;  -ms-text-size-adjust: none;}
+input, select, textarea { font: 12px/20px "Helvetica Neue", Helvetica, "PingFang SC", 微软雅黑, Tahoma, Arial, sans-serif,'\5FAE\8F6F\96C5\9ED1';}
+i, cite, em { font-style: normal;}
+input,button,select,textarea{ vertical-align: middle;outline:none}
+td, th, div,p,span{word-break: break-all;word-wrap: break-word;}
+ul,dl,ol, li {list-style:none;margin:0;padding:0;}
+table {border-collapse: collapse;}
+hr {  border: none;  height: 1px;  }
+img{border:none;}
+label{font-weight:normal;}
+a { text-decoration: none; outline:0;blr:expression(this.onFocus=this.blur());
+}
+a:link,a:visited,a:hover, a:active, a:focus{text-decoration: none !important;outline:0 !important;}
+/** 文本输入框的 X  **/input::-ms-clear{display: none;}
+/** 密码输入框的 X  **/input::-ms-reveal{display: none;}
+.layui-form-radio>i{animation: none!important;}
+/*------------------common ------------------*/
+.clearfix:after {  content:"";display:block;clear:both;}
+.clearfix {*zoom:1;}/*IE/7/6*/
+.fl{float:left !important;}
+.fr{float:right !important;}
+.tl{text-align:left !important;}
+.tc{text-align:center !important;}
+.tr{text-align:right !important;}
+.tjust{text-align: justify !important;}
+.textOver{white-space:nowrap;word-wrap:normal;overflow:hidden;text-overflow:ellipsis;}
+.integral{
+    display: none;
+    z-index: 20000000;
+    position: fixed;
+    top:40%;
+    right: 44.5%;
+    height: 134px;
+    width: 154px;
+    text-align: center;
+    line-height: 134px;
+    background: url(../../img/front/index/integral.png) no-repeat center;
+}
+.integral .num{
+    display: inline-block;
+    width:36px;
+    height:28px;
+    font-size:20px;
+    font-weight:400;
+    color:rgba(90,204,155,1);
+    opacity:1;
+}
+.integral .point{
+
+    padding-top: 42px;
+    display: inline-block;
+    width:28px;
+    line-height:72px;
+    height:20px;
+    font-size:14px;
+    font-weight:400;
+    line-height:72px;
+    color:rgba(135,150,171,1);
+    opacity:1;
+}
+/*弹窗*/
+
+.layui-layer .layui-layer-title{
+    background: #fff !important;
+}
+
+.layui-layer{
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+}
+.layui-layer-iframe .layui-layer-btn, .layui-layer-page .layui-layer-btn{
+    border: 0 !important;
+    text-align: right !important;
+}
+
+
+@font-face {
+    font-family: "DIN Alternate Bold";
+    src: url("DIN/DINAlternateBold.eot"); /* IE9 */
+    src: url("DIN/DINAlternateBold.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("DIN/DINAlternateBold.woff2") format("woff2"), /* chrome、firefox、opera、Safari, Android, iOS */
+    url("DIN/DINAlternateBold.woff") format("woff"), /* chrome、firefox */
+    url("DIN/DINAlternateBold.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    url("DIN/DINAlternateBold.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
+}
+.layui-layer-ico1 {
+    background: url(../../../resources/img/icon1-blue.png) no-repeat!important;
+}

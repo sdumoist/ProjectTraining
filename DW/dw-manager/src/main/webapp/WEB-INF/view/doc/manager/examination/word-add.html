@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>添加敏感词</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/manager/examination/css/sensitive_words.css?v=${h_version}" type="text/css" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="weadmin-body">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="we-red">*</span>敏感词
+            </label>
+            <div class="layui-input-inline">
+                <input id="word" name="word"   class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                备注
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="remark" name="remark"   class="layui-textarea wider-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/examination/js/word_add.js?v=${h_version}"></script>
+</body>
+</html>

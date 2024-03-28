@@ -1,0 +1,112 @@
+<!doctype html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-专题列表</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script>
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render()
+        });
+    </script>
+    <style>
+        .btn-rit{display: none}
+    </style>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/front_topic_list.css?v=${h_version}"/>
+</head>
+<body style="height: 100%;">
+@include("/common/front-header_new2.html"){}
+@include("/common/front-rit.html"){}
+<div class="outContainer">
+    <div class="topic-title-info">
+        <div class="container">
+            <div class="topic-info">
+                <h3>专题列表</h3>
+<!--                <p>专题介绍</p>-->
+            </div>
+            <div class="topic-info">
+                <h1>${topicCount}</h1>
+                <p>专题数量</p>
+            </div>
+        </div>
+    </div>
+    <div class="container1 mainCon">
+        <input  type="hidden" class="hide"  id="topicCount" value="${topicCount}">
+        <input  type="hidden" class="hide"  id="curr" value="${curr}">
+        @if(isEmpty(topicList)){
+        <div class="text-center noresult">
+            <img src="${ctxPath}/../../../../../static/resources/img/front/noresult.png"/>
+            <p>暂无专题</p>
+        </div>
+        @}else{
+        @for(topic in topicList){
+            <div class="row topic-item">
+                <div class="topic-cover">
+                    <img class="cover-img" src="${ctxPath}/preview/list?fileId=${topic.topicCover}">
+                    <ul>
+                        <li class="detail-item">
+<!--                                <div class="item-key">文档数</div>-->
+                            <div class="item-value">${topic.viewNum} 人看过</div>
+                        </li>
+                        <li class="detail-item">
+<!--                                <div class="item-key">浏览量</div>-->
+<!--                            <div class="item-value">${topic.docCount} 篇文章</div>-->
+                        </li>
+                    </ul>
+                </div>
+                <div class="topic-desc clearfix add-border">
+                    <div class="topic-desc-left">
+                        <div class='topic-title clearfix textOver' title="${topic.topicName}">
+                            ${topic.topicName}
+                        </div>
+                    </div>
+                    <div class="topic-desc-rit">
+                        <ul class="topic-detail  hidden-xs">
+                            <li class="detail-item">
+                                <div class="item-key">创建日期：${topic.createTime,'yyyy-MM-dd'} </div>
+<!--                                    <div class="item-value"></div>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="topic-abstract" title="${topic.topicDesc}">
+                        @if(strutil.length (topic.topicDesc) > 90){
+                        ${strutil.subStringTo(topic.topicDesc,0,90)}...
+                        @}else{
+                        ${topic.topicDesc}
+                        @}
+                    </div>
+                    <div class="go-topic-detail">
+                        <a  href='${ctxPath}/frontTopic/topicDetail?topicId=${topic.topicId}&page=1&size=10' target='_blank'>查看专题</a>
+                    </div>
+
+                </div>
+            </div>
+
+        @}
+        @}
+    </div>
+    <div class="text-center">
+        @if(isEmpty(topicList)){
+        <!--如果为空无分页-->
+        @}else{
+        <div id="laypageAre"></div>
+        @}
+    </div>
+    @include("/common/front-footer.html"){}
+</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/extendPagination.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front_topic_list.js?v=${h_version}"></script>
+</html>

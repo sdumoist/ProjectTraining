@@ -1,0 +1,75 @@
+@charset "UTF-8";
+/**
+ * @ClassName:
+ * @Description: 访问首页样式表
+ * @Author:
+ * @Date:
+ */
+/*----------- 头部 ----------*/
+.searchHeaderBar{height: 45px;line-height: 32px;font-size: 12px;border-bottom:2px solid #3894fc;}
+.searchMenuBar{float:right;width: auto;margin-right: 60px;height:45px;line-height:45px;vertical-align:middle}
+.searchMenuBar>a{padding-left: 0; padding-right: 20px; padding-top: 3px;color: #3893fc;transition: all ease .3s;}
+.searchMenuBar .btn-icon:hover{color: #0b7be0;background: #fff;border-radius: 10px;}
+
+/*----------- 内容 ----------*/
+.mainCon{padding-top:40px;height:  260px;
+    min-height: 75%;}
+.mainCon .wrapper{margin:auto;width:600px;}
+.mainCon .logo{margin-bottom: 30px;width:100%;height: 85px;background: url(../img/homepage/logo.png) no-repeat center;}
+.mainCon .selectDiv{margin: auto}
+.mainCon .searchType li{float: left;margin-right: 20px;color: #727272;}
+.mainCon .searchType li label{margin:0;color: #727272;}
+.mainCon .searchType li input{margin: 0 18px 0 0;width: 0;height: 15px;}
+.mainCon .searchType li input:before{display: inline-block;content:"";width: 13px;height: 13px;background: url(../img/homepage/radio.png)no-repeat center;}
+.mainCon .searchType li input:checked:before{background: url(../img/homepage/radio1.png)no-repeat center;}
+.wrapper .form-group{ margin-bottom: 15px;}
+.wrapper .form-group input{padding-left:10px;width: 600px;height: 52px;font-size:14px;border: 1px solid #b8b8b8;border-radius: 0;}
+.mainCon .searchType {margin: auto;}
+.middleDiv{margin:auto ;border: 1px solid #e0e0e0; min-height: calc(100% - 380px);  width:1200px; padding: 0px 50px 0px 50px;}
+.chCategory{min-width:100px;float: left;text-align: left; height: auto;  line-height: 30px;    padding-right: 16px;}
+.choseCategory{white-space: nowrap;  display: inline-block;position: relative;margin-right: 20px;padding: 0px 30px 4px 25px;-moz-border-radius: 5px;/* Gecko browsers */-webkit-border-radius: 5px;/* Webkit browsers */border-radius: 15px;/* W3C syntax */background: #3893fc;height: 30px;border: 0px;text-align:center;line-height:30px;color: #fff;}
+.cancleLogo{display:none;background: url(../img/homepage/X.png)no-repeat center;right: 6px;top: 4px;position: absolute;z-index: 1;height:10px;border-radius: 50%;border: 1px solid #ffffff;}
+.choseCategory:hover .cancleLogo{display: inline-block;}
+.btn-sm{padding-left:18px;margin-left:10px;height:27px;outline: none;border:none;}
+.mainCon .searchType {margin: auto;}
+.categoryList{padding:0px 10px 0px 20px;width:150px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius:5px;background: url(../img/homepage/contrarDelta.png)no-repeat right center ;height: 30px;border: 0px;text-align:center;line-height:30px;text-overflow: ellipsis;  white-space: nowrap; overflow:hidden;}
+.categoryList:hover{background: url(../img/homepage/delta.png)no-repeat right center #eff6fb;}
+.categoryDetails {float:right;background: #eff6fb;height: auto!important;border: 1px solid #ff8914;list-style: none outside none;}
+.categoryDetails .categoryUL .categoryList:active{color: #ff8914;border-bottom: 1px solid #ff8914;}
+.categoryUL li{float: left;color: #727272;height: 30px; line-height: 30px;}
+.categoryUL li label{margin:0;color: #727272;text-align: center;}
+.categoryUL li input{margin: 0 18px 0 0;width: 0;height: 15px;}
+.categoryUL li input:before{display: inline-block;content:"";width: 13px;height: 13px;}
+.categoryUL li input:checked:before{background: url(../img/homepage/radio1.png)no-repeat center;}
+.categoryLI{width: 212px;height: auto;}
+.rlzyStyle{width:212px;float: left;text-align: right; height: auto;  line-height: 50px;    padding-right: 16px; }
+.rlzyStyle label{overflow:hidden;text-overflow: ellipsis;  white-space: nowrap;padding-right: 16px; background:url(../img/homepage/rightDelta.png)no-repeat right center;}
+.rlzyStyle img{padding-left: 10px;}
+.allStyle{  justify-content: center;  width: 100%;height: auto;  overflow: auto;background: #eff6fb;  display: -webkit-flex;  align-items: center;border-bottom: 1px solid #f0f4fb;}
+.cateDiv{ width: 100%;height: auto;  overflow: auto;background: #eff6fb;  }
+.categoryDetail{float: left;width:calc(100% - 212px);color:#3893fc; border-left: 1px solid #e0e0e0;padding-left: 30px;}
+.categoryDetail label{line-height: 50px; width:180px;display: inline-block;overflow: hidden;  text-overflow: ellipsis;  white-space: nowrap;}
+.selectCateDiv{padding-top: 24px;width: 100%;height: auto;  overflow: auto;  display: -webkit-flex;  align-items: center;}
+.selectCate{min-width:100px;float: left;text-align: left; height: auto;  line-height: 30px;    padding-right: 16px;}
+.selectCateDetail{line-height: 30px;  display: inline-block;width:calc(100% - 100px);}
+.docCategory{line-height: 30px;  display: inline-block;width:calc(100% - 100px);}
+.docCategoryDiv{    margin-top: 24px;}
+.docCategory label{margin-bottom: 0px;}
+.advancedBtnDiv{ align: center; margin:auto;  height: 40px;  width:130px;    margin-top: 20px;  margin-bottom: 20px;}
+.advancedBtn{    color: #ffffff;line-height: 40px;  font-size: 18px;  height: 40px;  width: 130px;  border: 0px;  background: #3c91fd;}
+.changDeltaImg{background: url(../img/homepage/delta.png)no-repeat right center #eff6fb;}
+.changImg456{background: url(../img/homepage/contrarDelta.png)no-repeat right center #ffffff;}
+.changColor{color:#fd8714;text-decoration:underline;}
+.removeBackground{background: none !important;}
+/*----------- 尾部 ----------*/
+.footer{position: fixed;  bottom: 0; right: 0;  left: 0;height: 40px;line-height: 40px;text-align:center;color: #666666;margin-bottom: 20px;position: relative}
+.searchMenuBar li{float: left;list-style:none;}
+.showHid{width: 100px;}
+.showHid:hover .userClass{background:  url(../img/homepage/delta.png)no-repeat right center;}
+.showHid:hover dl{display:block}
+dd{margin: 10px;color: #3894fc;}
+.userClass{padding-left: 10px; padding-right: 20px; background: url(../img/homepage/contrarDelta.png)no-repeat right center;}
+.ul-header{ position: relative;  color: #3893fc;  border-radius: 2px;  box-sizing: border-box;  float: right;  }
+.ul-header li a{color:#3893fc;}
+.hidClass{text-align: left;display: none;left: 0;top: 65px;min-width: 100%;line-height: 36px;padding: 5px 0;box-shadow: 0 2px 4px rgba(0,0,0,.12);border: 1px solid #d2d2d2;background-color: #fff;z-index: 100;border-radius: 2px;white-space: nowrap;}
+

@@ -1,0 +1,2633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.foldermanager.dao.FsFolderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.foldermanager.model.FsFolder">
+        <id column="folder_id" property="folderId" />
+        <result column="folder_name" property="folderName" />
+        <result column="visible_range" property="visibleRange" />
+        <result column="is_edit" property="isEdit" />
+        <result column="parent_folder_id" property="parentFolderId" />
+        <result column="level_code" property="levelCode" />
+        <result column="show_order" property="showOrder" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        folder_id AS folderId, folder_name AS folderName, visible_range AS visibleRange, is_edit AS isEdit, parent_folder_id AS parentFolderId, level_code AS levelCode, show_order AS showOrder, create_user_id AS createUserId, create_time AS createTime, update_user_id AS updateUserId, update_time AS updateTime
+    </sql>
+
+    <select id="getFilesAndFloderAll" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        select
+        DF.FOLDER_ID fileId,
+        DF.FOLDER_NAME fileName,
+        'folder' fileType,
+        '' folderLocal,
+        '' sourceKey
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="foldId != null and foldId != ''">
+            AND PARENT_FOLDER_ID = #{foldId}
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        UNION all
+        select
+        DF.doc_id fileId,
+        concat(DF.title,DF.doc_type)fileName,
+        'file' fileType,
+        FF.file_path folderLocal,
+        FF.source_key sourceKey
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        where
+        1=1
+        AND DF.valid_flag='1'
+        <if test="foldId != null and foldId != ''">
+            AND DF.fold_id = #{foldId}
+        </if>
+    </select>
+
+    <select id="getChildFolders" resultType="String">
+        select distinct ff.folder_id,ff.level_code from
+        fs_Folder ff,fs_Folder ff1
+        where
+        <if test="folderIds != null and folderIds.size() > 0">
+            ff1.folder_id IN
+            <foreach item="idItem" collection="folderIds" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        and ff.level_code like CONCAT(ff1.level_code,'%')
+    </select>
+
+    <select id="getDeptList" resultType="Map">
+     select so.short_name oragnAlias ,ss.ORGAN_ALIAS oragnAliasWhole,ss.organ_id  organId from sys_stru ss  left join sys_organ so on so.organ_id =ss.organ_id where ss.STRU_TYPE!=9  and  ss.STRU_TYPE!=1  and ss.IN_USE =1  and ss.organ_id !='5AA3D70B14F94A4486523C29DACB70DE'
+ and ss.organ_id !='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+ and ss.organ_id !='35E0C4C0E3CF97496288B93FF365673B'
+ and ss.organ_id !='849F959D16ED9809F0C31BEA77CE2F5A'
+and ss.organ_id !='4601A1D037C4E9DDCCA7945931F68205'
+and ss.organ_id !='399DF80B30F941E2B407DD8A701DBBCC'
+and ss.organ_id !='895411A283794A0E847BCD9E67B1FF24'
+ and ss.organ_id !='7EA0D24D96AF81D1E1AB49FAEF5B5790'
+ <if test="visibleRange != null and visibleRange != ''">
+     and ifnull(so.visible_range,0)!=#{visibleRange}
+ </if>
+
+ order by ss.GLOBAL_ORDER
+</select>
+
+    <update id="updateDeptVisibleRange" parameterType="list">
+        UPDATE sys_organ SET visible_range = #{visibleRange} WHERE organ_id IN
+        <foreach collection="organId" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+
+    <select id="getChildren" resultType="FsFolder">
+        SELECT
+        DF.FOLDER_ID folderId, DF.FOLDER_NAME folderName, DF.PARENT_FOLDER_ID parentFolderId,DF.IS_EDIT isEdit,
+        DF.create_user_id createUserId,DF.create_time CreateTime,DF.visible_range visibleRange
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        and (create_user_id=#{userId}
+        OR ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type='1'
+        AND
+        ( DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        )
+        )
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+
+
+    <select id="getChildrenBySuperAdmin" resultType="FsFolder">
+        SELECT
+        DF.FOLDER_ID folderId, DF.FOLDER_NAME folderName, DF.PARENT_FOLDER_ID parentFolderId,DF.IS_EDIT isEdit,
+        DF.create_user_id createUserId,DF.create_time CreateTime,DF.visible_range visibleRange
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="fsFolderParams.id != null and fsFolderParams.id != ''">
+            AND PARENT_FOLDER_ID = #{fsFolderParams.id}
+        </if>
+        <if test="fsFolderParams.name != null and fsFolderParams.name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{fsFolderParams.name},'%')
+        </if>
+
+        <if test="fsFolderParams.orderResult != null and fsFolderParams.orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${fsFolderParams.orderResult}
+        </if>
+        LIMIT #{fsFolderParams.pageNumber}, #{fsFolderParams.pageSize}
+
+    </select>
+
+    <select id="selectIdsByLevelCode" resultType="string">
+        select group_concat(distinct folder_id,',')
+        from FS_FOLDER
+        where level_code in
+        <foreach item="idItem" collection="levelCodes" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+
+    <!--懒加载目录树-->
+    <select id="getFolderTreeByParentIdLazy" resultType="map">
+        select
+          fold.folder_id id,
+          fold.folder_name text,
+          fold.parent_folder_id parent
+        from FS_FOLDER fold
+        where fold.parent_folder_id = #{parentId}
+        and ifnull(fold.IS_EDIT,'') != 1
+    </select>
+
+    <!--查询目录表所有数据-->
+    <select id="selectAllFold" resultType="map">
+        select
+          fold.folder_id id,
+          fold.folder_name text,
+          fold.parent_folder_id  parent,
+          fu.folder_id fuFolderId
+        from FS_FOLDER fold
+        left join folder_extranet_auth fu on fold.folder_id = fu.folder_id
+        where  ifnull(fold.IS_EDIT,'') != 1
+        and (fold.own_id is null or fold.own_id = '')
+    </select>
+
+    <select id="selectAllFolder" resultType="map">
+        select
+            fold.folder_id id,
+            fold.folder_name text,
+            fold.parent_folder_id  parent
+        from FS_FOLDER fold
+        where  ifnull(fold.IS_EDIT,'') != 1
+        and (fold.own_id is null or fold.own_id = '')
+        <if test="folderIds != null and folderIds.size() >0">
+            and fold.folder_id IN
+            <foreach item="idItem" collection="folderIds" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="folderId != null and folderId != '' ">
+            AND fold.folder_id != #{folderId}
+        </if>
+    </select>
+
+    <select id="getNum" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        and (create_user_id=#{userId}
+        OR
+        (
+        EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type='1'
+        AND
+        ( DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        )
+        )
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getNumByChildFloder" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+    </select>
+    <select id="getNumBySuperAdmin" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+    <select id="getFilesAndFloder" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT*FROM(   ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,'' size,0 orderName,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName,DF.visible_range visibleRange
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{operateType}
+        AND
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+
+        or DF.create_user_id=#{userId}
+        )
+
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+
+        )
+
+        UNION all
+        (  SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size,1 orderName,DF.user_id createUserId,'' isEdit,su.user_name createUserName,DF.visible_range visibleRange
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID = #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.file_id = DF.doc_id
+        )
+
+        or DF.author_id=#{userId}
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        ))T
+        order by show_order, orderName,convert(${orderResult} using gbk)
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+    <select id="getFilesAndFloderBySuperAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+      SELECT*FROM(  ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag,'' folderLocal,
+        DF.audit_flag auditFlag
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        )
+        UNION all
+        (SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,DF.update_time updateTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size, 1 orderName,1 SHOW_ORDER,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        ,DF.visible_range visibleRange,DF.set_authority setAuthority ,DF.share_flag shareFlag,FF.file_path folderLocal,
+        '' auditFlag
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ))t
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') ,
+        <if test='orderResult.indexOf("fileSize")!=-1 '>
+            ${orderResult}
+        </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+           , SHOW_ORDER
+       </if>
+        <if test="orderResult == null ">
+            order by orderName, ifnull(isEdit,''), convert(fileName using gbk) asc ,SHOW_ORDER,convert(createTime using gbk) desc
+        </if>
+        <if test=" pageNumber != null and pageSize!=null ">
+            LIMIT #{pageNumber}, #{pageSize}
+        </if>
+    </select>
+    <select id="addCheck" resultType="FsFolder">
+        SELECT FOLDER_ID folderId, FOLDER_NAME folderName
+        FROM
+        FS_FOLDER
+        WHERE  PARENT_FOLDER_ID = #{pid}
+        AND FOLDER_NAME = #{name}
+    </select>
+
+    <select id="countFolderName" resultType="FsFolder">
+        SELECT FOLDER_ID folderId
+        FROM
+        FS_FOLDER
+        WHERE PARENT_FOLDER_ID = #{pid}
+        AND (
+        <foreach collection="list" item="item" index="index" separator="or">
+            (FOLDER_NAME = #{item.name} )
+        </foreach>
+        )
+    </select>
+    <select id="getRoot" resultType="FsFolder">
+        SELECT Folder_ID folderId, Folder_NAME folderName, parent_folder_id parentFolderId,level_code levelCode
+        FROM
+        FS_Folder
+        WHERE  parent_folder_id = 'root'
+        ORDER BY folder_NAME
+    </select>
+    <delete id="deleteInIds">
+        DELETE FROM FS_FOLDER WHERE FOLDER_ID IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <select id="getFsFolderBylevel" parameterType="string">
+        SELECT folder_id from FS_FOLDER  where level_code like  CONCAT(#{code},'%')
+    </select>
+    <select id="getFolderNameByLevelCode" resultType="string">
+        SELECT folder_name from FS_FOLDER  where level_code = #{levelCode}
+    </select>
+    <select id="getChildFsFolder" parameterType="string" resultType="string">
+        SELECT GETCHILDFSFILE(#{rootId})
+    </select>
+    <select id="getChildFsFolderType" parameterType="string" resultType="string">
+        SELECT GETFOLDERCHILDTYPE(#{rootId})
+    </select>
+
+    <select id="getTreeDataLazy" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,   DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+        DF.parent_folder_id = #{id}
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID =  #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+
+        or DF.create_user_id=#{userId}
+        )
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+
+    <select id="getTreeDataLazyBySuper" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.folder_path folderPath,
+        DF.parent_folder_id parentFolderId,
+        DF.level_code levelCode,
+        DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+        DF.parent_folder_id = #{id}
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+    <select id="getChildListForSuperAdmin" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.folder_path folderPath,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.create_user_id createUserId,
+        DF.create_time createTime,
+        DF.level_code levelCode
+
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="folderList != null and folderList.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="folderList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+
+    <select id="getChildList" resultType="FsFolder">
+        SELECT
+        DF.folder_ID folderId,
+        DF.folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.is_edit isEdit,   DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="fileList != null and fileList.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="fileList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND  ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID =  #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        )
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+
+
+    <select id="getChildCountList" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder DF
+        WHERE 1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND  ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID = #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        )
+        GROUP BY parent_folder_id
+    </select>
+    <select id="getChildCountListForSuperAdmin" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder
+        WHERE 1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        GROUP BY parent_folder_id
+    </select>
+
+    <select id="searchLevel" resultType="Map">
+        SELECT
+        S.VALUE value,
+        S.LABEL label
+        FROM
+        SYS_DICT_SINGLE S
+        WHERE
+        S.TYPE_ID = (SELECT ID FROM SYS_DICT_TYPE  T WHERE t.TYPE_NAME = 'level')
+        ORDER BY S.SORT
+    </select>
+    <select id="getAuthority" resultType="Map">
+        select dfa.author_id authorId,
+        SU.user_name userName,
+        dfa.author_type authorType,
+        dfa.is_edit isEdit,
+        g.group_name groupName,
+        ss.stru_id organId,
+        dfa.operate_type operateType,
+  SR.ROLE_NAME roleName
+        from
+        (select * from doc_fold_authority  where  folder_id = #{folderId} ) dfa
+          left join sys_roles  SR on SR.ROLE_ID= dfa.author_id
+        left join sys_users  SU on SU.user_id= dfa.author_id
+        left join doc_group  g
+        on g.group_id = dfa.author_id
+        left join sys_stru ss on ss.stru_id = dfa.organ_id
+
+    </select>
+    <select id="getFsFolderDetail" resultType="Map">
+        SELECT
+        F.FOLDER_ID  folderId,
+        F.FOLDER_NAME folderName,
+        SS.LEVEL_ID levelId,
+        F.PARENT_FOLDER_ID parentFolderId
+        FROM
+        FS_FOLDER F
+        LEFT JOIN (
+        SELECT
+        S.LEVEL_ID,
+        S.RES_ID
+        FROM
+        FS_SECURITY_SCOPE S
+        ) SS ON SS.RES_ID = F.FOLDER_ID
+        WHERE
+        F.FOLDER_ID = #{fsFileId}
+    </select>
+
+
+    <select id="getPersonList" resultType="Map">
+        SELECT
+        o.organ_name deptName,
+        u.user_name personName,
+        o.organ_Id deptId,
+        u.user_id personId
+        FROM
+        sys_users u
+        LEFT JOIN sys_organ o ON u.department_id = o.organ_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND u.user_name = #{name}
+        </if>
+        <if test="deptId != null and deptId != '' ">
+            AND o.organ_Id  = #{deptId}
+        </if>
+        AND o.organ_name != '离职人员'
+        AND u.department_id IS NOT NULL
+        AND u.department_id != ''
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+    <select id="getPersonNum" resultType="int">
+        SELECT
+        count(u.user_id) num
+        FROM
+        sys_users u
+        LEFT JOIN sys_organ o ON u.department_id = o.organ_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND u.user_name = #{name}
+        </if>
+        <if test="deptId != null and deptId != '' ">
+            AND o.organ_Id  = #{deptId}
+        </if>
+        AND o.organ_name != '离职人员'
+        AND u.department_id IS NOT NULL
+        AND u.department_id != ''
+    </select>
+
+    <select id="getChildrenByRoot" resultType="FsFolder">
+        SELECT
+        DF.FOLDER_ID folderId, DF.FOLDER_NAME folderName, DF.PARENT_FOLDER_ID parentFolderId,level_code levelCode
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+            AND PARENT_FOLDER_ID = '2bb61cdb2b3c11e8aacf429ff4208431'
+            AND ifnull(DF.IS_EDIT,'') != 1
+        ORDER BY  DF.SHOW_ORDER
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getFilesAndFloderNumBySuperAdmin" resultType="int">
+       select count(*) FROM ( ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize, '' size,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        )
+        UNION all
+        (SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        FROM
+        DOC_INFO DF
+        LEFT JOIN sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        )file
+
+
+    </select>
+    <select id="getFilesAndFloderNum" resultType="int">
+        select count(*)from(( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,'' size,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{operateType}
+        AND
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID = #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        or DF.create_user_id=#{userId}
+        )
+
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+
+        )
+
+        UNION all
+        (  SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN  fs_folder FFD on df.fold_id=FFD.folder_id
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID = #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.file_id = DF.doc_id
+        )
+        <if test="levelCode != null and levelCode != ''">
+            or     FFD.level_code IN ${levelCode}
+        </if>
+        or DF.author_id=#{userId}
+
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        ))file
+
+    </select>
+    <select id="getFolderByLevelCode" resultType="FsFolder">
+        SELECT
+        DF.FOLDER_ID folderId, DF.FOLDER_NAME folderName, DF.PARENT_FOLDER_ID parentFolderId
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        AND level_code = #{levelCode}
+
+    </select>
+    <select id="selectByLevelCode" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.folder_path folderPath,
+        DF.level_code levelCode,
+        DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+        DF.parent_folder_id = #{id}
+        <!--<foreach item="idItem" collection="levelCodeList" open="(" separator="," close=")">#{idItem}
+            </foreach>-->
+      <if test="levelCodeString != null and levelCodeString != ''">
+          and (
+          DF.level_code IN ${levelCodeString}
+          )
+      </if>
+
+
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+
+    <select id="selectByLevelCodeMobile" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.folder_path folderPath,
+        DF.level_code levelCode,
+        DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+        DF.parent_folder_id = #{id}
+        <!--<foreach item="idItem" collection="levelCodeList" open="(" separator="," close=")">#{idItem}
+            </foreach>-->
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+        <if test="folderIds != null and folderIds.size()>0">
+            AND DF.folder_id IN
+        <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        </if>
+
+
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+    <select id="selectByLevelCodeList" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.folder_path folderPath,
+        DF.is_edit isEdit,
+        DF.create_user_id createUserId,
+        DF.create_time createTime,
+        DF.level_code levelCode
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+           <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+         <if test="levelCodeString != null and levelCodeString != ''">
+             and
+             (
+             DF.level_code IN ${levelCodeString}
+             )
+          </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        ORDER BY DF.is_edit DESC,SHOW_ORDER,CREATE_TIME
+    </select>
+
+    <select id="selectByLevelCodeListMobile" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+        DF.folder_path folderPath,
+        DF.is_edit isEdit,
+        DF.create_user_id createUserId,
+        DF.create_time createTime,
+        DF.level_code levelCode
+        FROM
+        FS_folder DF
+        LEFT JOIN folder_extranet_auth fea  on DF.folder_id = fea.folder_id
+        WHERE
+        1=1
+        <if test="list != null and list.size() >0">
+            AND DF.parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+          <if test="folderIds != null and folderIds.size() > 0 ">
+              AND DF.folder_id IN
+              <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                  #{idItem}
+              </foreach>
+          </if>
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and
+            (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        ORDER BY DF.is_edit DESC,DF.SHOW_ORDER,DF.CREATE_TIME
+    </select>
+
+
+    <select id="selectByLevelCodePage" resultType="FsFolder">
+        SELECT
+        DF.FOLDER_ID folderId, DF.FOLDER_NAME folderName, DF.PARENT_FOLDER_ID parentFolderId,DF.IS_EDIT isEdit,
+        DF.create_user_id createUserId,DF.create_time CreateTime,DF.visible_range visibleRange
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="fsFolderParams.id != null and fsFolderParams.id != ''">
+            AND PARENT_FOLDER_ID = #{fsFolderParams.id}
+        </if>
+        and ( DF.level_code IN
+        <foreach item="idItem" collection="fsFolderParams.levelCodeList" open="(" separator="," close=")">#{idItem}
+        </foreach>
+
+
+        )
+
+        <if test="fsFolderParams.name != null and fsFolderParams.name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{fsFolderParams.name},'%')
+        </if>
+
+        <if test="fsFolderParams.orderResult != null and fsFolderParams.orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${fsFolderParams.orderResult}
+        </if>
+        LIMIT #{fsFolderParams.pageNumber}, #{fsFolderParams.pageSize}
+
+    </select>
+
+    <select id="selectByLevelCodeNum" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FOLDER DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="levelCodeString != null and levelCodeString != ''">
+        and (
+            DF.level_code IN ${levelCodeString}
+        )
+        </if>
+
+
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getFilesAndFloderByAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT*FROM(
+        ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName,DF.visible_range visibleRange ,'' setAuthority,'0' shareFlag,'' folderLocal
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        DF.doc_id fileId,
+        DF.title fileName,
+        DF.fold_id foldId,
+        lower(DF.doc_type) fileType,
+        DF.create_time createTime,
+        DF.update_time updateTime,
+        CASE
+        WHEN DF.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        FF.FILE_SIZE fileSize,
+        FF.SIZE size,
+        1 orderName,
+        1 SHOW_ORDER,
+        DF.user_id createUserId,
+        '' isEdit,
+        su.user_name createUserName,
+        DF.visible_range visibleRange,
+        DF.set_authority setAuthority,
+        DF.share_flag shareFlag,
+        FF.file_path folderLocal
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF ON DF.DOC_ID = FF.FILE_ID
+        LEFT JOIN sys_users su ON df.user_id = su.user_id
+        LEFT JOIN fs_folder FFD ON df.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT TUA.A FROM (
+        SELECT
+        dgu.group_id A
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT
+        ur.GRANTED_ROLE A
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT #{userId} A FROM DUAL
+        UNION ALL
+        SELECT 'allpersonflag' A FROM DUAL
+        ) TUA )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = DF.doc_id
+        WHERE
+        1 = 1
+        AND DF.valid_flag = '1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ) tt
+        WHERE
+        ( tt.authority != NULL
+        OR tt.authority != '')
+        )
+        )T
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') desc ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName,ifnull(isEdit,'') desc,convert(fileName using gbk) asc,SHOW_ORDER,convert(createTime using gbk) desc
+        </if>
+        <if test="pageNumber != null and pageSize!=null ">
+            LIMIT #{pageNumber}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getFilesAndFloderByAdminMobile" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT*FROM(
+        ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName,DF.visible_range visibleRange ,'' setAuthority,'0' shareFlag,'' folderLocal
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+        <if test="folderExtranetIds != null and folderExtranetIds.size()>0">
+            AND DF.folder_id  IN
+            <foreach collection="folderExtranetIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        DF.doc_id fileId,
+        DF.title fileName,
+        DF.fold_id foldId,
+        lower(DF.doc_type) fileType,
+        DF.create_time createTime,
+        DF.update_time updateTime,
+        CASE
+        WHEN DF.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        FF.FILE_SIZE fileSize,
+        FF.SIZE size,
+        1 orderName,
+        1 SHOW_ORDER,
+        DF.user_id createUserId,
+        '' isEdit,
+        su.user_name createUserName,
+        DF.visible_range visibleRange,
+        DF.set_authority setAuthority,
+        DF.share_flag shareFlag,
+        FF.file_path folderLocal
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF ON DF.DOC_ID = FF.FILE_ID
+        LEFT JOIN sys_users su ON df.user_id = su.user_id
+        LEFT JOIN fs_folder FFD ON df.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT TUA.A FROM (
+        SELECT
+        dgu.group_id A
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT
+        ur.GRANTED_ROLE A
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT #{userId} A FROM DUAL
+        UNION ALL
+        SELECT 'allpersonflag' A FROM DUAL
+        ) TUA )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = DF.doc_id
+        WHERE
+        1 = 1
+        AND DF.valid_flag = '1'
+
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ) tt
+        WHERE
+        ( tt.authority != NULL
+        OR tt.authority != '')
+        )
+        )T
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') desc ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName, ifnull(isEdit,'') desc, convert(fileName using gbk) asc,SHOW_ORDER,convert(createTime using gbk) desc
+        </if>
+        <if test="pageNumber != null and pageSize!=null ">
+            LIMIT #{pageNumber}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getChildCount" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder
+        WHERE 1=1
+
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            level_code IN ${levelCodeString}
+            )
+        </if>
+
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+        GROUP BY parent_folder_id
+    </select>
+    <select id="getChildCountMobile" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder
+        WHERE 1=1
+
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            level_code IN ${levelCodeString}
+            )
+        </if>
+
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="folderIds!= null and folderIds.size()>0">
+            AND folder_id IN
+        <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        </if>
+
+        GROUP BY parent_folder_id
+    </select>
+
+    <select id="getFilesAndFloderByAdminNum" resultType="int">
+        select count(*)from(( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,'' size,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+           1=1
+           AND DF.level_code IN ${levelCodeString}
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN  fs_folder FFD on df.fold_id=FFD.folder_id
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.file_id = DF.doc_id
+        and (DFA.authority != NULL
+        OR DFA.authority != '')
+        )
+        <if test="levelCode != null and levelCode != ''">
+            or     FFD.level_code IN ${levelCode}
+        </if>
+        or DF.author_id=#{userId}
+
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        ))file
+
+    </select>
+
+    <select id="getFilesAndFloderByAdminNumMobile" resultType="int">
+        select count(*)from(( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,'' size,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        LEFT JOIN folder_extranet_auth fea on df.folder_id = fea.folder_id
+        WHERE
+        1=1
+        AND DF.level_code IN ${levelCodeString}
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="folderIds != null and folderIds.size() >0">
+            AND df.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN  fs_folder FFD on df.fold_id=FFD.folder_id
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.file_id = DF.doc_id
+        and (DFA.authority != NULL
+        OR DFA.authority != '')
+        )
+        <if test="levelCode != null and levelCode != ''">
+            or     FFD.level_code IN ${levelCode}
+        </if>
+        or DF.author_id=#{userId}
+
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        ))file
+
+    </select>
+
+    <select id="getCurrentMaxLevelCode" resultType="String">
+      SELECT max(level_code) FROM `fs_folder` where parent_folder_id=#{parentId};
+
+    </select>
+    <select id="getChildByParentId" resultType="FsFolder">
+        SELECT   FOLDER_ID folderId,PARENT_FOLDER_ID parentFolderId FROM `fs_folder` where parent_folder_id=#{parentId}
+         ORDER BY SHOW_ORDER,CREATE_TIME;
+
+    </select>
+    <select id="getChildLevelCode" resultType="String">
+        SELECT   level_code  FROM `fs_folder` where level_code LIKE  CONCAT(#{levelCode},'%')
+        ORDER BY SHOW_ORDER,CREATE_TIME;
+
+    </select>
+    <select id="getFileNumBySuperAdmin" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+
+
+    </select>
+    <select id="getFileNum"  resultType="int">
+        SELECT
+        count(*)
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN  fs_folder FFD on df.fold_id=FFD.folder_id
+        WHERE
+        1=1
+        AND  DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.file_id
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        AND DFA.file_id = DF.doc_id
+        and Dfa.authority>1
+        )
+        <if test="levelCodeString != null and levelCodeString != ''">
+            or     FFD.level_code IN ${levelCodeString}
+        </if>
+        or DF.author_id=#{userId}
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getChildCodeCount" resultType="int">
+          SELECT  max(  char_length(level_code))/4 -  char_length(#{rootId})/4 FROM `fs_folder`
+          where level_code LIKE CONCAT(#{rootId},'%')
+
+    </select>
+    <select id="getPersonUpload" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+            di.doc_id fileId ,
+            di.title   fileName,
+            di.read_num readNum,
+            di.download_num downloadNum,
+          di.user_id createUserId,
+            di.create_time createTime,
+            di.doc_type fileType,
+            di.share_flag shareFlag,
+            di.fold_id foldId,
+          ff.file_size fileSize,
+          ff.file_pdf_path pdfPath,
+          ifnull(COL.collectNum,0) collectNum,
+          ffr.level_code folderLocal,
+        ifnull(ffr.own_id,'') ownId,
+        su.user_name createUserName,
+        di.audit_user approvalUser,
+        di.audit_time approvalTime,
+        di.audit_opinion approvalOpinion,
+        CASE
+        WHEN di.valid_flag = '1' AND di.audit_user IS NOT NULL
+        THEN
+        '4'
+        WHEN di.valid_flag = '1' AND di.audit_user IS NULL
+        THEN
+        '5'
+        ELSE
+        di.valid_flag
+        END approvalFlag
+        FROM
+            doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON di.doc_id = COL.RESOURCEID
+        LEFT JOIN  sys_users su on di.user_id=su.user_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+         where
+        <if test="auditUsing == 'true' ">
+            di.valid_flag IN ('1','2','3')
+        </if>
+        <if test="auditUsing != 'true' ">
+            di.valid_flag = '1'
+        </if>
+         and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND di.doc_type IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY fileName DESC
+                </if>
+                <if test="order == 1">
+                    ORDER BY fileName ASC
+                </if>
+                <if test="order == 2">
+                    order by di.create_time ASC
+                </if>
+                <if test="order == 3">
+                    order by di.create_time DESC
+                </if>
+                <if test="order == 6">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 7">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+                <if test="order == 11">
+                    order by approvalFlag ASC
+                </if>
+                <if test="order == 12">
+                    order by approvalFlag DESC
+                </if>
+                <if test="order == 13">
+                    order by di.audit_user ASC
+                </if>
+                <if test="order == 14">
+                    order by di.audit_user DESC
+                </if>
+                <if test="order == 15">
+                    order by di.audit_time ASC
+                </if>
+                <if test="order == 16">
+                    order by di.audit_time DESC
+                </if>
+            </when>
+            <otherwise>
+                order by di.create_time desc
+            </otherwise>
+        </choose>
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="getPersonUploadMobile" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+        di.doc_id fileId ,
+        di.title   fileName,
+        di.read_num readNum,
+        di.download_num downloadNum,
+        di.user_id createUserId,
+        di.create_time createTime,
+        di.doc_type fileType,
+        di.share_flag shareFlag,
+        di.fold_id foldId,
+        ff.file_size fileSize,
+        ff.file_pdf_path pdfPath,
+        ifnull(COL.collectNum,0) collectNum,
+        ffr.level_code folderLocal,
+        ifnull(ffr.own_id,'') ownId,
+        su.user_name createUserName,
+        di.audit_user approvalUser,
+        di.audit_time approvalTime,
+        di.audit_opinion approvalOpinion,
+        CASE
+        WHEN di.valid_flag = '1' AND di.audit_user IS NOT NULL
+        THEN
+        '4'
+        ELSE
+        di.valid_flag
+        END approvalFlag
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON di.doc_id = COL.RESOURCEID
+        LEFT JOIN  sys_users su on di.user_id=su.user_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+        where
+        <if test="auditUsing == 'true' ">
+            di.valid_flag IN ('1','2','3')
+        </if>
+        <if test="auditUsing != 'true' ">
+            di.valid_flag = '1'
+        </if>
+        and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND di.doc_type IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND ffr.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY fileName DESC
+                </if>
+                <if test="order == 1">
+                    ORDER BY fileName ASC
+                </if>
+                <if test="order == 2">
+                    order by di.create_time ASC
+                </if>
+                <if test="order == 3">
+                    order by di.create_time DESC
+                </if>
+                <if test="order == 6">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 7">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+                <if test="order == 11">
+                    order by approvalFlag ASC
+                </if>
+                <if test="order == 12">
+                    order by approvalFlag DESC
+                </if>
+                <if test="order == 13">
+                    order by di.audit_user ASC
+                </if>
+                <if test="order == 14">
+                    order by di.audit_user DESC
+                </if>
+                <if test="order == 15">
+                    order by di.audit_time ASC
+                </if>
+                <if test="order == 16">
+                    order by di.audit_time DESC
+                </if>
+            </when>
+            <otherwise>
+                order by di.create_time desc
+            </otherwise>
+        </choose>
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="getPersonUploadClient" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+        di.doc_id fileId ,
+        di.title   fileName,
+        di.read_num readNum,
+        di.download_num downloadNum,
+        di.user_id createUserId,
+        di.create_time createTime,
+        di.doc_type fileType,
+        di.share_flag shareFlag,
+        di.fold_id foldId,
+        ff.file_size fileSize,
+        ff.file_pdf_path pdfPath,
+        ifnull(COL.collectNum,0) collectNum,
+        ffr.level_code folderLocal,
+        su.user_name createUserName
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON di.doc_id = COL.RESOURCEID
+        LEFT JOIN  sys_users su on di.user_id=su.user_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+        where di.valid_flag='1'
+        and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND di.doc_type IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),di.create_time)&gt;= 0
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY fileName DESC
+                </if>
+                <if test="order == 1">
+                    ORDER BY fileName ASC
+                </if>
+                <if test="order == 2">
+                    order by di.create_time ASC
+                </if>
+                <if test="order == 3">
+                    order by di.create_time DESC
+                </if>
+            </when>
+            <otherwise>
+                order by di.create_time desc
+            </otherwise>
+        </choose>
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="getPersonUploadNum" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+        where
+        <if test="auditUsing == 'true' ">
+            di.valid_flag IN ('1','2','3')
+        </if>
+        <if test="auditUsing != 'true' ">
+            di.valid_flag = '1'
+        </if>
+        and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getPersonUploadNumMobile" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+        where
+        <if test="auditUsing == 'true' ">
+            di.valid_flag IN ('1','2','3')
+        </if>
+        <if test="auditUsing != 'true' ">
+            di.valid_flag = '1'
+        </if>
+        and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND ffr.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getPersonUploadNumClient" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.doc_id=ff.file_id
+        left join  fs_folder  ffr on di.fold_id=ffr.folder_id
+        where di.valid_flag='1'
+        and di.author_id=#{userId}
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),di.create_time)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),di.create_time)&gt;= 0
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getFolderByLevelCodeStringFirstBySuper" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE 1=1
+        AND LENGTH (level_code) = 6
+    </select>
+    <select id="getFolderByLevelCodeStringSecondBySuper" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE 1=1
+        AND LENGTH (level_code) = 9
+    </select>
+    <select id="getFolderByLevelCodeStringThirdBySuper" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE 1=1
+        AND LENGTH (level_code) = 12
+    </select>
+    <select id="getFolderByLevelCodeStringFirst" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE level_code IN
+        ${levelCodeString}
+        AND LENGTH (level_code) = 6
+    </select>
+    <select id="getFolderByLevelCodeStringSecond" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE level_code IN
+        ${levelCodeString}
+        AND LENGTH (level_code) = 9
+    </select>
+    <select id="getFolderByLevelCodeStringThird" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE level_code IN
+        ${levelCodeString}
+        AND LENGTH (level_code) = 12
+    </select>
+    <select id="getFolderByLevelCodeStringFirstByFolderIdBySuper" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE 1=1
+        AND LENGTH (level_code) = 9
+        and parent_folder_Id=#{folderId}
+        ORDER BY ifnull(is_edit,'') desc,SHOW_ORDER
+    </select>
+    <select id="getFolderByLevelCodeStringFirstFolderId" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE level_code IN
+        ${levelCodeString}
+        AND LENGTH (level_code) = 9
+        and parent_folder_Id=#{folderId}
+    </select>
+
+
+    <select id="getFolderByParentLevelCode" resultType="FsFolder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fs_folder
+        WHERE  level_code like CONCAT(#{levelCodeString},'%')
+    </select>
+    <select id="getChildFolderNum" resultType="integer">
+        SELECT
+       count(1)
+        FROM fs_folder
+        WHERE  level_code like CONCAT(#{levelCode},'%') and level_code !=#{levelCode}
+    </select>
+    <select id="getChildFileNum" resultType="integer">
+        SELECT
+  count(1)
+        FROM fs_folder ff
+            LEFT JOIN doc_info di on  ff.folder_id=di.fold_id
+        WHERE  ff.level_code like CONCAT(#{levelCode},'%')and di.valid_flag='1'
+    </select>
+    <select id="getTotalFileSize" resultType="Long">
+               SELECT
+       sum(ffe.file_size)
+        FROM fs_folder ff
+      LEFT JOIN doc_info di on  ff.folder_id=di.fold_id
+      LEFT JOIN fs_file ffe on di.doc_id = ffe.file_id
+        WHERE  ff.level_code like CONCAT(#{levelCode},'%') and di.valid_flag='1'
+    </select>
+    <select id="getPersonPic" resultType="String">
+        SELECT
+        PICTURE64
+        FROM
+        jxd7_xt_headpicture
+
+        where
+         USERNAME=#{name}
+
+    </select>
+    <select id="getPersonPath" resultType="String">
+        SELECT
+        path
+        FROM
+        jxd7_xt_headpicture
+
+        where
+         USERNAME=#{name}
+
+    </select>
+    <select id="getFileNumBySuperAdminByFolderShare" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        and DF.share_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+
+
+    </select>
+    <select id="getFilesAndFloderNumBySuperAdminByFolderShare" resultType="int">
+        select count(*) FROM ( ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+        UNION all
+        (SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        FROM
+        DOC_INFO DF
+        LEFT JOIN sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        and df.share_flag ='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        )file
+
+
+    </select>
+    <select id="getFilesAndFloderBySuperAdminByFolderShare" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT*FROM(  ( SELECT
+        DF.FOLDER_ID fileId, DF.FOLDER_NAME fileName, DF.PARENT_FOLDER_ID foldId,'folder' fileType,DF.create_time createTime,
+        '' authority, '' fileSize,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name createUserName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+        UNION all
+        (SELECT
+        DF.doc_id fileId, DF.title fileName, DF.fold_id foldId, lower(DF.doc_type) fileType,DF.create_time createTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,1 orderName,1 SHOW_ORDER,DF.user_id createUserId,'' isEdit,su.user_name createUserName
+        ,DF.visible_range visibleRange,DF.set_authority setAuthority ,DF.share_flag shareFlag
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        and DF.share_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ))t
+        order by orderName,SHOW_ORDER,convert(${orderResult} using gbk)
+        <if test='isDesc == "1" '>
+            desc
+        </if>
+
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="checkAuditDoc" resultType="String">
+        SELECT
+        GROUP_CONCAT(doc_id)
+        FROM
+        doc_info
+        WHERE
+        valid_flag = '2'
+        AND fold_id IN (SELECT folder_id FROM fs_folder WHERE level_code LIKE
+        CONCAT((SELECT level_code FROM fs_folder WHERE folder_id = #{fsFolderId}),'%')
+        AND folder_id != #{fsFolderId})
+    </select>
+
+    <select id="selectFoldersByLevelCode" resultType="com.jxdinfo.doc.manager.foldermanager.model.FsFolder">
+        SELECT
+        substring(
+        folder_path,
+       ( #{length}+1))
+   folderPath,
+   folder_name folderName
+        FROM fs_folder
+        WHERE 1=1
+        AND level_code like CONCAT(#{levelCode},'%')
+    </select>
+
+    <select id="getFsFolderBylevelOrder" parameterType="string" resultType="string">
+        SELECT folder_id from FS_FOLDER  where level_code like  CONCAT(#{code},'%') ORDER BY level_code
+    </select>
+
+    <!--查询目录及上级目录-->
+    <select id="getFolderPath" resultType="map">
+        select
+        PDF.folder_id pathId,
+        PDF.folder_name pathName
+        FROM
+        FS_FOLDER PDF
+        where (select level_code from FS_FOLDER where folder_id=#{foldId})  like CONCAT(PDF.level_code,'%')
+        order by PDF.level_code asc
+    </select>
+
+    <select id="getFolderExtranetAuthTree" parameterType="java.lang.String" resultType="Map">
+        select
+        folder_id,
+        folder_name,
+        CASE parent_folder_id WHEN 'root' THEN '#' else parent_folder_id END
+        as parent_folder_id
+        from FS_FOLDER
+
+    </select>
+</mapper>

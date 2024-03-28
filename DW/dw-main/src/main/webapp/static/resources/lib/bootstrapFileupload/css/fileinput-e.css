@@ -1,0 +1,25 @@
+/**
+ *  文件上传样式修改
+ */
+.kv-file-content{
+    display: none;
+}
+.kv-file-upload{
+    display: none;
+}
+.kv-file-zoom{
+    display: none;
+}
+.fileinput-remove-button{
+    background-color: #1065b3;
+}
+.file-preview{
+    height: 210px;
+}
+.file-drop-zone{
+    height: 180px;
+}
+.file-preview-thumbnails{
+    height: 170px;
+    overflow: auto;
+}

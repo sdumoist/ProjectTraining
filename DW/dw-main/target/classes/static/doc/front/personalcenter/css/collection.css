@@ -1,0 +1,43 @@
+@charset "utf-8";
+.cancelCollect{
+    background-color: #3C91FD;
+    border-radius: 10px;
+    width: 80px;
+    float: left;
+    margin-left:20px;
+    margin-right: 20px;
+    margin-top:5px;
+}
+
+.cancelCollection{
+    font-size:14px!important;
+    font-family:Source Han Sans CN;
+    font-weight:400;
+}
+.cancelCollection:hover{
+    color:rgba(60,145,253,1);
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe{
+    width: calc(100% - 70px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    position: absolute;
+    top: 11px;
+    left: 32px;
+}
+.newFolderNew{color: #222;background-color: white;border: 1px solid #DBDBDB;width: 70px;height: 24px;line-height:34px;float: left;margin-left: 0!important; /*margin-left:10px;*/ /*margin-right: 10px;*/margin-top:11px;border-radius:2px;font-size: 10px;}
+.newFolderNew:hover,.newFolder:hover{color:#222;}
+.newFolder{font-size: 10px;color: #222;background: #fff;border-radius:1px;border: 1px solid #DBDBDB;opacity: 1;width: 70px;height: 24px;line-height: 34px;float: left;margin-right: 10px;margin-top: 11px;}
+/*加载中样式*/
+div#transLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+span.nofolder{left: 68px !important;}
+@media only screen and (max-width:1366px) {
+}
+span.nofolder{left: 78px !important;}
+}

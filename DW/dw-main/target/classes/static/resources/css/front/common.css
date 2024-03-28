@@ -1,0 +1,255 @@
+@charset "UTF-8";
+/**
+ * @ClassName: coomon.css
+ * @Description: 公共样式表
+ * @Author: gxj
+ * @Date: 2018-08-11
+ */
+.container .logo a{background: url(../../../logo/logo.png) no-repeat center!important;background-size: auto 30px!important;}
+.page-content .layui-tab-content .layui-tab-item iframe { width: 100%;  height: 100%;  background: #fff url(../../../logo/welcom_1366.png) no-repeat center 30%; }
+.noPointer a,.layui-nav li a img{cursor: context-menu}
+.left-nav { height: calc(100% - 121px)!important;}
+.left-nav.sm { height: calc(100% - 51px)!important;}
+.size{position: absolute;bottom: 0;height: 30px;width: 180px;padding: 20px;background: #fafafa;    border-right: 1px solid #ced6db;}
+.hidden{display: none}
+.size-top{width: 175px;height: 12px;color: #616668;font-size: 12px}
+.size-bottom{width: 175px;height: 6px;background: #E8ECF2;margin-top: 10px;}
+.size-lack{width: 0;height: 6px;background: #27B7B0;transition:all .3s linear;}
+.leftArea{background: #fff}
+.layui-input, .layui-select, .layui-textarea{line-height: 16px}
+.layui-layout-left{top: -1px}
+#pwdForm label.layui-form-label{width: 82px}
+.layui-table.table_list img {max-width: 100px;height: 26px;width: auto;margin: 0 8px 3px 5px;}
+/*--------------------------------按钮样式---------------------------------*/
+/*弹出框按钮*/
+/*.layui-layer-btn a {height: 30px!important;line-height: 28px!important;}*/
+/*保存*/
+/*取消*/
+.bot-btns{text-align: center}
+.bot-btns button {
+    padding: 0 15px;
+    margin: 0 5px 0;
+    border-radius: 2px;
+    width: 60px;
+    border: 1px solid #018cff;
+    height: 30px;
+    background: #fff;
+}
+.bot-btns button#cancel{
+    color: #018cff;
+    font-size:  12px;
+}.bot-btns button#saveBtn{background-color: #018cff;}
+.white-btn .iconfont { /* line-height: 27px; */text-align: center;vertical-align: middle;}
+
+/*弹出框内容*/
+/*.layui-layer{background: #f3f6f6}*/
+.weadmin-body {padding: 10px 20px; /*background: #f3f6f6*/}
+/*弹出框线*/
+.layui-layer-btn {border-top: 1px solid #E3ECEC;}
+/*
+!*input颜色*!
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {color: #666;font-size:16px;}
+
+　　input:-moz-placeholder, textarea:-moz-placeholder {color:#666;font-size:16px;}
+
+　　input::-moz-placeholder, textarea::-moz-placeholder {color:#666;font-size:16px;}
+
+　　input:-ms-input-placeholder, textarea:-ms-input-placeholder {color:#666;font-size:16px;}
+*/
+/*列表按钮*/
+/*.white-btn,button#cancel,button#cancelBtn{display: inline-block;background-color: #FFFFFF;border: 1px solid #27b7b0;color: #27b7b0;height: 30px;line-height: 30px;border-radius: 3px;white-space: nowrap;text-align: center;font-size: 12px;cursor: pointer;margin-left: 3px;transition: all .3s;-webkit-transition: all .3s;}*/
+/*.white-btn{width: 62px}*/
+.white-btn:hover,.confirm-class .layui-layer-btn .layui-layer-btn1:hover,.layui-layer-btn .layui-layer-btn1:hover,button#cancel:hover,button#cancelBtn:hover{background-color: #F0FCFC;}
+.layui-btn+.layui-btn {margin-left: 3px !important;}
+/*字体图标*/
+.layui-btn .layui-icon {font-size: 16px;font-weight: normal;}
+
+.layui-laydate-content{background: #fff!important;}
+#nav .iconfont{letter-spacing:0}
+.layui-textarea{line-height: 18px!important;}
+/*表格下边框不显示*/
+.layui-table-body{margin-bottom: 2px !important;overflow-x: hidden}
+/*.layui-table-box{height: 100% !important}*/
+/*------------ scrollbar ------------*/
+::-webkit-scrollbar-track-piece {cursor: default;width:4px;height: 4px;background-color:#fff;}
+::-webkit-scrollbar {cursor: default;width:4px;height: 4px;background-color:#fff;}
+::-webkit-scrollbar-thumb {cursor: default;width:4px;height: 4px;background-color:#eee;}
+::-webkit-scrollbar-thumb:hover {cursor: default;width:4px;height: 4px;background-color:#eee;}
+.we-red {color: red;position: absolute;left: 3px;}
+.green{ position: relative;top: 2px;color: #26b7b0;line-height: 20px;font-size: 22px;}
+.blue {
+    position: relative;
+    top: 2px;
+    color: #3C91FD;
+    line-height: 20px;
+    font-size: 22px;
+}
+.hide{display: none}
+th .layui-table-cell {text-align:center;}
+.con-full-l .layui-input-inline input{padding-right: 35px}
+.layui-laydate{animation: none!important;}
+.layui-form-radio {margin: 0 5px!important;}
+input:-moz-placeholder {color: #adbbba !important; opacity:1;}
+input::-moz-placeholder { color: #adbbba !important;opacity:1;}
+input:-ms-input-placeholder{color: #adbbba !important;opacity:1;}
+input::-webkit-input-placeholder{color: #adbbba !important;opacity:1;}
+input:hover :-moz-placeholder {color: #3E5B82 !important; opacity:1;}
+input:hover::-moz-placeholder { color: #3E5B82 !important;opacity:1;}
+input:hover:-ms-input-placeholder{color: #3E5B82 !important;opacity:1;}
+input:hover::-webkit-input-placeholder{color: #3E5B82 !important;opacity:1;}
+.layui-table-tips-c {line-height: 20px;padding: 0;}
+.layui-unselect{-moz-user-select: none; -khtml-user-select: none; user-select: none;}
+input[type=file]:focus, input[type=checkbox]:focus, input[type=radio]:focus{outline: none!important;border: 0}
+@media screen and (max-width:1920px) and (min-width:1367px){
+    .layui-btn {padding: 0 15px;}
+    .white-btn,button#cancel,button#cancelBtn{padding: 0 15px;}
+}
+.layui-btn{
+    outline: none;
+}
+.layui-btn::-moz-focus-inner{ border: 0; }
+.layui-btn:focus{outline: none}
+
+.move-confirm .layui-layer-content {
+    height: calc(100% - 110px);
+    font-size: 15px !important;
+    background: url(../../js/img/confire-warn.png) no-repeat 15% 50%;
+    text-indent: 18%;
+    background-size: 23px;
+    line-height: 50px !important;
+}
+.back-auth .layui-layer-content{
+    background: url(../../js/img/confire-warn.png) no-repeat 6% 28%;
+    text-indent: 10%;
+    line-height: 29px !important;
+    height: 105px;
+}
+.back-auth .layui-layer-btn.layui-layer-btn-{
+    position: relative;
+    bottom: 12px;
+}
+.move-confirm {
+    width: 400px;
+    height: 200px;
+}
+.layui-layer-btn.layui-layer-btn- {
+    padding-right: 10px !important;
+    border: 0;
+    text-align: right !important;
+    font-size: 14px;
+}
+.layui-form-label {
+    line-height: 36px;
+    /*font-size: 12px;*/
+}
+.move-class .layui-layer-content {
+    width: calc(100% - 30px);
+    margin: 15px;
+    height: calc(100% - 135px)!important;
+    border: 1px solid #D2D8DC;
+    text-indent: 0;
+}
+.hoverSpan  .layui-icon{color:#5C5C5C;}
+.hoverSpan  .layui-icon:hover{color:#2980FF;}
+/*button#saveBtn,#copyBtn,.pass-btn,.reject-btn{*/
+/*    width: 90px;*/
+/*    height: 32px;*/
+/*    line-height: 31px;*/
+/*    color: #fff;*/
+/*    border: 1px solid #2980FF !important;*/
+/*    border-radius: 1px;*/
+/*    background: #2980FF !important;*/
+/*    padding: 0;*/
+/*    text-align: center;*/
+/*    float: right;*/
+/*    padding: 0 10px;*/
+/*}*/
+/*button#cancelBtn,button#cancel{*/
+/*    width: 90px !important;*/
+/*    height: 32px !important;*/
+/*    line-height: 31px !important;*/
+/*    border: 1px solid #DBDBDB !important;*/
+/*    background: #fff !important;*/
+/*    border-radius: 1px;*/
+/*    color: #222;*/
+/*    padding: 0;*/
+/*    text-align: center;*/
+/*    cursor: pointer;*/
+/*}*/
+.share-class a.layui-layer-ico.layui-layer-close.layui-layer-close2 {
+    display: none;
+}
+body#top {
+    min-width: 1366px;
+    min-height: 768px;
+    overflow: auto;
+}
+.bot-btns button#pass{
+    background: #27b7b0;
+    font-size: 14px !important;
+}
+@media only screen and (max-width:1366px) {
+    .layui-form-item .layui-input-inline, .search-wrapper input {width: 165px;}
+    .layui-btn {padding: 0 8px;font-size: 12px;}
+    .layui-layer-content {
+        height: calc(100% - 80px);
+        /*font-size: 10px !important;*/
+    }
+    .layui-form-label {
+        line-height: 25px;
+        /*font-size: 10px;*/
+    }
+    /*button#saveBtn,#copyBtn,.pass-btn,.reject-btn{*/
+    /*    width:64px;*/
+    /*    height:26px;*/
+    /*    line-height: 25px;*/
+    /*    font-size: 12px;*/
+    /*}*/
+    /*button#cancelBtn,button#cancel{*/
+    /*    width:64px !important;*/
+    /*    height:26px !important;*/
+    /*    line-height: 25px !important;*/
+    /*    font-size: 12px;*/
+    /*}*/
+    .move-class .layui-layer-content {
+        height: calc(100% - 107px)!important;
+    }
+    .move-confirm .layui-layer-content {
+        height: calc(100% - 80px);
+        font-size: 12px !important;
+        background: url(../../js/img/confire-warn.png) no-repeat 15% 50%;
+        text-indent: 18%;
+        background-size: 20px;
+        line-height: 20px !important;
+    }
+    .move-confirm {
+        width: 280px !important;
+        height: 140px;
+    }
+    .move-confirm *{font-size: 12px}
+    .move-class .layui-layer-btn.layui-layer-btn-{
+        font-size: 12px;
+    }
+}
+@media only screen and (max-width:500px) {
+    .move-confirm .layui-layer-content {
+        height: calc(100% - 80px);
+        font-size: 12px !important;
+        background: url(../../js/img/confire-warn.png) no-repeat 15% 50%;
+        text-indent: 18%;
+        background-size: 20px;
+        line-height: 20px !important;
+    }
+    .move-confirm {
+        width: 280px !important;
+        height: 140px;
+    }
+    .move-confirm *{font-size: 12px}
+}
+/*权限设置滚动条*/
+.layui-row.authority-top .layui-show{
+    width: max-content;
+}
+.jstree.renThree .jstree-default .jstree-node,.jstree.qzThree .jstree-default .jstree-node,.jstree.qzThree .jstree-children,.jstree.renThree .jstree-children,div#renTree,div#qzTree,.jstree-default .jstree-node{width: max-content}
+.layui-tab-content span.treeSpanActive{margin: 0!important;padding: 0!important;right: -25px!important;}

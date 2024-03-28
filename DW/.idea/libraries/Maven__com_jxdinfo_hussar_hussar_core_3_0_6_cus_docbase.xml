@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.jxdinfo.hussar:hussar-core:3.0.6-cus-docbase">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-core/3.0.6-cus-docbase/hussar-core-3.0.6-cus-docbase.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-core/3.0.6-cus-docbase/hussar-core-3.0.6-cus-docbase-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-core/3.0.6-cus-docbase/hussar-core-3.0.6-cus-docbase-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

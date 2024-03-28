@@ -1,0 +1,330 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no"/>
+    <title>${session.projectTitle}</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/assets/lib/swiper/css/swiper.min.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/resources/css/front/index_new.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        #changeHeadIcon{
+            background:rgba(125,125,125,.5);
+            border-radius: 50%;
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 20px;
+            top: 23px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 12px;
+            display: none;
+            cursor: pointer;
+        }
+        .photo-area img:hover + #changeHeadIcon,#changeHeadIcon:hover{
+            display: block;
+        }
+    </style>
+    <script type="text/javascript">
+        projectTitle = "${session.projectTitle}";
+    </script>
+</head>
+<body>
+<div class="pageCon">
+    <div class="background1">
+        <input class="hide" type="hidden" value="${fileCount}" id="fileCount">
+        <input class="hide" type="hidden" value="${projectFlag}" id="projectFlag">
+        <header>
+            <div class="ul-header">
+                <ul class=" container">
+                    <li class="user-wrapper2">
+                       <div class="down-handbook" id="downHandbook" title="下载使用手册">
+                        </div>
+                    </li>
+                    <li class="user-wrapper2" id="user">
+                        <a target="_blank" href="${ctxPath}/personalcenter/" class="user-wrapper-new changeIcon">
+                            @if(session.url==null||session.url==""){
+                            <img src="${ctxPath}/static/resources/img/front/index/photo.png " style="width: 24px">
+                            @}else {
+                            <img src="${session.url}" style="width: 24px;border-radius: 50%">
+                            @}
+                            <span target="_blank" class="user-photo" id="loginName" href="#">
+                            ${userName}
+                        </span>
+                        </a>
+
+                        @if(adminFlag!=1){
+
+                        @}
+                        <div class="user-dropdown">
+                            <div class="photo-area changeIcon">
+                                @if(session.url==null||session.url==""){
+                                <img src="${ctxPath}/static/resources/img/front/index/photo.png "
+                                     style="background:rgba(213,235,255,1);border-radius: 50%">
+                                @}else {
+                                <img src="${session.url}" style="border-radius: 50%">
+                                @}
+                                @if(session.projectFlag==true){
+                                <div id="changeHeadIcon">更换头像</div>
+                                @}
+                                <div class="userName">${userName}</div>
+                                <a href="${ctxPath}/personalcenter?menu=6" onclick="void(0)" target="_blank">
+                                    <div class="userPoint">积分&nbsp<span id="totalIntegral"></span></div>
+                                </a>
+                            </div>
+                            <div class="function-area">
+                                <a href="${ctxPath}/personalcenter/" target="_blank">
+                                    <div class="personal">个人中心</div>
+                                </a>
+                                @if(shiro.hasPermission("sys:manager")){
+                                <a target="_blank" href="${ctxPath}/jqwkmanager/">
+                                    <div class="management">后台管理</div>
+                                </a>
+                                @}else{
+                                <a target="_blank" class="dsiableManagement">
+                                    <div class="management">后台管理</div>
+                                </a>
+                                @}
+                            </div>
+                            <div class="logout-area"><a id="loginout">退出登录</a></div>
+                            <s><i></i></s>
+                        </div>
+
+                    </li>
+                    @if(session.projectFlag!=true){
+                    <li class="user-wrapper2">
+                        <a href="${ctxPath}/frontTopic/messageList?page=1&size=10" target="_blank">
+                            <div class="message">
+                                资讯印象
+                            </div>
+                        </a>
+                    </li>
+                    @}
+                </ul>
+            </div>
+            <div class="newNews">
+                <div class="container clearfix">
+                    <div class="newNews-box">
+                        <div class="newNews-name">快报 NEWS</div>
+                        <div class="top-info">
+                            <div class="plane-swiper" style="overflow: hidden" id="plane-swiper">
+                                <div class="swiper-wrapper swiper-no-swiping" style="transition-timing-function: linear;" id="plane">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shearBox">
+                        <input hidden id="manager" value="1">
+                        <a href="${ctxPath}/personalcenter?toUpload=true" onclick="void(0)" target="_blank">
+                            <button class="layui-btn uploader-btn">上传文件</button>
+                        </a>
+                        @if(session.projectFlag!=true){
+                        <a href="${ctxPath}/personalcenter?menu=12" onclick="void(0)" target="_blank">
+                            <button class="layui-btn uploader-btn">分享科研成果</button>
+                        </a>
+                        @}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mainCon">
+                <div class=" mainCon-inner">
+                    <div class="container">
+                        <div class="layui-col-md2 layui-col-md-offset2"></div>
+                        <div class="layui-col-md7 search-box">
+                            <div class="search-wrapper global-search-input">
+                                <div class="layui-form search-wrapper-select" lay-filter="classify">
+                                    <select id="select">
+                                        <option value="0">全部</option>
+                                        <option value="7">文档</option>
+                                        <option value="8">图片</option>
+                                        <option value="9">视频</option>
+                                        <option value="10">音频</option>
+                                        <option value="14">词条</option>
+                                        <option value="15">作者</option>
+                                        @if(session.projectFlag!=true){
+                                        <option value="12">成果</option>
+                                        @}
+                                    </select>
+                                </div>
+                                <input class="search-input" id="searchInput" autocomplete="off" placeholder="搜索文档名称、关键词等，多个关键词用空格隔开"
+                                       onblur="placeholder='搜索文档名称、关键词等，多个关键词用空格隔开'" onfocus="placeholder=''"
+                                       value="${key!}"  maxlength="150">
+                                <div id="search">查一下</div>
+                                <div class="keywords-association-box" id="keywordsAssociation" style="display: none">
+                                    <ul>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---热门搜索-->
+                <div class="container">
+                    <div class="hot-search layui-col-md6 layui-col-md-offset4">
+                        热门搜索：
+                    </div>
+                </div>
+
+            </div>
+        </header>
+        <div class="container">
+            <div class="layui-row layui-col-space10 partOne">
+                <div class="layui-col-md3 left-list">
+                    <div class="top-item">
+                        <ul class="type-list loading-hide" id="folders">
+
+                        </ul>
+                        <div class="top-item-loading">
+                            <div class="ant-spin ant-spin-spinning" id="transLoading1" class="hide"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div>
+                        </div>
+                        <div class="all-top" hidden><a href="javascript:void (0)" >显示全部</a></div>
+                        <ul class="type-list hide-li"  id="folders_other">
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="layui-col-md6 center-swiper-main">
+                    <div class="top-item center-swiper swiper-container">
+                        <div class="swiper-wrapper">
+                            @if(session.projectFlag!=true){
+                            <div class="swiper-slide"><a
+                                    href="${ctxPath}/personalcenter?menu=11&folderId=0808&folderName=%E8%BD%BB%E9%AA%91%E5%85%B5LCDP"
+                                    target="_blank">
+                                <img src="${ctxPath}/static/resources/img/front/index/slider-item5.png"/></a></div>
+
+                            <div class="swiper-slide"><a href="${ctxPath}/personalcenter?menu=12" target="_blank">
+                                <img class="img-big"
+                                     src="${ctxPath}/static/resources/img/front/index/slider-item4.png"/></a></div>
+                            <div class="swiper-slide"><a
+                                    href="${ctxPath}/searchPic?keyWords=&fileType=8&UIFolder=f80566559a5b4384abf805f3fd246fbd"
+                                    target="_blank">
+                                <img class="img-big"
+                                     src="${ctxPath}/static/resources/img/front/index/slider-item3.png"/></a></div>
+                            @}
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination" id="bannerList"></div>
+                    </div>
+                </div>
+                <div class="layui-col-md3 right-doc">
+                    <div class="right-item">
+                        <div class="dataStatistics-container">
+                            <div class="dataStatistics-info">
+                                <div class="dataStatistics-number"><span></span></div>
+                                <span>当前文档数量</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="upload-info document">
+                        <div class="right-tab">
+                            <span class="active">文档动态</span>
+                            @if(session.projectFlag!=true){
+                            <span>科研成果</span>
+                            @}
+                        </div><!--文档动态-->
+                        <div class=" swiper-container newList active" id="swiper_container">
+                            <div class="borderLeft"></div>
+                            <div class="swiper-wrapper" id="newList" >
+
+                            </div>
+                        </div>
+
+                        <div class=" swiper-container newList " id="achievements">
+                            <div class="borderLeft"></div>
+                            <div class="swiper-wrapper" id="newComponent" >
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class=" content-out">
+        <div class="topic-container">
+            <div class="layui-row layui-col-space10 topic">
+                <div class="commen-title">专题推荐</div>
+                <a class='moreTopic'  href="/frontTopic/topicList?page=1&size=12" target="_blank" >更多专题<span></span></a>
+                <ul class="topic-title clearfix loading-hide">
+                </ul><!--分类推荐-->
+                <div class="topic-title2">
+                    <div class="ant-space ant-space-horizontal ant-space-align-center" id="transLoading2"><div class="ant-space-item" style="margin-right:16px"><div class="ant-spin ant-spin-sm ant-spin-spinning"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div></div><div class="ant-space-item" style="margin-right:16px"><div class="ant-spin ant-spin-spinning"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div></div><div class="ant-space-item"><div class="ant-spin ant-spin-lg ant-spin-spinning"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div></div></div>
+                </div>
+                <div id="topic-body" class="clearfix loading-hide">
+                </div>
+                <div class="topic-loading" class="clearfix">
+                    <div class="ant-spin ant-spin-spinning" id="transLoading3" class="hide"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="hotWord">
+            <div class="container">
+                <div class="hotWordinfo">
+                    <div class="commen-title">
+                        热门词条
+                    </div><!--上传排行-->
+                    <a class='moreTopic'  href="/entry/allEntryList?fileType=14" target="_blank" >更多词条<span></span></a>
+                    <!---->
+                </div>
+                <div id="entrybody">
+
+                </div>
+            </div>
+        </div>-->
+        <div class="container">
+            <div class="layui-row layui-col-space10 doc">
+                <div class="commen-title">
+                    热门文档
+                </div>
+                <div class="container-more">
+                    <div class="more-doc">
+                        换一批<span></span>
+                    </div>
+                </div>
+
+                <div id="doc-title">
+                </div>
+                <div id="doc-body">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="background-3">
+        <div class="container">
+            <div class="upload-info">
+                <div class="commen-title">
+                    文档贡献榜
+                </div><!--上传排行-->
+                <div  id="uploadRank" class="uploadRank"></div>
+            </div>
+        </div>
+    </div>
+    @include("/common/front-footer.html"){}
+</div>
+
+
+@include("/common/front-rit.html"){}
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<div class="tips" style="display: none"></div>
+<script type="text/javascript">
+    projectTitle = "${session.projectTitle}";
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/assets/lib/swiper/js/swiper.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/jquery.dataStatistics.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/index.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+</body>
+</html>

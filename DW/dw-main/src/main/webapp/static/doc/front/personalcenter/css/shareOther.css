@@ -1,0 +1,32 @@
+@charset "utf-8";
+body#top .viewContent{height: 70%;background: none}
+body#top .container-new{margin-top: 0;height: calc(100% - 109px)}
+.pdf-content {
+    position: absolute;
+    background: url(../img/noPreview.svg) no-repeat center top;
+    display: none;
+    z-index: 2;
+    padding-top: 152px;
+    font-size: 16px;
+    color: #8796ab;
+    text-align: center;
+    margin: 0;
+}
+body#top .pdf-content {
+    top: 50%;
+    transform: translateY(-50%);
+    transition: top .05s ease;
+    height: 182px!important;
+    position: absolute;
+    width: 100%;
+}
+.content-bottom {
+    height: calc(100% - 50px);
+}
+
+#title {
+    margin-top: 10px;
+}
+.viewTitle.type-other{
+    margin-bottom: 8px;
+}

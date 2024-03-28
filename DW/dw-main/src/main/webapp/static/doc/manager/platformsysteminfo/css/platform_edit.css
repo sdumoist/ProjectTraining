@@ -1,0 +1,9 @@
+.layui-form-item .layui-inline { margin: 0px auto;}
+.weadmin-body{padding: 0}
+.bot-btns{position: fixed;width: 100%;padding: 20px 15px 8px;height: 52px;border-top: 1px solid #E3ECEC;text-align: center;box-sizing: border-box;}
+.layui-form{padding: 10px 18px}
+.layui-form-label{width: 100px; margin-left: 50px;}
+.layui-col-md6{padding-left: 60px;}
+.layui-col-md12{padding-left: 60px;}
+.layui-form-item{ margin: 40px auto;}
+#systemName{width: 240px; margin-left: -25px;}

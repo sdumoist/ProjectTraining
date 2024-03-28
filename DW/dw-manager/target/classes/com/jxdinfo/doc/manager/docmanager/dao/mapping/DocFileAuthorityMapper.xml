@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docmanager.dao.DocFileAuthorityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docmanager.model.DocFileAuthority">
+        <id column="ID" property="id" />
+        <result column="FILE_ID" property="fileId" />
+        <result column="DOC_ID" property="docId" />
+        <result column="AUTHOR_ID" property="authorId" />
+        <result column="AUTHOR_TYPE" property="authorType" />
+        <result column="IS_EDIT" property="isEdit" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID AS id, FILE_ID AS fileId, DOC_ID AS docId, AUTHOR_ID AS authorId, AUTHOR_TYPE AS authorType, IS_EDIT AS isEdit
+    </sql>
+
+    <select id="selectAuthorityList" resultType="com.jxdinfo.doc.manager.docmanager.model.DocFileAuthority">
+        SELECT
+        fau.file_authority_id AS fileAuthorityId,
+        fau.FILE_ID AS fileId,
+        fau.AUTHOR_ID AS authorId,
+        fau. AUTHOR_TYPE AS authorType,
+        fau.AUTHORITY AS authority,
+        fau.ORGAN_ID AS organId
+        from doc_file_authority fau where fau.file_id = #{fileId}
+    </select>
+
+    <delete id="deleteAuthByFileIds">
+        delete from doc_file_authority
+        where file_id in
+        <foreach collection="fileIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="judgeFileAuthority" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM doc_file_authority d WHERE d.FILE_ID = #{fileId} AND d.AUTHOR_ID = #{userId}
+        AND d.AUTHORITY = "2" AND d.AUTHOR_TYPE = 0
+        <if test="listGroup != null and listGroup.size() >0">
+        UNION ALL
+        SELECT COUNT(*) FROM doc_file_authority d WHERE d.FILE_ID = #{fileId} AND d.AUTHORITY = "2"
+        AND d.AUTHOR_TYPE = 1 AND d.AUTHOR_ID IN
+        <foreach collection="listGroup" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        </if>
+        UNION ALL
+        SELECT COUNT(*) FROM doc_file_authority d WHERE d.FILE_ID = #{fileId} AND d.AUTHORITY = "2"
+        AND d.AUTHOR_TYPE = 2 AND d.ORGAN_ID IN
+        <foreach collection="parentOrganList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        UNION ALL
+        SELECT COUNT(*) 
+        FROM doc_file_authority d 
+        WHERE d.FILE_ID = #{fileId} AND d.AUTHORITY = "2" AND d.AUTHOR_TYPE = 3
+    </select>
+</mapper>

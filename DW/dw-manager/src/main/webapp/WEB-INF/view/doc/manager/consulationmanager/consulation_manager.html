@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>群组管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+</head>
+<body>
+    <div class="background">
+        <div class="content">
+            <input id="saveType" type="hidden">
+            <form class="layui-form clearfix" action="" id="searchForm">
+                <div class="layui-form-item clearfix">
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" id="bannerName" name="bannerName" placeholder="请输入banner名称" autocomplete="off"-->
+                               <!--class="layui-input">-->
+                    <!--</div>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<button class="layui-btn" data-type="reload" id="searchBtn" type="button"><i-->
+                                <!--class="layui-icon">&#xe615;</i>查询-->
+                        <!--</button>-->
+                    <!--</div>-->
+                    <div class="fr">
+                        <button type="button" class="layui-btn" id="addBtn" data-type="addTopic"><i
+                                class="layui-icon">&#xe654;</i>新增
+                        </button>
+                        <!--<button type="button" class="layui-btn" id="editBtn" data-type="editTopic"><i class="layui-icon">&#xe642;</i>修改-->
+                        <!--</button>-->
+                        <button type="button" class="layui-btn" id="delBtn" data-type="delTopics"><i
+                                class="layui-icon">&#xe640;</i>删除
+                        </button>
+                        <!--<button type="button" class="layui-btn" id="moveUp" data-type="moveUp"><i class="iconfont">&#xea13;</i>上移-->
+                        <!--</button>-->
+                        <!--<button type="button" class="layui-btn" id="moveDown" data-type="moveDown"><i class="iconfont">&#xea14;</i>下移-->
+                        <!--</button>-->
+                        <!-- <button type="button" class="layui-btn" id="sendToJQX" data-type="sendToJQX"><i class="layui-icon">&#x1007;</i>推送至金企信
+                         </button>-->
+                    </div>
+                </div>
+            </form>
+            <div class="tableBox">
+                <table class="layui-table" id="topicList" lay-filter="topicList"></table>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-form.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/zTree/js/jquery.ztree.all.js"></script>
+<script src="${ctxPath}/static/doc/manager/consulationmanager/consulation_manager.js?v=${h_version}"></script>
+</html>

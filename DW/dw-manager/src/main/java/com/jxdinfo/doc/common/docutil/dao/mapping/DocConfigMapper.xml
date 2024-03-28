@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.common.docutil.dao.DocConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.common.docutil.model.DocConfig">
+        <id column="config_id" property="configId"/>
+        <result column="config_value" property="configValue"/>
+    </resultMap>
+    
+    <!-- 根据配置项key获取配置项值 -->
+    <select id="getConfigValueByKey" resultType="String">
+        SELECT
+			config_value
+		FROM
+			doc_configure
+		WHERE
+			config_key = #{configKey}
+    </select>
+
+    <select id="select" resultType="java.util.Map">
+        select
+        <choose>
+            <when test="columns != null and columns.length > 0">
+                <foreach collection="columns" item="item" separator=",">
+                    ${item}
+                </foreach>
+            </when>
+            <otherwise>
+                *
+            </otherwise>
+        </choose>
+         from ${table}
+        <if test="params != null and params.size() > 0">
+            where
+            <foreach collection="params" item="item" index="index" separator=" and ">
+                ${index}=#{item}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="delete">
+        delete from ${table}
+        <if test="params != null and params.size() > 0">
+             where
+            <foreach collection="params" item="item" index="index" separator=" and ">
+                ${index}=#{item}
+            </foreach>
+        </if>
+    </delete>
+
+    <insert id="addUserPicList" parameterType="java.util.List">
+        insert into JXD7_XT_HEADPICTURE
+        (
+        userid,
+        username ,
+        createdate,
+        picture64,
+        md5,
+        path
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.userid},
+            #{item.username},
+            #{item.createdate},
+            #{item.picture64},
+            #{item.md5},
+            #{item.path}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateUserPicList" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" separator=";">
+            UPDATE JXD7_XT_HEADPICTURE set
+            USERNAME = #{item.username},
+            CREATEDATE = #{item.createdate},
+            PICTURE64 = #{item.picture64},
+            MD5 = #{item.md5},
+            path = #{item.path}
+            WHERE USERID = #{item.userid}
+        </foreach>
+    </update>
+</mapper>

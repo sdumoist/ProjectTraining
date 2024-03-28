@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docmanager.dao.DocFeedbackMapper">
+    <select id="selectDetailFeedback" resultMap="DocFeedbackMap">
+
+        SELECT df.*,fa.*
+        FROM doc_feedback df LEFT JOIN doc_feedback_attachment fa
+        ON df.feedback_id = fa.feedback_id
+		WHERE df.feedback_id = #{feedbackId}
+    </select>
+    <resultMap id="DocFeedbackMap" type="DocFeedback">
+        <id column="feedback_id" property="feedbackId"/>
+        <result column="feedback_type" property="feedbackType"/>
+        <result column="feedback_describe" property="feedbackDescribe"/>
+        <result column="feedback_user_id" property="feedbackUserId"/>
+        <result column="feedback_user" property="feedbackUser"/>
+        <result column="contack_way" property="contackWay"/>
+        <result column="feedback_time" property="feedbackTime"/>
+        <result column="feedback_state" property="feedbackState"/>
+        <result column="deal_user_id" property="dealUserId"/>
+        <result column="deal_user" property="dealUser"/>
+        <result column="deal_time" property="dealTime"/>
+        <result column="deal_describe" property="dealDescribe"/>
+        <collection property="feedbackAttachments" javaType="List" ofType="FeedbackAttachment">
+            <id column="attachment_id" property="attachmentId"/>
+            <result column="attachment_type" property="attachmentType"/>
+            <result column="attachment_url" property="attachmentUrl"/>
+        </collection>
+    </resultMap>
+</mapper>

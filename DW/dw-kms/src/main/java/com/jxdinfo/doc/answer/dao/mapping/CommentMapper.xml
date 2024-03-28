@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.answer.dao.CommentMapper">
+
+    <select id="getCommentDetail" resultType="Map">
+        SELECT DISTINCT
+            qcr.COMMENT_REPLY_ID AS id,
+            qcr.QUE_ID AS queId,
+            qcr.ANS_ID AS ansId,
+            qcr.BY_REPLY_ID AS byReplyId,
+            qcr.BY_REPLY_USER_ID AS byUserId,
+            qcr.BY_REPLY_USER_NAME AS byUserName,
+            qcr.REPLY_CONTENT AS content,
+            qcr.REPLY_TIME AS replyTime,
+            qcr.REPLY_USER_ID AS replyUserId,
+            qcr.REPLY_USER_NAME AS replyUserName,
+            qcr.AGREE_NUM AS agreeNum,
+            COUNT(DISTINCT qcr2.COMMENT_REPLY_ID) AS commentNum,
+            CASE
+            WHEN ql.ID IS NOT NULL THEN
+            '1'
+            ELSE
+            '0'
+            END AS isAgree,
+            CASE
+            WHEN qcr.REPLY_USER_ID = #{userId} THEN
+            '1'
+            ELSE
+            '0'
+            END AS isDlete
+        FROM
+            qa_comment_reply qcr
+        LEFT JOIN
+          qa_log ql
+        ON
+          ql.DATA_ID = qcr.COMMENT_REPLY_ID AND ql.OPERATION = '4' AND ql.STATE = '0' AND ql.USER_ID = #{userId}
+          AND ql.TIME = (SELECT max(L.TIME) FROM qa_log L WHERE L.DATA_ID = qcr.COMMENT_REPLY_ID  AND L.STATE = '0' AND L.USER_ID = #{userId} )
+        LEFT JOIN
+            qa_comment_reply qcr2
+        ON
+            qcr2.BY_REPLY_ID = qcr.COMMENT_REPLY_ID AND qcr2.STATE = '0'
+        WHERE
+            qcr.BY_REPLY_ID = #{byReplyId}
+          AND qcr.STATE = '0'
+        GROUP BY
+          qcr.COMMENT_REPLY_ID
+        ORDER BY
+          qcr.REPLY_TIME DESC
+    </select>
+
+</mapper>

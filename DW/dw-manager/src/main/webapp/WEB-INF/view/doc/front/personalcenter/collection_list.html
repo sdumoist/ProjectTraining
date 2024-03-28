@@ -1,0 +1,207 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/collection.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/collection_list.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+<style>
+    .table_list tbody>tr>td:first-child>span.nameTitpe>.fileName:hover{
+        cursor:default;
+        color: #222!important;
+
+    }
+    span#name1.new-folder {
+        width: 100% !important;
+        left: 32px !important;
+        top: 36px !important;
+    }
+</style>
+</head>
+<body>
+<!--<div class="back-collections">-->
+    <!--<span id="amount"></span><span class="total"><span id="path" style="margin-left: 0px"></span></span>-->
+<!--</div>-->
+<div class="background">
+    <div class="content clearfix" id="collectList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="toolBar"  style="min-height: 50px">
+
+                    <!--<button id="cancelCollect" class="layui-btn cancelCollect" >取消收藏</button>-->
+                </div>
+                <div class="fast-button">
+                    <!--<button id="delHistoryBtn" class="layui-btn cancelCollect" >取消收藏</button>-->
+
+                    <div id="uploader" class="wu-example">
+                        <div class="shadow">
+
+                        </div>
+                        <div id="dndArea">
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                        <div class="layui-card popWin success" style="display: none" >
+                            <div class="layui-card-header">
+                                <span>收藏记录</span>
+                                <div class="fr">
+                                    <i class="iconfont controls-down">&#xe61a;</i>
+                                    <i class="iconfont controls-close">&#x1006;</i>
+                                </div>
+                                <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="success-msg"></div>
+                                <div class="btns">
+                                    <div class="uploader-list upload-head">
+                                        <div  class="item">
+                                            <h4 class="info">文件名</h4>
+                                            <h4 class="state">文件状态</h4>
+                                            <h4   class="operation file_btn_head" href="javascript:void(0);"   style="text-align: center">操作</h4>
+                                        </div>
+                                    </div>
+                                    <!-- 文件列表：选择文件后在该div显示 -->
+                                    <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                    <label class="text-right"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="newFolder" class="newFolder"><span class="newFolderPic">+</span>创建收藏夹</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="addDiv" style="display: none;text-align:right" class="addFont ">
+    <div class="popup layui-popup">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>目录名称
+                </label>
+                <div class="layui-input-block" style="margin-left:80px">
+                    <input type="text" id="categoryName" autocomplete="off"  maxlength="130" lay-verify="required|categoryName" class="layui-input">
+                </div>
+            </div>
+            <div class="name-list clearfix"></div>
+            <input type="hidden" value="${openFileId}" id="openFileId">
+            <input type="hidden" value="${folderName}" id="folderName">
+            <input type="hidden" value="${docId}" id="docId">
+        </form>
+    </div>
+
+</div>
+<div class="noDataTip">未找到相关内容~</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<div id="filTree" style="display: none;overflow: auto" class="leftArea">
+    <div id="fileTree2" class="jsTree"></div>
+</div>
+<div id="folderTreeAuthority" style="display: none;overflow: auto" class="leftArea">
+    <div id="folderTreeAuthority2" class="jsTree"></div>
+</div>
+<script id="demo1" type="text/html">
+    <div class="member-center-list">
+        <table class="layui-table table_list" >
+            <colgroup>
+                <col width="56%">
+                <col width="180">
+                <col >
+            </colgroup>
+            <tbody>
+            <tr id="collectionToNowFolder1" align="center">
+                <td colspan="2">
+                    <div class="layui-unselect layui-form-checkbox" id="collection" onclick="collectionToNowFolder()"><i class="iconfont" style="width: 12px;height:12px;font-size: 12px;"></i></div>收藏至当前文件夹
+                </td>
+            </tr>
+            <tr id="collectionToNowFolder2" style="display: none" align="center">
+                <td colspan="2">
+                    <div class="layui-unselect layui-form-checkbox layui-form-checked" id="conCollection" onclick="cancelCollectionFromNowFolder()"><i class="iconfont" style="width: 12px;height:12px;font-size: 12px;"></i></div>
+                    已收藏至当前文件夹
+                    <div class="layui-unselect collected"><i class="iconfont" style="width: 15px;height:15px;font-size: 8px;color: #fff"></i></div>
+                </td>
+            </tr>
+            {{#  layui.each(d.list, function(index, item){ }}
+            {{#
+            var titlesub = function(){
+            var result='';
+            if(item.fileType!="folder"){
+            result=item.fileName+item.fileType;
+            }else{
+            result=item.fileName
+            }
+            return result;
+            };
+
+            }}
+
+            {{#
+            var timesub = function(){
+            var result=item.opTime;
+
+            result=  result.substring(0,result.lastIndexOf(':'));
+
+            return result;
+            };
+
+            }}
+            {{# if(null != item.fileName){}}
+            <tr class='hoverEvent
+                {{# if(item.isCollection){   }}
+                       selected-tr
+                {{#  } }}
+                '  onclick="clickCheck(this,'{{item.id}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                <td>
+                    <!--<input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.id}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >-->
+                    <!--<div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.id}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">-->
+                    <!--<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>-->
+                    <!--</div>-->
+                    <input  class="checkFileId" hidden value="{{item.id}}">
+                    <input  class="checkFileType" hidden value="{{item.fileType}}">
+                    <input  class="checkFileName" hidden value="{{item.fileName}}">
+                    <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                    <span id="name{{index}}"  class ="nameTitpe" title="{{item.fileName}}" style="cursor: default;width: 250px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: inline-block;float: left; width: auto!important;" ><a class="fileName" >{{item.fileName}}</a></span>
+                    <div class="layui-unselect  collected"><i class="iconfont" style="width: 15px;height:15px;font-size: 8px;;color: #fff"></i></div>
+                    <span style="display: none" class="hoverSpan"></span>
+                    <input type="text" id="inputName{{index}}" style="width:70%;float:right"  maxlength="30"  value="{{item.fileName}}" class="layui-input hide">
+                </td>
+                <td>
+                    {{# if(item.isCollection){   }}
+                    <button id="isCollection"  onclick="cancelCollection(this,'{{item.resourceId}}')">已收藏</button>
+                    {{#  }else{ }}
+                    <button id="noCollection" onclick="collectionToFolder('{{item.resourceId}}','{{item.parentFolderId}}')">确定</button>
+                    {{#  } }}
+                </td>
+
+                <span id="person{{ item.resourceId }}" style="display: none;" class="vertical"></span>
+                <span id="authority{{ item.resourceId }}" style="display: none;" class="vertical"></span>
+            </tr>
+            {{#  }}}
+            </tbody>
+            {{#  }); }}
+        </table>
+    </div>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/collection_list.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#collectList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+</script>
+</body>

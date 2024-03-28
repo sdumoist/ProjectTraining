@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.componentmanager.dao.ComponentFrontMapper">
+
+    <select id="componentList" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons
+        FROM
+        component_apply a
+        WHERE component_state=2
+
+    </select>
+
+
+</mapper>

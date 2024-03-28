@@ -1,0 +1,9 @@
+@charset "UTF-8";
+.must{color:red;}
+button#btnSave {width: 90px;height: 32px;line-height: 31px;color: #fff;border: 1px solid #2980FF;border-radius: 1px;background: #2980FF;text-align: center;float: right;padding: 0 10px;font-size: 14px;margin-right: 20px;}
+.layui-input{width: 310px;float: left;}
+.weadmin-body {padding-top: 30px;}
+@media only screen and (max-width: 400px){
+    .layui-input{width: 260px}
+    button#btnSave{width: 64px;height: 26px;line-height: 25px;font-size: 12px;}
+}

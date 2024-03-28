@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.newupload.dao.UploadMapper">
+    <select id="getUploadState" resultType="java.util.Map">
+        SELECT
+          FILE_ID docId,
+          SOURCE_PATH sourcePath,
+          UPLOAD_STATE state,
+          CONTENT_TYPE contentType,
+          TIMES times,
+          SERVER_ADDRESS address
+        FROM
+          FS_FILE_UPLOAD
+        WHERE
+         UPLOAD_STATE = '1' or UPLOAD_STATE = '2'
+         and (times = null or times  &lt; 4)
+    </select>
+
+    <insert id="newUploadState">
+        INSERT INTO FS_FILE_UPLOAD
+        (
+          FILE_ID,
+          SOURCE_PATH,
+          UPLOAD_STATE,
+          CONTENT_TYPE,
+          TIMES,
+          server_address
+        )VALUES(
+          #{docId},
+          #{sourcePath},
+          #{state},
+          #{contentType},
+          #{times},
+          #{address}
+        )
+    </insert>
+
+    <update id="updateUploadState">
+        UPDATE FS_FILE_UPLOAD
+        SET
+            <if test="sourcePath != null and sourcePath != ''">
+                SOURCE_PATH=#{sourcePath},
+            </if>
+            <if test="state != null and state != ''">
+                UPLOAD_STATE=#{state},
+            </if>
+            <if test="contentType != null and contentType != ''">
+                CONTENT_TYPE=#{contentType},
+            </if>
+        <if test="content != null and content != ''">
+            content=#{content},
+        </if>
+            <if test="times != null">
+                TIMES=#{times},
+            </if>
+            FILE_ID=#{docId}
+        WHERE
+            FILE_ID=#{docId}
+    </update>
+
+    <delete id="deleteUploadState">
+        DELETE FROM FS_FILE_UPLOAD WHERE FILE_ID=#{docId}
+    </delete>
+    <select id="selectUpload" resultType="java.util.Map">
+     select    FILE_ID docId,
+          SOURCE_PATH sourcePath,
+          UPLOAD_STATE state,
+          CONTENT_TYPE contentType,CONTENT content,
+          TIMES times,
+          SERVER_ADDRESS address from FS_FILE_UPLOAD WHERE FILE_ID=#{docId} and UPLOAD_STATE!="3"and  UPLOAD_STATE!="4"
+    </select>
+</mapper>

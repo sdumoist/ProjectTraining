@@ -1,0 +1,235 @@
+@charset "utf-8";
+.title{box-sizing: border-box;height: 180px;background-color: #ECF0F6;padding: 10px;}
+.content{box-sizing: border-box;height: 456px;background-color: #ECF0F6;padding: 0;}
+#marg2{background: white;height: 157px;}
+#marg2 .file-container-flatten{box-sizing: border-box;padding: 0 0 8px;height: 100%!important;background-color: #FFFFFF;overflow-y: auto;width:100%;}
+.view-table2{width: 100%;position: absolute;background: #fff;z-index: 1;height:93px;}
+
+.message2{
+    height: 40px; font-size: 20px; padding: 0 5px;width: 575px;float: left;
+    font-size:16px;
+    /*font-family:Source Han Sans CN;*/
+    font-weight:400;
+    line-height:42px;
+    color:rgba(52,64,81,1);
+}
+.content {
+    padding: 0 10px !important;
+}
+.table_integral{
+    border: none;
+    width: 100%;
+    height: 100%;
+    margin-top: -13px;
+    padding-top: 0;
+}
+.table_integral tr{
+    height: 100%;
+    border: none !important;
+    font-size: 14px;
+}
+.table_integral td{
+    height:100%;
+    width: 14%;
+    text-align: center;
+    padding-top: 30px;
+    /*border-left: solid 1px lightgrey;*/
+}
+.table_integral td:first-child{
+    border: none !important;
+    padding-top: 9px!important;
+    width: 16%;
+}
+@font-face{
+    font-family:Source Han Sans CN;
+    /*为引入的字体命名*/
+    src:url(../../../../resources/font/SourceHanSansCN-Medium.eot);
+    /*定义要引入字体文件的路径*/
+}
+.font_total,.font_detail,.font_download,.point,.point_download,.point_total{
+    /*font-family: Source Han Sans CN;*/
+    font-weight: 400;
+}
+.font_total{
+    font-size: 52px;
+    cursor: pointer;
+}
+.font_detail,.font_download{
+    font-size: 22px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.point_total{
+    font-size: 20px;
+}
+.point,.point_download{
+    font-size: 14px;
+}
+.font_detail{
+    color: #4DBF86;
+}
+.font_download{
+    color: #F86842;
+}
+.point{
+    color: #4DBF86;
+}
+.point_download{
+    color: #F86842;
+}
+.integral_tr{ color: #8796AB;font-size: 16px;}
+.btn-more{
+    color: rgba(60, 145, 253, 1);
+    background: none;
+    border:1px solid rgba(60, 145, 253, 1);
+    border-radius:2px 2px 2px 2px;
+}
+.integral_tr .border,.integral_tr .noBorder{
+    width:0px;
+    height:43px;
+    border-right:1px solid rgba(218,235,254,1);
+    opacity:1;
+    z-index: 1;
+    position: relative;
+    top: -21px;
+    left:0px;
+    float: right;
+}
+.integral_tr .noBorder{
+    border-right:0 solid rgba(218,235,254,1);
+}
+.layui-table tr:first-child td, .layui-table th, .layui-table-fixed-r, .layui-table-header, .layui-table-page, .layui-table-tips-main, .layui-table-tool, .layui-table-view, .layui-table[lay-skin=line], .layui-table[lay-skin=row] {
+    border-top-width: 0;
+}
+.table-top .integral_div{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    margin-top: 63px;
+}
+.table-top2{
+    margin: 0 15px;
+    background: #fff;
+    border-bottom: 1px solid rgba(209,222,237,1);
+    height: 43px;
+}
+#dndArea{top:48px!important;border-style: none}
+
+#dndArea {;height: calc(100% - 102px)!important;}
+.table_list {
+    width: 100%;
+    margin: auto;
+}
+.table_list.layui-table tr td {
+    text-align: center !important;
+}
+.view-table {
+    /*width: 913px !important;*/
+    position: absolute;
+    background: #fff;
+    z-index: 1;
+}
+.integral-rule{
+    position: absolute;right: 36px;top:50px;width:300px;min-height: 200px;
+    box-shadow: 0px 1px 10px rgba(178,194,213,0.21);
+    z-index: 999;
+    background: white;
+    padding: 0 15px;
+    border: 1px solid rgba(223,231,241,1);
+;
+
+}
+
+.integral-title{
+    height: 54px;
+    border-bottom: 1px solid rgba(223,231,241,1);
+}
+.integral-rule .integral-title span{
+    font-size: 16px;font-weight: bold;
+    display: inline-block;
+    height: 53px;
+    line-height: 60px;
+    width: 70px;
+    border-bottom: 3px solid #3C91FD;
+}
+.integral-rule .integral-content{min-height: 100px;height: auto}
+.integral-rule .integral-desc{
+    margin-top: 10px;line-height: 20px;
+
+
+}
+.integral-rule .integral-info-title{
+    font-size: 15px;font-weight: bold;margin-top: 6px;
+}
+.integral-info-info{
+    border: 1px solid rgba(223,231,241,1);
+    padding: 5px 3px ;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.integral-info-info ul li{
+    height: 25px ;line-height: 25px;
+}
+
+#play{
+    display: inline-block;
+    width:116px;
+    height:30px;
+    line-height: 25px;
+    text-align: center;
+    background:rgba(255,255,255,1);
+    border-radius: 3px;
+    border:1px solid rgba(255,173,91,1);
+    box-shadow:0px 3px 6px rgba(251,186,121,0.52);
+    right: 50px;
+    position: absolute;
+    top:12px;
+}
+#play s{
+    position:absolute;
+    top: 7px;
+    left: 114px;
+    display:block;
+    height:0;
+    width:0;
+    font-size: 0;
+    line-height: 0;
+    border-color: transparent transparent  transparent rgba(255,173,91,1);
+    border-style: solid solid solid dashed;
+    border-width: 7px;
+}
+
+#play i{
+    position:absolute;
+    top: -10px;
+    *
+    left: -10px;
+    left: -11px;
+    display:block;
+    height:0;
+    width:0;
+    font-size: 0;
+    line-height: 0;
+    /* border-color:transparent transparent #fff transparent; */
+    border-color: transparent transparent transparent #fff;
+    border-style:dashed dashed solid dashed;
+    border-width: 10px;
+}
+
+
+.interal-icon{
+    right: 20px;
+    position: absolute;
+    top:20px;
+}
+#view {
+    overflow: auto !important;
+}
+@media only screen and (max-width:1366px) {
+    #play {
+        top: 8px;
+    }
+    .interal-icon {
+        top: 16px;
+    }
+}

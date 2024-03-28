@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>复用登记</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+<style>
+    .layui-elem-quote{
+        height: 75px;
+        border-left: 1px solid  #DCDEE0;
+        background-color: #f9f9f9;
+    }
+    .layui-elem-field legend{
+        font-size: 17px;
+    }
+</style>
+</head>
+<body class="newBody weadmin-body">
+
+<div  class="collections">
+    <dv class="layui-form" >
+
+        <div class="layui-col-md6">
+
+                <fieldset class="layui-elem-field layui-field-title" >
+                    <legend>部门意见</legend>
+                </fieldset>
+                <blockquote class="layui-elem-quote layui-quote-nm">
+                    ${componentApply.returnReasons}
+                </blockquote>
+
+        </div>
+        <div class="layui-col-md6" style="margin-top: 20px">
+            <fieldset class="layui-elem-field layui-field-title" >
+                <legend>委员会意见</legend>
+            </fieldset>
+            <blockquote class="layui-elem-quote layui-quote-nm">
+                ${componentApply.returnReasonsWyh}
+            </blockquote>
+
+        </div>
+
+    </dv>
+</div>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+
+
+<script>
+    $(function () {
+        $(".reason")
+    })
+    var width = $(window).width();
+</script>
+
+</body>
+</html>

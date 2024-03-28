@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docmanager.dao.PreviewMapper">
+    <!-- 根据文档ID获取文档所属目录信息 -->
+    <select id="getFoldInfoByDocId"  parameterType="String"  resultType="Map">
+        SELECT
+			f.folder_id foldId,
+			f.folder_name foldName
+		FROM
+			doc_info d
+		LEFT JOIN fs_folder f ON f.folder_id = d.fold_id
+        WHERE doc_id=#{docId}
+    </select>
+
+     <!-- 根据目录ID获取目录的上级目录信息 -->
+    <select id="getFoldInfoByChildFoldId"  parameterType="String"  resultType="Map">
+        SELECT
+			f.folder_id foldId,
+			f.folder_name foldName
+		FROM
+			fs_folder f
+        WHERE folder_id = (select parent_folder_id from fs_folder where folder_id = #{childFoldId})
+    </select>
+</mapper>

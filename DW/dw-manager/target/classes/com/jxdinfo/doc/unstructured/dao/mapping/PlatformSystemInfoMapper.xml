@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.unstructured.dao.PlatformSystemInfoMapper">
+
+    <select id="platformSystemInfoList" resultType="com.jxdinfo.doc.unstructured.model.PlatformSystemInfoVO">
+        SELECT
+        platform.system_id AS systemId,
+        platform.system_name AS systemName,
+        platform.system_key AS systemKey,
+        platform.valid_flag AS validFlag,
+        platform.create_time AS createTime,
+        platform.update_time AS updateTime,
+        platform.create_user_id AS createUserId,
+        users.user_name AS createUserName
+        FROM platform_system_info platform LEFT JOIN sys_users users
+        ON platform.create_user_id = users.user_id
+        <where>
+            <if test="systemName != '' and systemName != null">
+                and platform.system_name LIKE CONCAT('%',#{systemName},'%')
+            </if>
+        </where>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+</mapper>

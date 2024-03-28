@@ -1,0 +1,53 @@
+#path span{margin-left: 2px}
+/*-------收藏按钮弹出框--------*/
+#newFolder{display: none}
+.back-collections{position: absolute;top:0;width: 100%;height: 34px;padding-top: 17px;font-weight: 600;padding-left: 20px;font-size: 14px;color: #777777;background-size:7px;;cursor: pointer;z-index: 11;}
+.back-collections:hover{color: #2980FF}
+.background{padding-top: 0px;background: #fff!important;}
+#isCollection{background: #fff;color: #777777;border: solid 1px #E3E7ED}
+#conCollection{background: #fff;color: #777777;border: solid 1px #E3E7ED}
+.background .fast-button{height: calc(100% - 53px) !important}
+.member-center-list{height: 100%!important;}
+div#uploader.wu-example{height: 100%!important;}
+#marg .file-container-flatten{padding: 0}
+.fast-button{height: calc(100% - 51px) !important}
+
+/*table*/
+#dndArea{padding: 0}
+.table_list{margin-top: 6px}
+.table_list.layui-table tr td:first-child, .table_list.layui-table tr th:first-child{padding-right: 120px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap}
+.table_list.layui-table tr td{position: relative;margin-left: 0;padding-right: 0;width: 100%;height: 67px;font-size: 14px;border-bottom: solid 1px #EEF0F5;cursor: pointer;background: #fff!important;}
+.table_list tbody:last-child td{border-bottom: 0}
+td .fileName{font-size: 14px;position: relative;padding-left: 32px;height: 100%;padding-top: 16px;}
+td .fileName::before{content: "";position: absolute;left: 0;width: 20px;height: 17px;;background: url("/static/img/folder.png") no-repeat;background-size: 19px auto;}
+tfoot{display: none}
+.nameTitpe>a{display: inline-block;max-width: 200px;height: 50px;text-overflow: ellipsis;overflow: hidden;}
+/*收藏按钮*/
+.table_list button{position: absolute;right: 13px;top:50%;transform: translateY(-50%);width:72px;height:28px;color: #fff;background:rgba(41,128,255,1);border-radius:1px;text-align: center;line-height: 28px;font-size: 14px;border: none;transition: all .3s}
+.table_list button:hover{background-color: #3DA0FC;}
+.table_list button:active{    background-color: #FFF;border: solid 1px #2980FF;color: #222;}
+/*收藏单选框*/
+#conCollection,#collection{float: left;width: 16px!important;height: 16px!important;margin-right: 12px}
+#conCollection .iconfont,#collection .iconfont{width: 16px!important;height: 16px!important;font-size: 14px!important;line-height: 16px!important;}
+#collectionToNowFolder2 td,#collectionToNowFolder1 td{border-top: 0;color: #222;font-size: 14px;line-height: 25px}
+.collectionToNowFolder{position: absolute;right: 13px;top:50%;transform: translateY(-50%);width:340px!important;height:35px!important;color: #fff;background:rgba(41,128,255,1);border-radius:1px;text-align: center;line-height: 28px;font-size: 14px;border: none}
+.collectionToNowFolder:hover{background-color: #3DA0FC}
+.collectionToNowFolder:active{background-color: #3DA0FC}
+/*已收藏标记*/
+.collected{position: relative;left: auto;display: none;width: 14px;height: 14px;border-radius: 7px;background: #2DCD72;}
+.collected  .iconfont { display: none;color: #fff;line-height: 16px;text-align: center;transform: scale(0.6);}
+#collectionToNowFolder2 .collected{display: inline-block;float: right;left: 8px;top:6px}
+#collectionToNowFolder2 .iconfont,.selected-tr  .collected,.selected-tr .iconfont{display: inline-block}
+.selected-tr  .collected{top: 4px;}
+
+#fileTree2{border-bottom: solid 1px #EEF0F5}
+.layui-layer-btn{overflow: hidden}
+
+/*新建文件夹*/
+#newFolder{position: absolute;bottom: 16px;left: 50%;margin-top: 0;padding-top: 12px;width: 100%;height: auto;transform: translateX(-50%);font-size: 14px;text-align: center;cursor: pointer;border: none; border-top: solid 1px #EEF0F5;}
+.newFolderPic{display: inline-block;margin-right: 15px;width:22px;height:22px;line-height: 22px;color:#fff;background:rgba(41,128,255,1);border-radius: 11px;}
+#input-newFolder{transform: translateY(-4px);border: solid 1px #2980FF;color: #222;}
+#input-newFolder::-webkit-input-placeholder{color:#BCBCBC !important;}
+#input-newFolder::-moz-placeholder{color:#BCBCBC !important;}
+#input-newFolder:-ms-input-placeholder{color:#BCBCBC !important;}
+

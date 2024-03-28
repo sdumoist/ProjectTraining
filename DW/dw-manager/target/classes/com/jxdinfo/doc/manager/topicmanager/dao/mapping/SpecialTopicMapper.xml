@@ -1,0 +1,180 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.topicmanager.dao.SpecialTopicMapper">
+    <!--专题详情查询-->
+    <select id="searchTopicDetail" parameterType="String" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+      SELECT
+			t.topic_id topicId,
+			t.topic_name topicName,
+			t.topic_desc topicDesc,
+			t.create_time createTime,
+			t.show_order showOrder,
+			t.author_id authorId,
+			t.topic_cover topicCover,
+			t.create_user_id createUserId,
+			t.update_user_id updateUserId,
+			t.update_time updateTime,
+			t.end_time endTime,
+			t.enable_time enableTime,
+			t.disable_time disableTime,
+				su.user_name authorName
+		FROM
+			doc_special_topic t left join  sys_users su on su.user_id = t.author_id
+		WHERE
+ 	t.topic_id = #{topicId}
+    </select>
+    
+    <!--专题列表查询-->
+    <select id="topicList" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+        SELECT
+        a.topic_id topicId,
+        a.topic_name topicName,
+        a.topic_desc topicDesc,
+        a.create_time createTime,
+        a.show_order showOrder,
+        CASE
+
+        WHEN c.count IS NULL THEN
+        0
+        ELSE
+        c.count
+        end  docNum
+        FROM
+        doc_special_topic a
+        LEFT JOIN (SELECT t.special_topic_id ,count from  topic_doc_num t) c ON a.topic_id = c.special_topic_id
+        WHERE 1=1
+        <if test="topicName != ''and topicName != null">
+            AND a.topic_name LIKE CONCAT('%',#{topicName},'%') 
+        </if>
+        ORDER BY a.show_order,a.create_time asc
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+    <!--专题列表查询-->
+    <select id="getValidTopicList" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+        SELECT
+        a.topic_id topicId,
+        a.topic_name topicName,
+        a.topic_desc topicDesc,
+        a.topic_cover topicCover,
+        a.create_time createTime,
+        dut.show_order showOrder,
+        CASE
+        WHEN c.count IS NULL THEN
+        0
+        ELSE
+        c.count
+        end  docNum
+        FROM
+        doc_special_topic a
+        LEFT JOIN (SELECT t.special_topic_id ,count from  topic_doc_num t) c ON a.topic_id = c.special_topic_id
+        LEFT JOIN (SELECT ut.show_order,ut.topic_id FROM doc_user_topic UT WHERE UT.user_id = #{userId}) dut ON dut.topic_id = a.topic_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND   a.topic_name LIKE  CONCAT('%',#{name},'%')
+        </if>
+        AND a.topic_id
+        <if test="isValid == 1">
+            NOT
+        </if>
+        IN (SELECT ut.topic_id FROM doc_user_topic UT WHERE UT.user_id = #{userId})
+        ORDER BY dut.show_order,a.create_time asc
+    </select>
+    <!--专题列表查询-->
+    <select id="getSpecialTopicList" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+        SELECT
+        a.topic_id topicId,
+        a.topic_name topicName,
+        a.topic_desc topicDesc,
+        a.topic_cover topicCover,
+        a.create_time createTime,
+        dut.show_order showOrder,
+        CASE
+        WHEN c.count IS NULL THEN
+        0
+        ELSE
+        c.count
+        end  docNum
+        FROM
+        doc_special_topic a
+        LEFT JOIN (SELECT t.special_topic_id ,count from  topic_doc_num t) c ON a.topic_id = c.special_topic_id
+        LEFT JOIN (SELECT ut.show_order,ut.topic_id FROM doc_user_topic UT WHERE UT.user_id = #{userId}) dut ON dut.topic_id = a.topic_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND   a.topic_name LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ORDER BY a.show_order,a.create_time asc
+    </select>
+    <!--获取数据条数-->
+    <select id="getTopicListCount" resultType="int">
+        SELECT count(topic_id)
+        FROM doc_special_topic
+        WHERE 1=1
+        <if test="topicName != ''and topicName != null">
+            AND topic_name LIKE CONCAT('%',#{topicName},'%')
+        </if>
+        ORDER BY show_order
+    </select>
+    <!--新增专题-->
+    <insert id="addSpecialTopic" parameterType="specialTopic">
+        INSERT doc_special_topic(topic_id,topic_name,topic_desc,create_time,show_order,author_id,enable_time,disable_time,topic_cover,view_num)
+        VALUES
+            (#{topicId},#{topicName},#{topicDesc},#{createTime},
+                (select show_order from (SELECT ifnull(max(show_order),0)+1 show_order FROM doc_special_topic)a),#{authorId},#{enableTime},#{disableTime},#{topicCover},0)
+    </insert>
+    <!--查重-->
+    <select id="checkTopicExist" resultType="int" parameterType="specialTopic">
+        SELECT count(topic_id) FROM doc_special_topic
+        WHERE topic_id != #{topicId}
+        AND topic_name = #{topicName}
+    </select>
+    <!--更新-->
+    <update id="updateSpecialTopic" parameterType="specialTopic">
+        UPDATE doc_special_topic
+        SET topic_name = #{topicName},
+            topic_desc = #{topicDesc},
+        show_order=#{showOrder},
+        update_user_id=#{updateUserId},
+        update_time=#{updateTime},
+            author_id = #{authorId},
+        enable_time = #{enableTime},
+        disable_time = #{disableTime}
+        <if test="topicCover != null and topicCover != '' ">
+            ,topic_cover = #{topicCover}
+        </if>
+        WHERE topic_id = #{topicId}
+    </update>
+    <!--删除-->
+    <delete id="delSpecialTopic" parameterType="list">
+        DELETE FROM doc_special_topic
+        WHERE topic_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--发布-->
+    <update id="publishTopic" parameterType="list">
+        UPDATE doc_special_topic
+        SET disable_time =now()
+        WHERE topic_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <!--删除专题下的文件-->
+    <delete id="delDoc" >
+        DELETE FROM doc_special_topic_files WHERE id  =#{id}
+    </delete>
+    <update id="updateViewNum">
+        UPDATE doc_special_topic set view_num = #{num}
+         WHERE topic_id = #{topicId}
+    </update>
+    <update id="moveTopic">
+        UPDATE ${table} AS tab1 JOIN ${table} AS tab2 ON (tab1.${idColumn}= #{idOne} AND tab2.${idColumn}= #{idTwo})
+        OR (tab1.${idColumn}=  #{idTwo}  AND tab2.${idColumn} = #{idOne} )
+        SET tab1.show_order = tab2.show_order,tab2.show_order=tab1.show_order
+    </update>
+
+    <select id="getMaxOrder" resultType="int" >
+ 		SELECT ifnull(max(show_order),1) FROM `doc_special_topic`;
+    </select>
+</mapper>

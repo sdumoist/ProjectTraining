@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no"/>
+    <title>知识问答</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/questionAndAnswer.css?v=${h_version}"/>
+</head>
+<body>
+<div class="q-a-container">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">所有问题</li>
+            <li>我的提问</li>
+            <li>我的回答</li>
+            <li>我的收藏</li>
+            <li>邀我回答</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                    <div class="search-container">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">关键词</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="keyword1" name="keyword" autocomplete="off" placeholder="请输入关键词" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">标签</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="label1" name="label" autocomplete="off" placeholder="请输入标签" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <select id="solve1" name="solve">
+                                        <option value="">请选择状态</option>
+                                        <option value="0">未解决</option>
+                                        <option value="1">已解决</option>
+                                        <option value="2">已结束</option>
+                                        <option value="3">已删除</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" id="screening" class="screening">筛选</button>
+                            <button class="put-question" type="button"><a href="${ctxPath}/routePath/question_add" target="_blank">我要提问</a></button>
+                        </form>
+                    </div>
+                    <div class="search-list">
+                        <div class="screen-container">
+                            <span class="question-time" onclick="timeOrder(this)">提问时间<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                            <span class="views" onclick="readNumOrder(this)">浏览量<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                        </div>
+                        <div id="view1" class="question-list">
+                        </div>
+                        <!--分页-->
+                        <div id="laypageAre" class="laypageAre"></div>
+                    </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="search-container">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="keyword2" name="keyword" autocomplete="off" placeholder="请输入关键词" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标签</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="label2" name="label" autocomplete="off" placeholder="请输入标签" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <select id="solve2" name="solve">
+                                    <option value="">请选择状态</option>
+                                    <option value="0">未解决</option>
+                                    <option value="1">已解决</option>
+                                    <option value="2">已结束</option>
+                                    <option value="3">已删除</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="screening2" class="screening">筛选</button>
+                        <button class="put-question" type="button"><a href="${ctxPath}/routePath/question_add" target="_blank">我要提问</a></button>
+                    </form>
+                </div>
+                <div class="search-list">
+                    <div class="screen-container">
+                        <span class="question-time" onclick="timeOrder(this)">提问时间<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                        <span class="views" onclick="readNumOrder(this)">浏览量<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                    </div>
+                    <div id="view2" class="question-list">
+                    </div>
+                    <!--分页-->
+                    <div id="laypageAre2"  class="laypageAre"></div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="search-container">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="keyword3" name="keyword" autocomplete="off" placeholder="请输入关键词" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标签</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="label3" name="label" autocomplete="off" placeholder="请输入标签" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <select id="solve3" name="solve">
+                                    <option value="">请选择状态</option>
+                                    <option value="0">未解决</option>
+                                    <option value="1">已解决</option>
+                                    <option value="2">已结束</option>
+                                    <option value="3">已删除</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="screening3" class="screening">筛选</button>
+                        <button class="put-question" type="button"><a href="${ctxPath}/routePath/question_add" target="_blank">我要提问</a></button>
+                    </form>
+                </div>
+                <div class="search-list">
+                    <div class="screen-container">
+                        <span class="question-time" onclick="timeOrder(this)">提问时间<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                        <span class="views" onclick="readNumOrder(this)">浏览量<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                    </div>
+                    <div id="view3" class="question-list">
+                    </div>
+                    <!--分页-->
+                    <div id="laypageAre3"  class="laypageAre"></div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="search-container">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="keyword4" name="keyword" autocomplete="off" placeholder="请输入关键词" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标签</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="label4" name="label" autocomplete="off" placeholder="请输入标签" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <select id="solve4" name="solve">
+                                    <option value="">请选择状态</option>
+                                    <option value="0">未解决</option>
+                                    <option value="1">已解决</option>
+                                    <option value="2">已结束</option>
+                                    <option value="3">已删除</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="screening4" class="screening">筛选</button>
+                        <button class="put-question" type="button"><a href="${ctxPath}/routePath/question_add" target="_blank">我要提问</a></button>
+                    </form>
+                </div>
+                <div class="search-list">
+                    <div class="screen-container">
+                        <span class="question-time" onclick="timeOrder(this)">提问时间<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                        <span class="views" onclick="readNumOrder(this)">浏览量<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                    </div>
+                    <div id="view4" class="question-list">
+                    </div>
+                    <!--分页-->
+                    <div id="laypageAre4"  class="laypageAre"></div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="search-container">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="keyword5" name="keyword" autocomplete="off" placeholder="请输入关键词" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标签</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="label5" name="label" autocomplete="off" placeholder="请输入标签" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <select id="solve5" name="solve">
+                                    <option value="">请选择状态</option>
+                                    <option value="0">未解决</option>
+                                    <option value="1">已解决</option>
+                                    <option value="2">已结束</option>
+                                    <option value="3">已删除</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="screening5" class="screening">筛选</button>
+                        <button class="put-question" type="button"><a href="${ctxPath}/routePath/question_add" target="_blank">我要提问</a></button>
+                    </form>
+                </div>
+                <div class="search-list">
+                    <div class="screen-container">
+                        <span class="question-time" onclick="timeOrder(this)">提问时间<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                        <span class="views" onclick="readNumOrder(this)">浏览量<i class="search-icon">&#xe612;</i><i class="search-icon">&#xe615;</i></span>
+                    </div>
+                    <div id="view5" class="question-list">
+                    </div>
+                    <!--分页-->
+                    <div id="laypageAre5"  class="laypageAre"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  所有数据    -->
+<div class="noDataTip">未找到相关内容~</div>
+<script id="demo1" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="question-item">
+            <div class="question-detail">
+                <div>
+                    <span><i>&#xe65b;</i><a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank">{{ item.title }}</a></span>
+                    <div class="question-label"><i>&#xe7c8;</i><span>{{ item.label }}</span></div>
+                </div>
+                <div class="interaction-container">
+                    <span>{{ item.userName }}</span>
+                    <span>{{ item.readNum }}浏览</span>
+                    <span>{{ item.answerNum }}回答</span>
+                    <span>{{ item.time }}</span>
+                </div>
+            </div>
+            <div class="question-desc">
+                <span>{{ item.contentText }}</span>
+                <div>
+                    {{#  if(item.canAnswer === '1' && item.state !== '2'){ }}
+                    <span>
+                        <a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank" style="color: #5ACC9B;">回答</a>
+                    </span>
+                    {{#  } }}
+
+                    {{#  if(item.isFollow === '0'){ }}
+                    <span onclick="collectionQuestion('{{ item.id }}')">收藏</span>
+                    {{#  } }}
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+<!--  我的提问   -->
+<script id="demo2" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="question-item">
+            <div class="question-detail">
+                <div>
+                    <span><i>&#xe65b;</i><a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank">{{ item.title }}</a></span>
+                    <div class="question-label"><i>&#xe7c8;</i><span>{{ item.label }}</span></div>
+                </div>
+                <div class="interaction-container">
+                    <span>{{ item.userName }}</span>
+                    <span>{{ item.readNum }}浏览</span>
+                    <span>{{ item.answerNum }}回答</span>
+                    <span>{{ item.time }}</span>
+                </div>
+            </div>
+            <div class="question-desc">
+                <span>{{ item.contentText }}</span>
+                <div>
+                    <span onclick="delQuestion('{{ item.id }}')">删除</span>
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+<!--  我的回答    -->
+<script id="demo3" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="question-item">
+            <div class="question-detail">
+                <div>
+                    <span><i>&#xe65b;</i><a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank">{{ item.title }}</a></span>
+                    <div class="question-label"><i>&#xe7c8;</i><span>{{ item.label }}</span></div>
+                </div>
+                <div class="interaction-container">
+                    <span>{{ item.userName }}</span>
+                    <span>{{ item.readNum }}浏览</span>
+                    <span>{{ item.answerNum }}回答</span>
+                    <span>{{ item.time }}</span>
+                </div>
+            </div>
+            <div class="question-desc">
+                <span>{{ item.contentText }}</span>
+                <div>
+
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+<!--  我的收藏    -->
+<script id="demo4" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="question-item">
+            <div class="question-detail">
+                <div>
+                    <span><i>&#xe65b;</i><a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank">{{ item.title }}</a></span>
+                    <div class="question-label"><i>&#xe7c8;</i><span>{{ item.label }}</span></div>
+                </div>
+                <div class="interaction-container">
+                    <span>{{ item.userName }}</span>
+                    <span>{{ item.readNum }}浏览</span>
+                    <span>{{ item.answerNum }}回答</span>
+                    <span>{{ item.time }}</span>
+                </div>
+            </div>
+            <div class="question-desc">
+                <span>{{ item.contentText }}</span>
+                <div>
+                    <span onclick="cancelFocus('{{ item.id }}')">取消收藏</span>
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+
+<!--  邀我回答    -->
+<script id="demo5" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="question-item">
+            <div class="question-detail">
+                <div>
+                    <span><i>&#xe65b;</i><a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank">{{ item.title }}</a></span>
+                    <div class="question-label"><i>&#xe7c8;</i><span>{{ item.label }}</span></div>
+                </div>
+                <div class="interaction-container">
+                    <span>{{ item.userName }}</span>
+                    <span>{{ item.readNum }}浏览</span>
+                    <span>{{ item.answerNum }}回答</span>
+                    <span>{{ item.time }}</span>
+                </div>
+            </div>
+            <div class="question-desc">
+                <span>{{ item.contentText }}</span>
+                <div>
+                    <span>
+                        {{#  if(item.state !== '2'){ }}
+                        <a href="${ctxPath}/routePath/questionDetail?queId={{ item.id }}" target="_blank" style="color: #5ACC9B;">回答</a>
+                        {{#  } }}
+                    </span>
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/questions/questionAndAnswer.js?v=${h_version}"></script>
+</body>
+</html>

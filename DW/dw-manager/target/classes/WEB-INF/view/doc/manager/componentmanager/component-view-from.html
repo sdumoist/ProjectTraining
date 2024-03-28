@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/component-view-from.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script>
+    function downloadComponent(id) {
+        var isShare=$("#isShare").val();
+        if(isShare==1||isShare==2){
+            location.href="/login"
+            return
+        }
+        $.ajax({
+            url: "/integral/downloadIntegral",
+            async: false,
+            data: {
+                docId: id,
+                ruleCode: 'download'
+            },
+            success: function (data) {
+                if (data.status == "1") {
+                    var index2 = parent.layer.confirm('下载文件将扣除'+data.integral+'积分，是否确认下载？', {
+                        icon: 3,
+                        title: '提示',
+                        skin:'download-info'
+                    }, function (index) {
+                        parent.layer.close(index2);
+                        var valid = true;
+                        $.ajax({
+                            url: "/integral/addIntegral",
+                            async: false,
+                            data: {
+                                docId: id,
+                                ruleCode: 'download'
+                            },
+                            success: function (data) {
+                                if (data != null) {
+
+                                    $("#num").html(data.msg)
+                                    if (data.msg == "积分不足") {
+                                        $(".integral .point").hide();
+                                        $(".integral .num").css({"width": "81px", "padding-top": "13px"})
+                                    }
+                                    $(".integral").show();
+                                    setTimeout(function () {
+                                        $(".integral .point").show();
+                                        $(".integral .num").css({"width": "36px", "padding-top": "0"})
+                                        $(".integral").hide();
+
+                                    }, 2000)
+
+                                    if (data.integral == 0) {
+                                        valid = false;
+                                    }
+                                }
+                            }
+                        });
+                        if (valid) {
+
+
+
+                                    $.ajaxFileUpload({
+                                        url: "/files/fileDownNew?docIds=" + id,
+                                        type: "post",
+                                        async: false,
+                                    });
+
+                        }
+                    })
+                } else {
+                    var valid = true;
+                    $.ajax({
+                        url: "/integral/addIntegral",
+                        async: false,
+                        data: {
+                            docId: id,
+                            ruleCode: 'download'
+                        },
+                        success: function (data) {
+                            if (data != null) {
+
+                                $("#num").html(data.msg)
+                                if (data.msg == "积分不足") {
+                                    $(".integral .point").hide();
+                                    $(".integral .num").css({"width": "81px", "padding-top": "13px"})
+                                }
+                                $(".integral").show();
+                                setTimeout(function () {
+                                    $(".integral .point").show();
+                                    $(".integral .num").css({"width": "36px", "padding-top": "0"})
+                                    $(".integral").hide();
+
+                                }, 2000)
+
+                                if (data.integral == 0) {
+                                    valid = false;
+                                }
+                            }
+                        }
+                    });
+                    if (valid) {
+
+                                $.ajaxFileUpload({
+                                    url: "/files/fileDownNew?docIds=" + id,
+                                    type: "post",
+                                    async: false,
+                                });
+                                /*
+                                 * $.ajaxFileUpload({ url:"/files/fileDownNew", type:"post", data:{
+                                 * docName:name, fileIds:id, } });
+                                 */
+
+
+
+
+                    }
+                }
+            }
+        })
+
+    }
+</script>
+    <style>
+        .component-top{max-width: 500px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display: block;float: left;}
+        .component-state{float: left;display: block;line-height: 20px;margin-top: 2px;margin-left: 8px;}
+        .list-title a:hover{
+            text-decoration: underline!important;
+        }
+        .reject-btn {
+            background: #fff url(../../../../../static/img/icon-reject.png) no-repeat left 15px center !important;
+            padding-left: 35px;
+            padding-right: 15px;
+            height: 30px;line-height: 30px;
+            background-size: 16px auto !important;
+            border: #fc3f3f solid 1px !important;
+            color: #fc3f3f !important;
+            margin-right: 9px;
+            border-radius: 15px !important;width: 72px}
+        .reject-btn:hover{ width: 72px;
+            height: 30px;line-height: 30px;
+            background: #fc3f3f url(../../../../../static/img/icon-reject-1.png) no-repeat left 15px center !important;
+            background-size: 16px auto !important;color:#fff !important;border-radius: 15px !important;}
+        .pass-btn {
+            background: #fff url(../../../../../static/img/icon-pass.png) no-repeat left 15px center !important;
+            padding-left: 35px;
+            padding-right: 15px;
+            height: 30px;line-height: 30px;
+            background-size: 16px auto !important;
+            border:#5aa3ff solid 1px !important;
+            color: #5aa3ff !important;
+            margin-right: 9px;
+            border-radius: 15px !important;width: 72px}
+        .pass-btn:hover{ width: 72px;
+            height: 30px;line-height: 30px;
+            background: #5aa3ff url(../../../../../static/img/icon-pass-1.png) no-repeat left 15px center !important;
+            background-size: 16px auto !important;color:#fff !important;border-radius: 15px !important;}
+    </style>
+</head>
+
+<body>
+
+<div class="weadmin-body ">
+    <div class="title-box">
+        <input type="text" id="isShare" name="isShare" hidden value="${isShare}" class="layui-input" style="display: none">
+        <input type="text" id="adminFlag" name="adminFlag" hidden value="${adminFlag}" class="layui-input" style="display: none">
+        <input type="text" id="adminFlag1" name="adminFlag1" hidden value="${adminFlag1}" class="layui-input" style="display: none">
+        <input type="text" id="orgId" name="orgId" hidden value="${orgId}" class="layui-input" style="display: none">
+        <input type="text" id="state" name="state" hidden value="${componentApply.componentState}" class="layui-input" style="display: none">
+        <input type="text" id="deptId" name="deptId" hidden value="${deptId}" class="layui-input" style="display: none">
+
+        <input type="text" id="componentId" name="componentId" hidden value="${componentId}" class="layui-input" style="display: none">
+        <input type="text" id="componentState" name="componentState" hidden value="${componentState}" class="layui-input" style="display: none">
+        <!--reject 驳回红色标签 pass其他 蓝色标签-->
+        <div class="title-img"><span  class="component-top"  title="${componentApply.componentName}">${componentApply.componentName}</span>
+        @if(componentApply.componentState==3){
+       <span  style="border:#fc3f3f solid 1px;color:#FC3F3C" class="component-state reject">已驳回</span>
+        @}
+            @if(componentApply.componentState==0){
+            <span  style="border:1px solid #deedff;color:#3C91FD;" class="component-state"> 待审核</span>
+            @}
+            @if(componentApply.componentState==1){
+            <span style="border:1px solid #ffebcc;color:#FE9F11;"  class="component-state"> 待发布</span>
+            @}
+            @if(componentApply.componentState==2){
+            <span style="border:1px solid #def5eb;color:#82D8B3;"  class="component-state"> 已发布</span>
+            @}
+
+    </div>
+        <div class="docView">
+           <span class="info userImg"> ${componentApply.userName}</span>
+            <span class="info">${deptName}</span>
+            <span class="info">${componentTime}</span>
+            <!--<span class="info" id="viewer">${readNum}</span>-->
+        </div>
+        <div class="btn-div">
+            <a id="shareBtn" style="display: none" ><span class="pdfBtn"><i class="layui-icon">&#xe641;</i>分享</span></a>
+            <button class="layui-btn layui-btn-radius pass-btn" style="display: none">通过</button>
+            <button class="layui-btn layui-btn-radius reject-btn"  style="display: none">驳回</button>
+
+        </div>
+    </div>
+    <div class="layui-form con-box" >
+        <div class="con-item">
+            <div class="div-title">基本信息</div>
+            <div class="item-info layui-row" >
+                <div class="layui-col-xs6">
+                    <span class="font">成果名称：</span>
+                    <span id="name">${componentApply.componentName}</span>
+                </div>
+
+                <div class="layui-col-xs6">
+                    <span class="font">应用场景：</span>
+                    <span>${componentApply.componentRange}</span>
+                </div>
+                <div class="layui-col-xs6 layui-6s">
+                    <span class="font">成果分类：</span>@if(componentApply.componentType == 0){
+                    技术组件
+                    @}else{
+                    解决方案
+                    @}
+                </div>
+                <div class="layui-col-xs6 layui-6s">
+                    <span class="font">成果来源：</span>@if(componentApply.componentOrigin == 0){
+                    项目开发
+                    @}else{
+                    技术预研
+                    @}
+                </div>
+                <div class="layui-col-xs6">
+                    <span class="font">关键词：</span>
+                    @if(componentApply.tags==null||componentApply.tags==""){
+
+                    <span style="color: #999999;font-size: 14px">
+                        暂无信息
+                    </span>
+
+                    @}else{
+                    <span>${componentApply.tags}</span>
+                    @}
+
+                </div>
+            </div>
+        </div>
+        <div class="con-item">
+            <div class="div-title" >成果描述</div>
+            @if(componentApply.componentDesc==""||componentApply.componentDesc==null){
+
+            <div class="div-null">
+                    <span class="span-null">
+                        内容为空
+                    </span>
+            </div>
+
+            @}else{
+            <div class="div-desc editor-img" >
+                <p>${componentApply.componentDesc}</p>
+            </div>
+            @}
+
+        </div>
+        <div class="con-item div-accessor">
+            @if(listSize!=0){
+            <div class="div-title">附件</div>
+
+           <!-- <div class="div-null">
+                    <span class="span-null">
+                        无附件
+                    </span>
+            </div>-->
+
+            <div class="annex">
+                <div class="annex-title"><span>附件（${listSize}个）</span></div>
+                <ul class="accessor-list">
+                    @for(doc in componentList){
+                    <li class="attachment-list">   @if(doc.attachmentType == '0'){
+                        <div class="list-top">成果代码</div>
+                        @}else if(doc.attachmentType == '1'){
+                        <div class="list-top">配置说明</div>
+                        @}else if(doc.attachmentType == '2'){
+                        <div class="list-top">使用说明</div>
+                        @}else if(doc.attachmentType == '3'){
+                        <div class="list-top">成果demo</div>
+                        @}else{
+                        <div class="list-top">其他文档</div>
+                        @}
+                        <a href="javascript:void (0)"  style="cursor: default" class="accessory">
+                        @if(doc.fileType == 'folder'){
+                        <img  src="${ctxPath}/static/resources/img/fsfile/folder_member.png">
+                        @}else if(doc.fileType == '.doc'||doc.fileType == '.docx'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/word.png">
+                        @}else if(doc.fileType == '.txt'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/txt.png">
+                        @}else if(doc.fileType == '.ppt'||doc.fileType == '.pptx'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/ppt.png">
+                        @}else if(doc.fileType == '.pdf'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/pdf.png">
+                        @}else if(doc.fileType == '.ceb'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/ceb.png">
+                        @}else if(doc.fileType == '.mp3'||doc.fileType == '.real'||doc.fileType == '.cd'||doc.fileType == '.ogg'||doc.fileType == '.asf'||doc.fileType == '.wav'||doc.fileType == '.ape'||doc.fileType == '.module'||doc.fileType == '.midi'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/music.png">
+                        @}else if(doc.fileType == '.mp4'||doc.fileType == '.avi'||doc.fileType == '.avi'||doc.fileType == '.wma'||doc.fileType == '.rmvb'||doc.fileType == '.rm'||doc.fileType == '.flash'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/video.png">
+                        @}else if(doc.fileType == '.xls'||doc.fileType == '.xlsx') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/excel.png">
+                        @}else if(doc.fileType == '.png'||doc.fileType == '.jpeg'||doc.fileType == '.gif'||doc.fileType == '.jpg'){
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/pic.png">
+                        @}else if(doc.fileType == '.bmp') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/bmp.png">
+                        @}else if(doc.fileType == '.psd') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/psd.png">
+                        @}else if(doc.fileType == '.html') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/html.png">
+                        @}else if(doc.fileType == '.exe') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/exe.png">
+                        @}else if(doc.fileType == '.zip'||doc.fileType == '.rar') {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/rar.png">
+                        @}else {
+                        <img  src="${ctxPath}/static/resources/img/front/file-iconNew/other.png">
+                        @}
+                        <div class="list-text">${doc.attachmentName}</div>
+                    </a>
+                        <div class="list-title"><span>
+                            <a href="javascript:void(0)" onclick="showPdfComponent('${doc.attachmentId}','${doc.attachmentName}','${doc.attachmentName}')">预览</a></span>
+                            <span><a href="javascript:void(0)" onclick="downloadComponent('${doc.attachmentId}')">下载</a></span>
+
+                        </div>
+                    </li>
+                    @}
+
+                </ul>
+
+            </div>
+            @}
+
+
+        </div>
+
+        <div class="con-item" id="audit" style="display: none;">
+            <div class="div-title" >审核意见</div>
+
+            <div class="item-body">
+                <ul class="examine-list">
+                    <li>
+                        <div class="examine-top">
+                            部门意见
+                            @if(componentApply.returnReasons == ""||componentApply.returnReasons == null){
+                            @}else{
+                            @}
+                        </div>
+                        <div class="examine-dec">
+                            @if(componentApply.returnReasons == ""||componentApply.returnReasons == null){
+                            <div class="lefts"></div><div class="middles" style="line-height: 40px" >暂无</div><div class="rights"></div>
+                            @}else{
+                            <div class="lefts"></div><div class="middles"><div class="title-set" title="${componentApply.returnReasons}"><span>${componentApply.returnReasons}</span></div></div> <div class="rights"></div>
+                            @}
+                        </div>
+                    </li>
+                    <li>
+                        <div class="examine-top">
+                            委员会意见
+                            @if(componentApply.returnReasonsWyh == ""||componentApply.returnReasonsWyh == null){
+                            @}else{
+                            @}
+                        </div>
+                        <div class="examine-dec">
+                            @if(componentApply.returnReasonsWyh == ""||componentApply.returnReasonsWyh == null){
+                            <div class="lefts"></div><div class="middles" style="line-height: 40px">暂无</div><div class="rights"></div>
+                            @}else{
+                            <div class="lefts"></div><div class="middles" ><div class="title-set" title="${componentApply.returnReasonsWyh}"><span>${componentApply.returnReasonsWyh}</span></div></div> <div class="rights"></div>
+                            @}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        @if(adminFlag1 == 7){
+        <div class="con-item">
+            <div class="div-title" >委员评价</div>
+            @if(componentApply.appraise==""||componentApply.appraise==null){
+
+            <div class="div-null">
+                        <span class="span-null">
+                            内容为空
+                        </span>
+            </div>
+
+            @}else{
+            <div class="div-desc editor-img" >
+                <p>${componentApply.appraise}</p>
+            </div>
+            @}
+
+        </div>
+    @}
+        <div>
+            @if(multiplexListSize!=0){
+
+            <div class="div-title" >被复用情况</div>
+            <table class="layui-table">
+                <colgroup>
+                    <col >
+                    <col width="200">
+                    <col width="150">
+                </colgroup>
+              <!--  <thead>
+                <tr>
+                    <th style="text-align: center">复用项目</th>
+                    <th style="text-align:center">项目部门</th>
+                    <th style="text-align:center">项目负责人</th>
+                </tr>
+                </thead>-->
+                <tbody>
+                @for(mul in multiplexList){
+
+                @if(mul.projectName==""||mul.projectName==null){
+                暂无
+                @}else{
+
+                <tr>
+                    <td style="text-align:left"><div class="rows">${mul.projectName}</div><div class="rows"><span>${mul.userName} </span> <span>${mul.deptName} </span><span>${mul.createTime,dateFormat="yyyy-MM-dd"}</span> </div></td>
+                </tr>
+                @}
+
+                @}
+
+
+
+                </tbody>
+            </table>
+            @}
+
+
+        </div>
+
+
+
+
+    </div>
+    <div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+</div>
+<!--<div class="bot-btns">
+    <button id="cancel" class="white-btn" lay-filter="cancel" type="button">返回</button>
+</div>-->
+
+
+<!--<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>-->
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/manager/componentmanager/js/componentView.js?v=${h_version}"></script>
+<script>
+</script>
+</body>
+</html>

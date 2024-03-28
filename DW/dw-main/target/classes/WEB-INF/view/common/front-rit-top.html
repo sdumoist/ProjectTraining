@@ -1,0 +1,69 @@
+<div class="btn-rit">
+
+    <a href="${ctxPath}/personalcenter?toUpload=true" target="_blank">
+        上传文件
+    </a>
+
+</div>
+<ul class="btn-rit-bottom"><!---->
+    @if(session.contactShow == '1'){
+    <li>
+        <div class="phone rit-item"></div>
+        <label>电话：18560195621</label>
+    </li>
+    <li onclick="">
+        <a class="qq rit-item" href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank"></a>
+        <label class="phone-label"><a href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+            <!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    @}
+    @if(session.clientShow == '1'){
+    <li>
+        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端" class="pcDownload rit-item">
+        </a>
+        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank">点击下载客户端</a></label>
+    </li>
+    @}
+    <li>
+        <a href="javascript:show_feedback()" class="feedback rit-item"></a>
+        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+    </li>
+    <li id="goToTop" style=" margin-top: 8px;">
+        <div class="goToTop rit-item" ></div>
+    </li>
+</ul>
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function(){
+            if ($(window).scrollTop()>10){
+                $("#goToTop").show()
+            }
+            else
+            {
+                $("#goToTop").hide()
+            }
+        });
+
+    })
+    $("#goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn(){
+            var oTop = document.body.scrollTop || document.documentElement.scrollTop||$(document).scrollTop();
+            if(oTop > 0){
+                scrollTo(0,oTop-50);
+                timer = requestAnimationFrame(fn);
+            }else{
+                $("#goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+
+</script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>

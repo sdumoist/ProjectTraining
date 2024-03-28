@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.professional.dao.ProfessionalMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.professional.model.Professional">
+        <id column="ID" property="id" />
+        <result column="User_ID" property="userId" />
+        <result column="User_Name" property="userName" />
+        <result column="major" property="major" />
+        <result column="major_ID" property="majorId" />
+        <result column="show_order" property="showOrder" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID AS id, User_ID AS userId, User_Name AS userName, major AS major, major_ID AS majorId, show_order AS showOrder
+    </sql>
+
+
+    <!--列表查询-->
+    <select id="professionalList" resultType="com.jxdinfo.doc.manager.professional.model.Professional">
+        SELECT
+        ID AS id,
+        User_ID AS userId,
+        User_Name AS userName,
+        major AS major,
+        major_ID AS majorId,
+        show_order AS showOrder
+        FROM
+        qa_professional a
+        WHERE 1=1
+        <if test="userName != ''and userName != null">
+            AND a.User_Name LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="majorId != ''and majorId != null">
+            AND a.major_ID = #{majorId}
+        </if>
+        ORDER BY a.show_order
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+    <!--列表总条数-->
+    <select id="getProfessionalListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        qa_professional a
+        WHERE
+        1=1
+        <if test="userName != ''and userName != null">
+            AND a.User_Name LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="majorId != ''and majorId != null">
+            AND a.major_ID = #{majorId}
+        </if>
+    </select>
+
+    <!--新增修改校验-->
+    <select id="operationJudge" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        qa_professional a
+        WHERE
+        a.major_ID = #{majorId}
+        <if test="id != ''and id != null">
+            AND a.ID != #{id}
+        </if>
+    </select>
+
+    <!--根据专业ID 获取数据 -->
+    <select id="getProfessionalByMojorId" resultType="com.jxdinfo.doc.manager.professional.model.Professional">
+        SELECT
+            ID AS id,
+            User_ID AS userId,
+            User_Name AS userName,
+            major AS major,
+            major_ID AS majorId,
+            show_order AS showOrder
+        FROM
+          qa_professional a
+        WHERE
+          a.major_ID = #{majorId}
+    </select>
+
+</mapper>

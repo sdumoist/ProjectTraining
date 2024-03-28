@@ -1,0 +1,40 @@
+<!-- jstree样式 -->
+<link rel="stylesheet" href="${ctxPath}/static/assets/lib/jsTree/style.min.css?v=${h_version}">
+<link rel="stylesheet" href="${ctxPath}/static/assets/lib/zTree/css/zTreeStyle.css?v=${h_version}">
+<link rel="stylesheet" href="${ctxPath}/static/assets/lib/layui2.5.5/css/layui.css?v=${h_version}">
+<link rel="stylesheet" href="${ctxPath}/static/assets/lib/layui2.5.5/css/modules/layer/default/layer.css?v=${h_version}">
+<link rel="stylesheet" href="${ctxPath}/static/css/hussar_font.css?v=${h_version}">
+<link rel="stylesheet" href="${ctxPath}/static/css/hussar.css?v=${h_version}"><!--公共layui覆盖样式-->
+<link rel="shortcut icon" href="${ctxPath}/static/favicon.ico" type="image/x-icon" />
+<!--公共样式-->
+<link href="${ctxPath}/static/resources/css/front/base.css?v=${h_version}" type="text/css" rel="stylesheet">
+<link href="${ctxPath}/static/resources/css/front/common.css?v=${h_version}" type="text/css" rel="stylesheet">
+<link href="${ctxPath}/static/doc/css/backstage.css?v=${h_version}" type="text/css" rel="stylesheet">
+@if(tool.isEmpty(session.theme)){
+<link rel="stylesheet" href="${ctxPath}/static/css/themes/default/hussar.css?v=${h_version}">
+@}else{
+<link rel="stylesheet" href="${ctxPath}/static/css/themes/blue/hussar.css?v=${h_version}">
+@}
+<!-- 自定义layui模块 -->
+<script type="text/javascript">
+    hussar_path="${ctxPath}";
+    theme = "${session.theme}";
+    tips = "${tips}";
+    spr = "${spr}";
+    puy =  "${puy}";
+    signOpen = "${signOpen}";
+    pk =  "${publicKey}";
+    securityType =  "${securityType}";
+    hmUrl = "${hmUrl}";
+</script>
+<script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/common/decode.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/common/SMEncrypt.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/common/jsencrypt.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/common/hussar_skin.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/constants.js"></script>
+<script src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js?v=${h_version}" type="text/javascript" charset="utf-8"></script>
+@if(tool.contains(hmUrl,"dd4d64830a")){
+<script src="${ctxPath}/static/js/common/hm.js?v=${h_version}"></script>
+@}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>置顶文件维护</title>
+    @include("/common/plugins.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <style>
+        .layui-table-tips-main{display:none}
+        .layui-table-tips-c{display:none}
+        .layui-layer-btn.layui-layer-btn-{text-align: center !important;}
+        .layui-form-switch {
+            width: 60px!important;
+            float: left;
+        }
+        .buttonState{
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+        .search{
+            width: 135px!important;
+        }
+        .layui-layer-dialog .layui-layer-padding {
+            text-align: center!important;
+        }
+        .layui-layer-dialog .layui-layer-content .layui-layer-ico {
+            left: 85px!important;
+        }
+        .layui-table-grid-down{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <input id="saveType" type="hidden">
+        <form class="layui-form clearfix" action="" id="searchForm">
+            <div class="layui-form-item clearfix">
+                <div class="layui-input-inline search">
+                    <input type="text" id="title" name="title" placeholder="请输入成果名称" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-input-inline search">
+                    <select class="layui-select" id="deptName" name="rType" lay-filter="deptName">
+
+
+
+                    </select>
+                </div>
+                <div class="layui-input-inline search">
+                    <select class="layui-select" id="componentType" name="rType" lay-filter="componentType">
+                        <option value="" selected>请选择成果分类</option>
+                       <!-- <option value="0">技术组件</option>
+                        <option value="1">解决方案</option>-->
+                    </select>
+                </div>
+                <div class="layui-input-inline search">
+                    <select class="layui-select" id="componentOrigin" name="rType" lay-filter="componentOrigin">
+                        <option value="" selected>请选择成果来源</option>
+                        <!--<option value="0">项目开发</option>
+                        <option value="1">技术预研</option>-->
+                    </select>
+                </div>
+                <div class="layui-input-inline search">
+                    <select class="layui-select" id="componentState" name="rState" lay-filter="componentState">
+                        <option value="" selected>请选择状态</option>
+                        <!--<option value="0">待审核</option>
+                        <option value="1">待发布</option>
+                        <option value="2">已发布</option>
+                        <option value="3">已驳回</option>-->
+                    </select>
+                </div>
+                <div class="layui-input-inline search">
+                    <select class="layui-select" id="awardType" name="rState">
+                        <option value="" selected>请选择奖项</option>
+                        <option value="1">无</option>
+                        <option value="2">发布奖</option>
+                        <option value="3">复用奖</option>
+                        <option value="4">发布奖,复用奖</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline" style="width: 80px">
+                    <button class="layui-btn" data-type="reload" id="searchBtn" type="button"><i
+                            class="layui-icon">&#xe615;</i>查询
+                    </button>
+                </div>
+
+
+
+                <div class="fr">
+                    <button type="button" class="layui-btn" id="setAwards" data-type="setAwards"><i
+                            class="layui-icon">&#xe620;</i>奖项设置
+                    </button>
+                </div>
+                <!-- <button type="button" class="layui-btn" id="sendToJQX" data-type="sendToJQX"><i class="layui-icon">&#x1007;</i>推送至金企信
+                 </button>-->
+
+            </div>
+        </form>
+        <div class="tableBox">
+            <table class="layui-table" id="topicList" lay-filter="topicList"></table>
+        </div>
+    </div>
+</div>
+<div id="awardsDiv" style="display: none;text-align:right">
+    <div class="popup layui-popup">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                    <label class="layui-form-label buttonState">
+                        设为发布奖
+                    </label>
+                    <div class="layui-input-inline buttonInline">
+                        <input width="300px" type="checkbox" name="publishFlag" lay-filter="publishFlag" lay-skin="switch" lay-text="是|否">
+                    </div>
+            </div>
+            <div class="layui-form-item">
+                    <label class="layui-form-label buttonState">
+                        设为复用奖
+                    </label>
+                    <div class="layui-input-inline buttonInline">
+                        <input width="300px" type="checkbox" name="collectFlag" lay-filter="collectFlag" lay-skin="switch" lay-text="是|否">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="state">
+    {{# if (d.componentState == "0") {}}
+    待审核
+    {{# }  if (d.componentState == "1") {}}
+    待发布
+    {{# }  if (d.componentState == "2") {}}
+    已发布
+    {{# }  if (d.componentState == "3") {}}
+    已驳回
+    {{# } }}
+</script>
+<script type="text/html" id="type">
+    {{# if (d.componentType == "0") {}}
+    技术组件
+    {{# }  if (d.componentType == "1") {}}
+    解决方案
+    {{# } }}
+</script>
+<script type="text/html" id="showTpl">
+    {{getTopicShow(d.topicShow)}}
+</script>
+<script type="text/html" id="origin">
+    {{# if (d.componentOrigin == "0") {}}
+    项目开发
+    {{# }  if (d.componentOrigin == "1") {}}
+    技术预研
+    {{# } }}
+</script>
+<script type="text/html" id="awards">
+    {{# if (d.publishFlag == "1" && d.collectFlag != "1") {}}
+    发布奖
+    {{# } else if (d.publishFlag != "1" && d.collectFlag == "1") {}}
+    复用奖
+    {{# } else if (d.publishFlag == "1" && d.collectFlag == "1") {}}
+    发布奖,复用奖
+    {{# } else {}}
+    无
+    {{# } }}
+</script>
+<script type="text/html" id="createTime">
+    {{#
+    var fn = function(data){
+    return data.substring(0,10);
+    };
+    }}
+    {{# if (d.createTime != null && d.createTime.length > 10) { }}
+    {{ fn(d.createTime) }}
+    {{# } }}
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs demo-reload {{d.option == '2' ? '' : 'layui-hide'}}" lay-event="reload">重传</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger {{d.option == '1' ? 'layui-hide' : ''}}" lay-event="delete">删除</a>
+    <a href="javascript:" lay-event="moveup" class="layui-btn layui-btn-xs ">上移</a>
+    <a href="javascript:" lay-event="movedown" class="layui-btn layui-btn-xs">下移</a>
+    <a href="javascript:" lay-event="movetop" class="layui-btn layui-btn-xs">置顶</a>
+    <a href="javascript:" lay-event="movebottom" class="layui-btn layui-btn-xs">置底</a>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/componentmanager/js/component_list_all.js?v=${h_version}"></script>
+</body>
+</html>

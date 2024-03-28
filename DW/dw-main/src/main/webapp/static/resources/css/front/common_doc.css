@@ -1,0 +1,39 @@
+.confirm-class .layui-layer-btn .layui-layer-btn1{
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222;
+    padding: 0;
+    text-align: center;
+}
+/*取消*/
+.confirm-class .layui-layer-btn .layui-layer-btn0 {
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    padding: 0;
+    text-align: center;
+    float: right;
+}
+/*button#saveBtn{background:#27b7b0 !important;float: none !important;}*/
+@media screen and (min-width:700px) and (max-width:1366px) {
+    .confirm-class .layui-layer-btn .layui-layer-btn1{
+        width:64px;
+        height:26px;
+        line-height: 25px;
+    }
+    /*取消*/
+    .confirm-class .layui-layer-btn .layui-layer-btn0 {
+        width: 64px;
+        height: 26px;
+        line-height: 25px;
+    }
+
+}

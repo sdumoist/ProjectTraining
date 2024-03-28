@@ -1,0 +1,30 @@
+@charset "UTF-8";
+/**
+ * @ClassName: fileUpload.css
+ * @Description: 上传页面样式表
+ * @Author: lx
+ * @Date: 2018-02-01
+ */
+
+.form-box{background: #fff; padding: 15px 10px; border-radius: 6px;margin: 0}
+.label-text{width: 70px;text-align: right}
+.need{color: #c22e1d;line-height: 20px;font-size: 14px}
+.form-control{height: 20px;width: 380px!important;border: 1px solid #d7d7d7;padding: 0 8px; }
+#brief{width:875px!important}
+.form-inline{margin-bottom: 14px}
+.file-preview {width: 940px;margin: 0 auto 14px}
+.file-caption-main{width: 940px;margin: auto;}
+.file-caption{ margin-left: 10px;width: 850px!important;}
+.btn-file{height: 20px;padding: 0 18px; font-size: 12px;line-height:20px;background: #0b7be0;border: 0;}
+/* 模拟下拉框 */
+#category1{position: absolute;top: 21px;left: 89px;width: 95px;padding: 6px;z-index: 1000;background: #fff; border: 1px solid #d5d5d5; border-radius: 0 0 6px 6px;float:left;overflow-y: scroll;}
+#category2{position: absolute;top: 21px;left: 184px;width: 95px;padding: 6px;z-index: 1000;background: #fff; border: 1px solid #d5d5d5; border-radius: 0 0 6px 6px;float:left;overflow-y: scroll;}
+#category3{position: absolute;top: 21px;left: 279px;width: 95px;padding: 6px;z-index: 1000;background: #fff; border: 1px solid #d5d5d5; border-radius: 0 0 6px 6px;float:left;overflow-y: scroll;}
+#category4{position: absolute;top: 21px;left: 374px;width: 95px;padding: 6px;z-index: 1000;background: #fff; border: 1px solid #d5d5d5; border-radius: 0 0 6px 6px;float:left;overflow-y: scroll;}
+.p_enter{  background: #316AC5; color: white;  }
+.input-group-btn{position: absolute;right: 0}
+.input-group-btn button{padding: 0 10px;background: #0b7be0;color: #fff;border: 0}
+.file-error-message{position: absolute; width: 880px;opacity: .95;z-index: 10000}
+.previewNum{
+    width: 60px;
+}

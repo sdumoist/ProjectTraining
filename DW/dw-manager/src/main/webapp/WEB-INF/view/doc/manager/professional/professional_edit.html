@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        button#saveBtn{background: #27b7b0 !important;float: none;border:1px solid #27b7b0 !important;}
+    </style>
+</head>
+
+<body style="height: 100%">
+<div class="weadmin-body" style="height: 100%;">
+    <div class="layui-form" style="height: calc(100% - 80px);">
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>专业
+                </label>
+                <div class="layui-input-inline">
+                    <hussar:select id="majorId" name="majorId" dicType="professional" selected="${item.majorId}"  placeholder="" ></hussar:select>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="id" name="id" value="${item.id}" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                专职
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <input type="hidden" id="userId" name="userId" value="${item.userId}" >
+                <textarea id="userName" name="userName"   class="layui-textarea" readonly>${item.userName}</textarea>
+            </div>
+        </div>
+        <!-- 人员树 -->
+        <div id="employeeTreeDiv" style="display: none;"  class="formmargin">
+            <div class="layui-input-inline personSearch">
+                <input id="personSearch" placeholder="请输入你想查询的专职" class="layui-input" style="width: 283px;">
+            </div>
+            <div class="search-results"></div>
+            <div id="showEmployeeTree" class="jsTree"></div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/professional/professional_info.js?v=${h_version}"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>空间管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/groupmanager/css/group_view.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+<div class="background">
+    <div class="content">
+        <div class="layui-col-md3 layui-col-sm3 con-full-l leftArea">
+            <div class="pims-tree">
+                <div class="layui-form-item con-full-l" >
+                    <div class="layui-input-inline search" style="display:none;">
+                        <input type="text" id="txtIndustryArea" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--添加检索结果-->
+                <div class="search-results"></div>
+                <div id="roleInfo" class="tree-box">
+                    <div id="powerTree" class="jsTree" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg">
+                <div class="layui-form-item clearfix">
+
+                    <div class="search-wrapper">
+                        <input class="layui-input" id="searchName" placeholder="请输入人员名称" value="">
+                        <button class="layui-btn"  id="searchBtn"><i class="layui-icon">&#xe615;</i>查询</button>
+                    </div>
+                    <div class="toolBar">
+                        <input  type="hidden" class="hide"  id="usersId" >
+                        <input  type="hidden" class="hide"  id="groupId" >
+                        <input  type="hidden" class="layui-input"  id="isSort" >
+                        <input  type="hidden" class="hide"  id="groupName">
+                    </div>
+                </div>
+                <div class="weadmin-body tableBox empStatisTables">
+                    <table class="layui-table" id="groupList" lay-filter="groupList"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/doc/manager/statistics/js/empStatistics.js?v=${h_version}"></script>
+</body>
+</html>

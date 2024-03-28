@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="dw-main:war">
+    <output-path>$PROJECT_DIR$/dw-main/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>dw-main</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="dw-main-2.5.0.war">
+      <element id="artifact" artifact-name="dw-main:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,118 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css"  href="${ctxPath}/static/doc/front/personalcenter/css/showOther.css?v=${h_version}"/>
+    <style>
+        body#top .container-new {margin-top: 0;height: calc(100% - 50px);overflow: hidden}
+        #search,#user-message{
+            display: none
+        }
+        #title{
+            margin-top: 10px;
+        }
+        .btn-div{
+            top: 8px !important;
+        }
+    </style>
+</head>
+<body id="top">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-header_new2.html"){}
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="fileTypeValue" value="${fileType}"/>
+<input type="hidden" class="hide" id="docId" value="${id}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<input type="text" class="hide" style="opacity: 0" id="username" value="${userName}"/>
+<input type="hidden" class="hide" id="showType" value="${showType}"/>
+
+
+<div class="container-new container-pdf" id="container-pdf">
+    <div class="container">
+<!--        <div class="breadCrumbs">-->
+<!--            <div style="overflow: hidden"><div class="pathes" style="margin-left: 0!important;"></div></div>-->
+<!--            <i class="layui-icon control-btn-r">&#xe602;</i>-->
+<!--        </div>-->
+        <div id="title" class="viewTitle"></div>
+        <div class="docView">
+            <span class="textOver" id="owner"></span>
+            <span class="textOver" id="uploadTime"></span>
+            <span class="textOver" id="fileSize"></span>
+            <span class="textOver" id="downloadNum"></span>
+            <span class="textOver" id="previewNum"></span>
+        </div>
+        <div class="doc-desc">
+            <span id="docAbstract"></span>
+        </div>
+    </div>
+    <div class="btn-div">
+        <a id="collectionToFolder">
+            <button type="button" class="favoriteBtn pdfBtn"><i class="iconfont"></i></button>
+            <div class="btn-message">收藏</div>
+        </a>
+        <a id="cancelCollection" style="display:none" title="取消收藏">
+            <button type="button" class="favoriteBtn pdfBtn"><i class="iconfont"></i></button>
+            <div class="btn-message">已收藏</div>
+        </a>
+        <a id="dowLoadButton" style="display:none">
+            <button type="button" class="downloadBtn pdfBtn"><i class="iconfont"></i></button>
+            <div class="btn-message">下载</div>
+        </a>
+
+        <!--        <a id="collection" style="display:none" title="收藏">-->
+        <!--            <button type="button" class="favoriteBtn pdfBtn"><i class="iconfont">&#xe600;</i></button>-->
+        <!--            <div class="btn-message">收藏</div>-->
+        <!--        </a>-->
+
+        <!--        <a id="cancelCollection" style="display:none" title="取消收藏">-->
+        <!--            <button type="button" class="favoriteBtn pdfBtn"><i class="iconfont">&#xe658;</i></button>-->
+        <!--            <div class="btn-message">已收藏</div>-->
+        <!--        </a>-->
+
+        <a id="shareBtn">
+            <button type="button" class="favoriteBtn pdfBtn"><i class="iconfont"></i></button>
+            <div class="btn-message">分享</div>
+        </a>
+
+    </div>
+    <div class="content-bottom">
+        <div class="layui-row divtop container" style="height: 100%!important;overflow: hidden">
+            <div class="layui-col-sm12">
+                <div class="pdf-view">
+                    <div class="viewContent">
+                        <div class="pdf-content">
+                            此文档不支持预览
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @include("/common/front-footer.html"){}
+</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+
+<div id="filTree" style="display: none;overflow: auto" class="leftArea">
+    <div id="fileTree2" class="jsTree"></div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+    projectTitle = "${session.projectTitle}";
+</script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/jquery.mousewheel.min.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/previewunstruct/js/showOther.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+</html>

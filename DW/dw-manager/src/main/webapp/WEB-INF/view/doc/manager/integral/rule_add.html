@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>新增积分规则</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/manager/examination/css/sensitive_words.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/integral/css/rule_view.css?v=${h_version}">
+    <style>
+        button#saveBtn{ float: none; width: 56px;  background: #018cff!important;  border-color: #018cff!important;  color: #fff!important;  font-size: 12px!important;  margin: 0 5px!important;}
+        button#cancel {
+            border: 1px solid #018cff!important;
+            background: #fff!important;
+            color: #018cff!important;
+            font-size: 12px!important;
+            width: 56px !important;
+            margin: 0 5px!important;}
+    </style>
+</head>
+
+<body>
+<div class="weadmin-body">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>规则名称
+                </label>
+                <div class="layui-input-inline">
+                    <input id="ruleName" name="ruleName"   class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>规则编码
+                </label>
+                <div class="layui-input-inline">
+                    <input id="ruleCode" name="ruleCode"   class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>规则积分
+                </label>
+                <div class="layui-input-inline">
+                    <input id="ruleIntegral" name="ruleIntegral"   class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>每日上限
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" id="maxTimes" name="maxTimes" class="layui-input" min="0" placeholder="默认无上限">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                有效性
+            </label>
+            <div class="layui-input-inline">
+                <select id="valid" name="valid"   class="layui-select">
+                    <option value="1" selected>有效</option>
+                    <option value="0">无效</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                规则描述
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="ruleDes" name="ruleDes"   class="layui-textarea wider-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                备注
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="remark" name="remark"   class="layui-textarea wider-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">保存</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/integral/js/rule_add.js?v=${h_version}"></script>
+</body>
+</html>

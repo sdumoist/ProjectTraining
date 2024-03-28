@@ -1,0 +1,6 @@
+.search-type {margin: auto;text-align: center;padding: 0;color: #3E5B82;;}
+.search-type li{display: inline-block;margin-right: 6px;list-style-type:none;}
+.search-type li label{margin:0;font-weight:normal}
+.search-type li input{margin: 0 18px 0 0;vertical-align:text-bottom;width: 0;height: 15px;}
+.search-type li input:before{display: inline-block;content:"";width: 13px;height: 13px;background: url(../../img/front/index/radio.png)no-repeat center;}
+.search-type li input:checked:before{background: url(../../img/front/index/radio1.png)no-repeat center;}

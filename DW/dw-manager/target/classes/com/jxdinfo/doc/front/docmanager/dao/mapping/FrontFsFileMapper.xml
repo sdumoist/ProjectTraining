@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docmanager.dao.FrontFsFileMapper">
+    <select id="getFsFolderListBySuperAdmin" resultType="com.jxdinfo.doc.manager.foldermanager.model.FsFolder">
+        SELECT
+        f.folder_ID folderId,
+        f.folder_NAME folderName
+        FROM
+        fs_folder f
+        WHERE
+        f.parent_folder_id = #{id}
+        AND IFNULL(f.is_edit,'') !='1'
+        order by f.create_time
+    </select>
+
+    <select id="getInfo" parameterType="list" resultType="Map">
+        <!--SELECT
+        U.USER_NAME name,
+        W.DOWNLOAD_NUM downNum,
+        W.READ_NUM readNum,
+        W.doc_id fileId,
+        W.authority authority
+        FROM
+        doc_info W
+        LEFT JOIN sys_users U ON w.AUTHOR_ID = u.USER_ID
+        WHERE
+        W.doc_id IN
+         <if test="list != null and list.size() >0">
+	        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+	            #{idItem}
+	        </foreach>
+	     </if>-->
+        SELECT
+        U.USER_NAME name,
+        W.DOWNLOAD_NUM downNum,
+        W.READ_NUM readNum,
+        W.doc_id fileId,
+        CASE
+        WHEN W.author_id = #{userId} THEN
+        '2'
+        ELSE
+        T1.authority
+        END authority
+
+        FROM
+        (
+        SELECT
+        DOWNLOAD_NUM,
+        READ_NUM,
+        doc_id,
+        AUTHOR_ID,
+        authority
+        FROM
+        doc_info
+        WHERE
+        doc_id IN
+        <if test="list != null and list.size() >0">
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">#{idItem}
+            </foreach>
+        </if>
+        ) W
+        LEFT JOIN sys_users U ON w.AUTHOR_ID = u.USER_ID
+
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        org.ORGAN_ALIAS
+        FROM
+        sys_users users,
+        sys_stru org
+        WHERE
+        users.DEPARTMENT_ID = org.ORGAN_ID
+        AND users.USER_ID = #{userId}
+        )
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = W.doc_id
+    </select>
+
+    <select id="getNumByChildFloder" resultType="int">
+
+        SELECT
+        COUNT(*)
+        FROM
+        FS_Folder DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND parent_folder_id = #{id}
+        </if>
+
+
+    </select>
+</mapper>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>文档权限管理</title>
+    <link href="${ctxPath}/static/doc/css/hussarCover.css"  type="text/css" rel="stylesheet">
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/doc/manager/foldermanager/css/folderAuthority.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/authority_new.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-table-cell {
+            overflow: visible;
+        }
+        .layui-form-switch {
+            width: 30px;
+            margin-top: 7px;
+            margin-left: -11px;
+            height: 18px;
+        }
+        body .layui-table-tips .layui-layer-content{display: none!important;}
+        .layui-form-select dl{min-height: 92px}
+        .layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after{
+            border-bottom: 1px solid #3C91FD;
+        }
+        .layui-input:focus, .layui-textarea:focus {
+            border-color: #d1deed!important;
+        }
+        .layui-input:hover, .layui-textarea:hover {
+            border-color: #d1deed!important;
+        }
+        .layui-form-checked[lay-skin=primary] i {
+            border-color: #fff !important;
+            color: #fff;
+        }
+        .layui-table td, .layui-table th, .layui-table-fixed-r, .layui-table-header, .layui-table-page, .layui-table-tips-main, .layui-table-tool, .layui-table-view, .layui-table[lay-skin=line], .layui-table[lay-skin=row] {
+            border-width: 0 0 1px;
+        }
+        .layui-tab-title li{
+            transition: none;
+            -webkit-transition: none;
+            box-sizing: border-box;
+            height: 40px;
+            padding: 0;
+            margin: 0 14px;
+            min-width: auto;
+        }
+        .layui-form-checkbox[lay-skin="primary"] i{
+            line-height: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="weadmin-body">
+    <div class="layui-row authority-top">
+        <div class="layui-col-xs5 layui-col-sm5 layui-col-md5 pims-tree">
+            <div class="personSearch con-full-l">
+                <div class="layui-input-inline">
+                    @if(session.isRole==true){
+                    <input id="groupSearch" placeholder="请输入"  style="display:none;" class="layui-input">
+                    <input id="personSearch" placeholder="请输入"  style="display:none;"  class="layui-input">
+
+                    <input id="roleSearch" placeholder="请输入"  class="layui-input">
+                    @}
+                    @if(session.isRole!=true){
+                    <input id="groupSearch" placeholder="请输入"  style="display:none;" class="layui-input">
+                    <input id="personSearch" placeholder="请输入"    class="layui-input">
+
+                    <input id="roleSearch" placeholder="请输入" style="display:none;" class="layui-input">
+                    @}
+                </div>
+            </div>
+            <div class="layui-tab layui-tab-brief" lay-filter="navigate">
+                <ul class="layui-tab-title" >
+                    @if(session.isRole==true){
+                    <li class="layui-this" id="roleTab" style="text-align: center">角色</li>
+
+                    <li style="text-align: center">组织架构</li>
+                    <li id="roleMsg" style="text-align: center">群组</li>
+                    @}
+                    @if(session.isRole!=true){
+                    <li id="roleTab" style="text-align: center;display: none">角色</li>
+
+                    <li class="layui-this" style="text-align: center">组织架构</li>
+                    <li id="roleMsg" style="text-align: center">群组</li>
+                    @}
+                </ul>
+                <div class="layui-tab-content">
+                    @if(session.isRole==true){
+                    <div class="layui-tab-item layui-show three">
+                        <div class="roleTree" id="roleTree"></div>
+                    </div>
+
+                    <div class="layui-tab-item  one" lay-id="one">
+                        <div class="renThree" id="renTree"></div>
+                    </div>
+                    <div class="layui-tab-item  two" lay-id="two">
+                        <div class="qzTree" id="qzTree"></div>
+                    </div>
+                    @}
+                    @if(session.isRole!=true){
+                    <div class="layui-tab-item three">
+                        <div class="roleTree" id="roleTree"></div>
+                    </div>
+
+                    <div class="layui-tab-item  layui-show one" lay-id="one">
+                        <div class="renThree" id="renTree"></div>
+                    </div>
+                    <div class="layui-tab-item  two" lay-id="two">
+                        <div class="qzTree" id="qzTree"></div>
+                    </div>
+                    @}
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs7 layui-col-sm7 layui-col-md7">
+            <div class="rit-top">
+                <form class="layui-form" lay-filter="formFilter">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: auto">权限列表 <i class="iconfont green blue">&#xe60b;</i></label>
+                        <div class="layui-card popWin">
+                            <div class="layui-card-header">权限说明</div>
+                            <div class="layui-card-body">
+                                <table class="layui-table"  lay-skin="line">
+                                    <colgroup>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>权限</th>
+                                        <th>查看</th>
+                                        <th>上传</th>
+                                        <th>管理</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>可前台浏览</td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>可上传文件</td>
+                                        <td></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>可编辑个人文件</td>
+                                        <td></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>可编辑子目录</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>可编辑他人文件</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><i class="iconfont green blue">&#xe616;</i></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        @if(session.projectFlag==true){
+                        <label class="layui-form-label" style="width: auto;margin-left: -15px;">获取上级目录权限：</label>
+                        @}else{
+                        <label class="layui-form-label" style="width: auto;margin-left: -15px;">继承上级目录权限：</label>
+                        @}
+                        <div class="layui-input-inline">
+                            <input type="checkbox" id="parentAuthority" name="parentAuthority" lay-filter="parentAuthority" lay-skin="switch">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-btn" id="delBtn">批量移除</button>
+                </form>
+            </div>
+            <div class="rit-bot">
+                <table id="rit_table" lay-filter="demo"></table>
+            </div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <form class="layui-form" lay-filter="formFilter">
+            <div class="layui-form-item more-div" style="float: left" >
+                <input type="checkbox" id="allUser" name="allUser" lay-skin="primary" title="全体人员" lay-filter="allUser">
+            </div>
+        </form>
+        <div class="btn-div">
+            <button id="saveBtn" class="layui-btn">确定</button>
+            <button id="cancelBtn" class="layui-btn">取消</button>
+        </div>
+    </div>
+
+    <!-- 权限说明 -->
+    <form class="layui-form" lay-filter="formFilter" style="display: none" id="authority">
+        <div class="layui-row">权限说明</div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">权限</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">查看</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">上传</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">管理</div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">可前台浏览</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">**</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">可上传文件</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">可编辑个人文件</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">可编辑子目录</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="grid-demo">可编辑他人文件</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="grid-demo">11</div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="${ctxPath}/static/doc/manager/docmanager/js/authority_new.js?v=${h_version}"></script>
+<!--html代码-->
+<script type="text/html" id="barDemo">
+    <span class="delete" lay-event="del"></span>
+</script>
+<script type="text/html" id="operateType">
+    <select name="operateType" lay-filter="operateType">
+        <option value="0">查看</option>
+        <option value="1">上传</option>
+        <option value="2">管理</option>
+    </select>
+</script>
+<script type="text/html" id="name">
+    {{#  if(d.type == 0){ }}
+    <span class="people">{{ d.name }}</span>
+    {{#  } else if(d.type == 1 || d.type == 3){ }}
+    <span class="qz">{{ d.name }}</span>
+    {{#  }else if(d.type == 2){ }}
+    <span class="dept">{{ d.name }}</span>
+    {{#  }else{ }}
+    <span class="role">{{ d.name }}</span>
+    {{# } }}
+</script>
+</body>
+</html>

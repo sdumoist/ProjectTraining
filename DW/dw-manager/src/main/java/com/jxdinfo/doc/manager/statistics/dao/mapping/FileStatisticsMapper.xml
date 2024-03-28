@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.statistics.dao.FileStatisticsMapper">
+
+	<select id="getUserPreviewData" resultType="java.util.Map">
+		SELECT
+		FSFILE.AUTHOR_ID,SUM(YLCOUNT) AS YLSUM
+		FROM
+		(
+		SELECT
+		DOCLOG.RESOURCE_ID,
+		COUNT(DOCLOG.RESOURCE_ID) AS YLCOUNT
+		FROM
+		DOC_RESOURCE_LOG DOCLOG
+		WHERE
+		<if test="opType != null and opType != ''">
+			DOCLOG.OPERATE_TYPE = #{opType}
+			AND
+		</if>
+		DOCLOG.RESOURCE_TYPE = '0'
+		GROUP BY
+		DOCLOG.RESOURCE_ID
+		) AS T
+		INNER JOIN (
+		SELECT
+		FS_FILE.FILE_ID,
+		DOC_INFO.AUTHOR_ID,
+		FS_FILE.FILE_NAME
+		FROM
+		FS_FILE,
+		DOC_INFO
+		WHERE
+		FS_FILE.FILE_ID = DOC_INFO.FILE_ID
+		AND
+		DOC_INFO.VALID_FLAG = '1'
+		) FSFILE ON
+		FSFILE.FILE_ID = T.RESOURCE_ID
+
+		GROUP BY FSFILE.AUTHOR_ID
+
+		ORDER BY YLSUM
+		DESC
+
+		LIMIT 10
+	</select>
+
+	<select id="getDeptData" resultType="java.util.Map">
+		SELECT
+			@rownum := @rownum + 1 AS TEMPRANK,
+			@incrnum := CASE
+		WHEN @rowtotal = obj.YLSUM + 1 THEN
+			@incrnum
+		WHEN @rowtotal := obj.YLSUM + 1 THEN
+			@rownum
+		END AS FILERANK,
+		obj.*
+		FROM
+			(
+				SELECT
+			SYS_ORGAN.SHORT_NAME,
+			SYS_ORGAN.ORGAN_ID,
+			count(DOC_INFO.doc_id) AS YLSUM
+		FROM
+			DOC_INFO,
+			DOC_RESOURCE_LOG DOCLOG,
+			SYS_USERS,
+			SYS_ORGAN
+		WHERE
+		<if test="opType != null and opType != ''">
+			DOCLOG.OPERATE_TYPE = #{opType}	/*操作类型*/
+			AND
+		</if>		
+		AND DOCLOG.RESOURCE_TYPE = '0' 
+		AND DOC_INFO.AUTHOR_ID = SYS_USERS.USER_ID
+		AND SYS_USERS.DEPARTMENT_ID = SYS_ORGAN.ORGAN_ID
+		AND DOCLOG.RESOURCE_ID = DOC_INFO.DOC_ID
+		AND DOC_INFO.VALID_FLAG = '1'
+		GROUP BY
+			SYS_ORGAN.SHORT_NAME,
+			SYS_ORGAN.ORGAN_ID
+		ORDER BY
+			count(DOC_INFO.doc_id) DESC
+			)obj,
+			(
+				SELECT
+					@rownum := 0 ,@rowtotal := NULL ,@incrnum := 0
+			)r
+
+	</select>
+
+	<select id="getFileListData" resultType="java.util.Map">
+		SELECT
+		@ROWNUM := @ROWNUM + 1 AS TEMPRANK,
+		@INCRNUM := CASE
+		WHEN @ROWTOTAL = OBJ.YLCOUNT + 1 THEN
+		@INCRNUM
+		WHEN @ROWTOTAL := OBJ.YLCOUNT + 1 THEN
+		@ROWNUM
+		END AS FILERANK,
+		OBJ.*
+		FROM
+		(
+		SELECT
+		DOCINFO.TITLE,
+		DOCINFO.DOC_ID AS DOCID,
+		DOCINFO.DOC_TYPE AS DOCTYPE,
+		U.USER_NAME AS AUTHORNAME,
+		CONCAT(U.USER_NAME,'/',CASE WHEN O.SHORT_NAME = '' THEN '无' ELSE O.SHORT_NAME END) AS USERNAME,
+		COUNT(DOCLOG.RESOURCE_ID) AS YLCOUNT
+		FROM
+		(SELECT * FROM DOC_RESOURCE_LOG WHERE
+		<if test="opType != null and opType != ''">
+			OPERATE_TYPE = #{opType}	/*操作类型*/
+			AND
+		</if>
+		RESOURCE_TYPE = '0') DOCLOG,
+		(select * from DOC_INFO where VALID_FLAG = '1') DOCINFO,
+		SYS_USERS U,
+		SYS_ORGAN O,sys_stru
+		WHERE
+		DOCINFO.FILE_ID = DOCLOG.RESOURCE_ID
+		AND U.USER_ID = DOCINFO.AUTHOR_ID
+		AND  sys_stru.STRU_ID= U.DEPARTMENT_ID
+		and O.ORGAN_ID=sys_stru.ORGAN_ID
+		GROUP BY
+		DOCINFO.DOC_ID,
+		U.USER_NAME
+		ORDER BY
+		YLCOUNT desc,TITLE DESC
+		)OBJ,
+		(
+		SELECT
+		@ROWNUM := 0 ,@ROWTOTAL := NULL ,@INCRNUM := 0
+		)R
+	</select>
+
+	<!-- 用户上传排名 -->
+	<select id="getUserFileUploadData" resultType="java.util.Map">
+		SELECT
+			@ROWNUM := @ROWNUM + 1 AS TEMPRANK,
+			@INCRNUM := CASE
+		WHEN @ROWTOTAL = OBJ.FILENUM + 1 THEN
+			@INCRNUM
+		WHEN @ROWTOTAL := OBJ.FILENUM + 1 THEN
+			@ROWNUM
+		END AS FILERANK,
+		 OBJ.*
+		FROM
+			(
+				SELECT
+					COUNT(DOC_INFO.AUTHOR_ID) AS FILENUM,
+					DOC_INFO.AUTHOR_ID,
+					SYS_USERS.USER_NAME,
+					SYS_ORGAN.SHORT_NAME,jxd7_xt_headpicture.path
+
+				FROM
+					DOC_INFO
+					 LEFT JOIN  SYS_USERS on 	DOC_INFO.AUTHOR_ID = SYS_USERS.USER_ID
+          LEFT JOIN sys_stru on SYS_USERS.DEPARTMENT_ID = sys_stru.STRU_ID
+					   LEFT JOIN sys_organ on sys_stru.ORGAN_ID=sys_organ.ORGAN_ID
+        LEFT JOIN  jxd7_xt_headpicture on jxd7_xt_headpicture.userID = sys_users.EMPLOYEE_ID
+				WHERE
+ DOC_INFO.AUTHOR_ID != ''
+					AND DOC_INFO.AUTHOR_ID != 'wkadmin'
+					AND DOC_INFO.AUTHOR_ID != 'superadmin'
+				AND DOC_INFO.AUTHOR_ID IS NOT NULL
+				AND DOC_INFO.VALID_FLAG = '1'
+				AND  SYS_ORGAN.ORGAN_TYPE != '1'
+				GROUP BY
+					DOC_INFO.AUTHOR_ID
+				ORDER BY
+					FILENUM DESC
+				LIMIT 0,8
+			) OBJ,
+			(
+				SELECT
+					@ROWNUM := 0 ,@ROWTOTAL := NULL ,@INCRNUM := 0
+			) R
+	</select>
+	<select id="getOrigin" resultType="java.util.Map">
+
+		SELECT
+		T1.NAME AS NAME,
+		IFNULL(T2.PCNUM, 0) AS PCNUM,
+		IFNULL(T3.MOBILENUM, 0) AS MOBILENUM
+
+		FROM
+		(
+		SELECT
+		drl.OPERATE_TYPE,
+		CASE
+WHEN drl.OPERATE_TYPE = '3' THEN
+	'预览'
+WHEN drl.OPERATE_TYPE = '4' THEN
+	'下载'
+ELSE
+        '收藏'
+        END NAME
+		FROM
+		doc_resource_log drl where drl.OPERATE_TYPE!=0
+		GROUP BY 	NAME
+
+		) T1
+LEFT JOIN (
+		SELECT
+		drl.OPERATE_TYPE,COUNT(*) PCNUM
+
+			FROM
+		doc_resource_log drl where drl.origin is null and drl.OPERATE_TYPE AND
+		drl.OPERATE_TIME >= #{searchTime }
+	GROUP BY drl.OPERATE_TYPE
+
+		) T2 ON T1.OPERATE_TYPE = T2.OPERATE_TYPE
+LEFT JOIN (
+		SELECT
+		drl.OPERATE_TYPE,COUNT(*) MOBILENUM
+
+			FROM
+		doc_resource_log drl where drl.origin ='mobile' and drl.OPERATE_TYPE  AND
+		drl.OPERATE_TIME >= #{searchTime }
+	GROUP BY drl.OPERATE_TYPE
+
+		) T3 ON T1.OPERATE_TYPE = T3.OPERATE_TYPE
+		ORDER BY
+		 T1.OPERATE_TYPE
+</select>
+	<!-- 部门上传排名 -->
+	<select id="getDeptFileUploadData" resultType="java.util.Map">
+			SELECT
+			@ROWNUM := @ROWNUM + 1 AS TEMPRANK,
+			@INCRNUM := CASE
+		WHEN @ROWTOTAL = OBJ.FILENUM + 1 THEN
+			@INCRNUM
+		WHEN @ROWTOTAL := OBJ.FILENUM + 1 THEN
+			@ROWNUM
+		END AS FILERANK,
+		 OBJ.*
+		FROM
+			(
+				SELECT
+					SYS_ORGAN.SHORT_NAME,
+					COUNT(SYS_ORGAN.ORGAN_ID) AS FILENUM
+				FROM
+					DOC_INFO,
+					SYS_USERS,
+					SYS_ORGAN,
+sys_stru
+				WHERE
+					DOC_INFO.AUTHOR_ID = SYS_USERS.USER_ID
+				AND SYS_USERS.DEPARTMENT_ID = sys_stru.STRU_ID
+and sys_stru.ORGAN_ID=sys_organ.ORGAN_ID
+				AND DOC_INFO.VALID_FLAG = '1'
+				AND  SYS_ORGAN.ORGAN_TYPE != '1'
+				and DOC_INFO.user_id!='wkadmin' and DOC_INFO.user_id!='superadmin'
+				GROUP BY
+					SYS_ORGAN.ORGAN_ID
+				ORDER BY
+					FILENUM DESC
+				LIMIT 0,
+				8
+			) OBJ,
+			(
+				SELECT
+					@ROWNUM := 0 ,@ROWTOTAL := NULL ,@INCRNUM := 0
+			) R
+	</select>
+
+	<!--获取文件数量 -->
+	<select id="getFileNumData" resultType="string">
+	SELECT
+		count(1)
+	FROM
+		(
+			SELECT
+				USER_ID,
+				DATE_FORMAT(LOGIN_TIME, '%Y-%M-%D') AS A
+			FROM
+				SYS_ONLINE_HIST
+			WHERE
+				CORPORATION_ID IN (
+					SELECT
+				     ss.STRU_ID
+					FROM
+						SYS_ORGAN so  LEFT JOIN sys_stru ss on ss.ORGAN_ID = so.ORGAN_ID
+					WHERE
+						so.ORGAN_TYPE != '9'
+					AND so.ORGAN_ID != '5AA3D70B14F94A4486523C29DACB70DE'
+					AND so.IN_USE = '1'
+				)
+
+			GROUP BY
+				A,
+				USER_ID
+		) B1
+UNION ALL
+	SELECT
+		count(1)
+	FROM
+		(
+			SELECT
+				USER_ID,
+				DATE_FORMAT(LOGIN_TIME, '%Y-%M-%D') AS A
+			FROM
+				SYS_ONLINE_HIST
+			WHERE
+				CORPORATION_ID IN (
+					SELECT
+				     ss.STRU_ID
+					FROM
+						SYS_ORGAN so  LEFT JOIN sys_stru ss on ss.ORGAN_ID = so.ORGAN_ID
+					WHERE
+						so.ORGAN_TYPE != '9'
+					AND so.ORGAN_ID != '5AA3D70B14F94A4486523C29DACB70DE'
+					AND so.IN_USE = '1'
+				)
+				AND TO_DAYS(LOGIN_TIME) = TO_DAYS(NOW())
+			GROUP BY
+				A,
+				USER_ID
+		) B2
+	UNION ALL
+		SELECT
+			COUNT(1)
+		FROM
+			DOC_INFO
+		WHERE
+			VALID_FLAG = '1'
+		UNION ALL
+			SELECT
+				COUNT(1)
+			FROM
+				DOC_INFO
+			WHERE
+				TO_DAYS(CREATE_TIME) = TO_DAYS(NOW())
+			AND VALID_FLAG = '1'
+				UNION ALL
+		SELECT
+			COUNT(1)
+		FROM
+			doc_resource_log
+		WHERE
+			VALID_FLAG = '1' and OPERATE_TYPE='3'
+	UNION ALL
+		SELECT
+			COUNT(1)
+		FROM
+			doc_resource_log
+		WHERE
+			VALID_FLAG = '1' and OPERATE_TYPE='4'
+	</select>
+
+	<!-- 获取部门活跃度分析 -->
+	<select id="getDeptActive" resultType="java.util.Map">
+		SELECT
+		T1.SHORT_NAME AS NAME,
+		IFNULL(T2.NUM, 0) AS LOGINNUM,
+		IFNULL(T3.PREVIEWNUM, 0) AS PREVIEWNUM,
+		IFNULL(T4.DOWNLOADNUM, 0) AS DOWNLOADNUM
+		FROM
+		(
+		SELECT
+		SS.STRU_ID ORGAN_ID,
+		SO.SHORT_NAME
+		FROM
+		SYS_ORGAN SO
+   LEFT JOIN sys_stru SS ON SS.ORGAN_ID = SO.ORGAN_ID
+		WHERE
+		SO.ORGAN_TYPE != '9'
+		AND SO.ORGAN_ID NOT IN ('5AA3D70B14F94A4486523C29DACB70DE',
+								'35E0C4C0E3CF97496288B93FF365673B',
+								'4601A1D037C4E9DDCCA7945931F68205',
+								'849F959D16ED9809F0C31BEA77CE2F5A',
+								'BCBFD1CD6F7ED1FD6D3068E997319297',
+								'1F760521297BE4A08EC462BF46C6FBBA',
+								'7EA0D24D96AF81D1E1AB49FAEF5B5790',
+								'895411A283794A0E847BCD9E67B1FF24',
+								'5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+								)
+		AND SO.IN_USE = '1'
+		) T1
+		LEFT JOIN (
+		SELECT
+		COUNT(C.CORPORATION_ID) AS NUM,
+		C.SHORT_NAME AS NAME,
+		C.CORPORATION_ID
+		FROM
+		(
+		SELECT
+		DATE_FORMAT(LOGIN_TIME, '%Y-%M-%D') AS A,
+		USER_ID AS B,
+		HIST.CORPORATION_ID,
+		ORG.SHORT_NAME
+		FROM
+		SYS_ONLINE_HIST HIST
+    left JOIN SYS_STRU SS ON HIST.CORPORATION_ID = SS.STRU_ID
+		left JOIN SYS_ORGAN ORG ON SS.ORGAN_ID = ORG.ORGAN_ID
+   where  HIST.LOGIN_TIME >= #{searchTime }
+		GROUP BY
+		A,
+		USER_ID
+		) C
+		GROUP BY
+		C.CORPORATION_ID
+		) T2 ON T1.ORGAN_ID = T2.CORPORATION_ID
+		LEFT JOIN (
+		SELECT
+		USERS.DEPARTMENT_ID,
+		COUNT(1) PREVIEWNUM
+		FROM
+		DOC_INFO,
+		DOC_RESOURCE_LOG LOG
+		LEFT JOIN SYS_USERS USERS ON LOG.USER_ID = USERS.USER_ID
+		WHERE
+		LOG.OPERATE_TYPE = '3'
+		AND DOC_INFO.DOC_ID = LOG.RESOURCE_ID
+		AND DOC_INFO.VALID_FLAG = '1'
+       AND  LOG.OPERATE_TIME  >= #{searchTime }
+		GROUP BY
+		DEPARTMENT_ID
+		) T3 ON T1.ORGAN_ID = T3.DEPARTMENT_ID
+		LEFT JOIN (
+		SELECT
+		USERS.DEPARTMENT_ID,
+		COUNT(1) DOWNLOADNUM
+		FROM
+		DOC_INFO,
+		DOC_RESOURCE_LOG LOG
+		LEFT JOIN SYS_USERS USERS ON LOG.USER_ID = USERS.USER_ID
+		WHERE
+		LOG.OPERATE_TYPE = '4'
+		AND DOC_INFO.DOC_ID = LOG.RESOURCE_ID
+		AND DOC_INFO.VALID_FLAG = '1'
+		AND  LOG.OPERATE_TIME  >= #{searchTime }
+		GROUP BY
+		DEPARTMENT_ID
+		) T4 ON T1.ORGAN_ID = T4.DEPARTMENT_ID
+		ORDER BY
+		 LOGINNUM  DESC  , NAME
+</select>
+	<select id="getFileListDataAllPerson" resultType="java.util.Map">
+		SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		<if test="opType==3">
+			D.READ_NUM YLCOUNT
+		</if>
+		<if test="opType==4">
+			D.download_num YLCOUNT
+		</if>
+		FROM
+		doc_info D
+		WHERE D.VALID_FLAG='1'
+		ORDER BY
+		<if test="opType==3">
+			D.READ_NUM
+		</if>
+		<if test="opType==4">
+			D.download_num
+		</if>
+		DESC
+	</select>
+	<select id="getFileListDataByAllCount" resultType="int">
+		select count(*) from (SELECT
+	D.TITLE TITLE,
+	D.DOC_ID DOCID,
+	D.DOC_TYPE DOCTYPE,
+	count(1) YLCOUNT
+FROM
+	doc_resource_log drl
+LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+WHERE
+	D.VALID_FLAG = '1'
+	AND drl.RESOURCE_TYPE = '0'
+AND drl.OPERATE_TYPE = '3'
+AND drl.valid_flag = '1'
+GROUP BY
+	D.DOC_ID
+ORDER BY
+	count(1) DESC) T
+	</select>
+	<select id="getFileListDataByWeekCount" resultType="int">
+		select count(*) from (SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		count(1) YLCOUNT
+		FROM
+		doc_resource_log drl
+		LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+		WHERE
+		D.VALID_FLAG = '1'
+		AND drl.RESOURCE_TYPE = '0'
+		AND drl.OPERATE_TYPE = '3'
+		AND drl.valid_flag = '1'
+		and TO_DAYS(NOW()) - TO_DAYS(drl.OPERATE_TIME) &lt;8
+		GROUP BY
+		D.DOC_ID
+		ORDER BY
+		count(1) DESC) T
+	</select>
+	<select id="getFileListDataByMonthCount" resultType="int">
+		select count(*) from (SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		count(1) YLCOUNT
+		FROM
+		doc_resource_log drl
+		LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+		WHERE
+		D.VALID_FLAG = '1'
+		AND drl.RESOURCE_TYPE = '0'
+		AND drl.OPERATE_TYPE = '3'
+		AND drl.valid_flag = '1'
+		and TO_DAYS(NOW()) - TO_DAYS(drl.OPERATE_TIME) &lt;31
+		GROUP BY
+		D.DOC_ID
+		ORDER BY
+		count(1) DESC) T
+	</select>
+	<select id="getFileListDataByAll" resultType="java.util.Map">
+		SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		D.CREATE_TIME CREATETIME,
+		D.USER_ID USERID,
+		SU.USER_NAME USERNAME,
+		COL.SCCOUNT SCCOUNT,
+		FF.FILE_PATH PATH,
+		FF.FILE_PDF_PATH PDFPATH,
+		count(1) YLCOUNT,
+		jxd7_xt_headpicture.path url
+
+		FROM
+		doc_resource_log drl
+		LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+		LEFT JOIN SYS_USERS SU ON D.USER_ID = SU.USER_ID
+		LEFT JOIN jxd7_xt_headpicture  ON jxd7_xt_headpicture.USERID = SU.EMPLOYEE_ID
+		LEFT JOIN FS_FILE FF ON D.DOC_ID=FF.FILE_ID
+		LEFT JOIN (SELECT COUNT(1) SCCOUNT,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+		WHERE
+		D.VALID_FLAG = '1'
+		AND drl.RESOURCE_TYPE = '0'
+		AND drl.OPERATE_TYPE = '3'
+		AND drl.valid_flag = '1'
+		GROUP BY
+		D.DOC_ID
+		ORDER BY
+		count(1) DESC
+   LIMIT #{pageNumber}, #{pageSize}
+	</select>
+	<select id="getFileListDataByWeek" resultType="java.util.Map">
+	SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		D.CREATE_TIME CREATETIME,
+		D.USER_ID USERID,
+		SU.USER_NAME USERNAME,
+		COL.SCCOUNT SCCOUNT,
+			FF.FILE_PATH PATH,
+		FF.FILE_PDF_PATH PDFPATH,
+		count(1) YLCOUNT,
+		jxd7_xt_headpicture.path url
+		FROM
+		doc_resource_log drl
+		LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+		LEFT JOIN SYS_USERS SU ON D.USER_ID = SU.USER_ID
+		LEFT JOIN jxd7_xt_headpicture  ON jxd7_xt_headpicture.USERID = SU.EMPLOYEE_ID
+				LEFT JOIN FS_FILE FF ON D.DOC_ID=FF.FILE_ID
+		LEFT JOIN (SELECT COUNT(1) SCCOUNT,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+WHERE
+	D.VALID_FLAG = '1'
+	AND drl.RESOURCE_TYPE = '0'
+AND drl.OPERATE_TYPE = '3'
+AND drl.valid_flag = '1'
+		and TO_DAYS(NOW()) - TO_DAYS(drl.OPERATE_TIME) &lt;8
+GROUP BY
+	D.DOC_ID
+ORDER BY
+	count(1) DESC
+	   LIMIT #{pageNumber}, #{pageSize}
+	</select>
+	<select id="getFileListDataByMonth" resultType="java.util.Map">
+		SELECT
+		D.TITLE TITLE,
+		D.DOC_ID DOCID,
+		D.DOC_TYPE DOCTYPE,
+		D.CREATE_TIME CREATETIME,
+		D.USER_ID USERID,
+		SU.USER_NAME USERNAME,
+		COL.SCCOUNT SCCOUNT,
+			FF.FILE_PATH PATH,
+		FF.FILE_PDF_PATH PDFPATH,
+		count(1) YLCOUNT,
+		jxd7_xt_headpicture.path url
+		FROM
+		doc_resource_log drl
+		LEFT JOIN doc_info D ON drl.RESOURCE_ID = d.doc_id
+		LEFT JOIN SYS_USERS SU ON D.USER_ID = SU.USER_ID
+				LEFT JOIN FS_FILE FF ON D.DOC_ID=FF.FILE_ID
+					LEFT JOIN jxd7_xt_headpicture  ON jxd7_xt_headpicture.USERID = SU.EMPLOYEE_ID
+		LEFT JOIN (SELECT COUNT(1) SCCOUNT,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.doc_id = COL.RESOURCEID
+		WHERE
+		D.VALID_FLAG = '1'
+		AND drl.RESOURCE_TYPE = '0'
+		AND drl.OPERATE_TYPE = '3'
+		AND drl.valid_flag = '1'
+				and TO_DAYS(NOW()) - TO_DAYS(drl.OPERATE_TIME) &lt;31
+		GROUP BY
+		D.DOC_ID
+		ORDER BY
+		count(1) DESC
+		   LIMIT #{pageNumber}, #{pageSize}
+	</select>
+	<select id="getFilesCount" resultType="int">
+		SELECT COUNT(DISTINCT D.doc_id) FROM doc_info D where D.VALID_FLAG='1'
+	</select>
+
+	<select id="getFilesCountByIdAndFlag" resultType="int">
+		SELECT COUNT(DISTINCT D.doc_id) FROM doc_info D
+		<where>
+			<if test="docId != null and docId != ''">
+				AND D.DOC_ID = #{docId}
+			</if>
+			<if test="validFlag != null and validFlag != ''">
+				AND D.VALID_FLAG = #{validFlag}
+			</if>
+		</where>
+	</select>
+
+	<select id="getFileListDataAllPersonCount" resultType="int">
+		SELECT
+	count(*)
+		FROM
+		doc_info D
+		WHERE D.VALID_FLAG='1'
+
+	</select>
+
+	<select id="getPreviewRankListData" resultType="java.util.Map">
+		SELECT
+	@ROWNUM := @ROWNUM + 1 AS TEMPRANK,
+	@INCRNUM :=
+CASE
+
+	WHEN @ROWTOTAL = OBJ.YLCOUNT + 1 THEN
+	@INCRNUM
+	WHEN @ROWTOTAL := OBJ.YLCOUNT + 1 THEN
+	@ROWNUM
+	END AS FILERANK,
+	OBJ.*
+FROM
+	(
+	SELECT
+		DOCINFO.TITLE,
+		DOCINFO.DOC_ID AS DOCID,
+		DOCINFO.DOC_TYPE AS DOCTYPE,
+		U.USER_NAME AS AUTHORNAME,
+		CONCAT( U.USER_NAME, '/', CASE WHEN O.SHORT_NAME = '' THEN '无' ELSE O.SHORT_NAME END ) AS USERNAME,
+		IFNULL( DOCINFO.READ_NUM, 0 ) AS YLCOUNT
+	FROM
+		DOC_INFO DOCINFO,
+		SYS_USERS U,
+		SYS_ORGAN O,
+		sys_stru
+	WHERE
+		DOCINFO.VALID_FLAG = '1'
+		AND IFNULL( DOCINFO.READ_NUM, 0 ) != 0
+		AND U.USER_ID = DOCINFO.AUTHOR_ID
+		AND sys_stru.STRU_ID = U.DEPARTMENT_ID
+		AND O.ORGAN_ID = sys_stru.ORGAN_ID
+	GROUP BY
+		DOCINFO.DOC_ID,
+		U.USER_NAME
+	ORDER BY
+		DOCINFO.READ_NUM DESC,
+		DOCINFO.TITLE DESC
+	) OBJ,
+( SELECT @ROWNUM := 0, @ROWTOTAL := NULL, @INCRNUM := 0 ) R
+	</select>
+
+	<select id="getDownloadRankListData" resultType="java.util.Map">
+		SELECT
+	@ROWNUM := @ROWNUM + 1 AS TEMPRANK,
+	@INCRNUM :=
+CASE
+
+	WHEN @ROWTOTAL = OBJ.YLCOUNT + 1 THEN
+	@INCRNUM
+	WHEN @ROWTOTAL := OBJ.YLCOUNT + 1 THEN
+	@ROWNUM
+	END AS FILERANK,
+	OBJ.*
+FROM
+	(
+	SELECT
+		DOCINFO.TITLE,
+		DOCINFO.DOC_ID AS DOCID,
+		DOCINFO.DOC_TYPE AS DOCTYPE,
+		U.USER_NAME AS AUTHORNAME,
+		CONCAT( U.USER_NAME, '/', CASE WHEN O.SHORT_NAME = '' THEN '无' ELSE O.SHORT_NAME END ) AS USERNAME,
+		IFNULL( DOCINFO.DOWNLOAD_NUM, 0 ) AS YLCOUNT
+	FROM
+		DOC_INFO DOCINFO,
+		SYS_USERS U,
+		SYS_ORGAN O,
+		sys_stru
+	WHERE
+		DOCINFO.VALID_FLAG = '1'
+		AND IFNULL( DOCINFO.DOWNLOAD_NUM, 0 ) != 0
+		AND U.USER_ID = DOCINFO.AUTHOR_ID
+		AND sys_stru.STRU_ID = U.DEPARTMENT_ID
+		AND O.ORGAN_ID = sys_stru.ORGAN_ID
+	GROUP BY
+		DOCINFO.DOC_ID,
+		U.USER_NAME
+	ORDER BY
+		DOCINFO.DOWNLOAD_NUM DESC,
+		DOCINFO.TITLE DESC
+	) OBJ,
+( SELECT @ROWNUM := 0, @ROWTOTAL := NULL, @INCRNUM := 0 ) R
+	</select>
+
+</mapper>

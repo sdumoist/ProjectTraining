@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>重置所有用户密码</title>   
+    
+    <!--外部css和js开始-->
+    @include("/common/plugins.html"){}
+    <script src="${ctxPath}/static/js/common/pwd_verify.js"></script>
+    <style type="text/css">
+        .must{color:red;}
+		.labelWidth{width: 180px;}
+        #pwdForm label.layui-form-label{
+            width: 137px;
+        }
+    </style>
+    <!--外部css和js结束-->    
+        
+</head>
+<body>
+<div class="weadmin-body"> 
+    <form class="layui-form ">
+        <div class="layui-form-item clearfix">
+            <div class="layui-input-inline">
+                <input id="userAccount" name="userAccount" class="layui-input" placeholder="用户账号">
+            </div> 
+            <div class="layui-input-inline">
+                <input id="userName" name="userName" class="layui-input" placeholder="用户名称">
+            </div>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn" id="btnSearch"><i class="layui-icon">&#xe615;</i>查询</button>
+                <button type="reset" class="layui-btn"  ><i class="layui-icon">&#xe00A;</i>重置</button>
+            </div>
+             <input id="status" type="hidden">
+
+            <div class=" fr">                                                               
+                <button id="btnReset" type="button" class="layui-btn">
+                    <i class="layui-icon">&#xe642;</i>重置密码
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="tableBox ">
+        <table class="layui-hide" id="userTable"></table>
+    </div>
+</div>
+
+<!-- 重置密码弹出框 -->
+<div id="resetEvent" style="display: none;" align="center" class="weadmin-body-1">
+    <form id="pwdForm" class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label labelWidth"><em class="must">*&nbsp;</em>您的密码：</label>
+            <div class="layui-input-inline">                  
+                <input id="admin_pwd" name="admin_pwd" type="password" class="layui-input" lay-verify="required" autocomplete="off">                             
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label labelWidth"><em class="must">*&nbsp;</em>重置用户的新密码：</label>
+            <div class="layui-input-inline">   
+                <input id="new_pwd" name="new_pwd" type="password" class="layui-input" lay-verify="required|password" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label labelWidth"><em class="must">*&nbsp;</em>确认密码：</label>
+            <div class="layui-input-inline">   
+                <input id="c_pwd" name="c_pwd" type="password" class="layui-input" lay-verify="required|password" autocomplete="off">
+            </div>
+        </div> 
+        <div class="cen btn-box">
+            <button id="btnClose" type="button" class="layui-btn btn-close"><i class="iconfont">&#x1006;</i>取消</button>
+            <button lay-submit lay-filter="go" id="btnSave" type="button" class="layui-btn btn-save"><i class="iconfont">&#xe009;</i>保存</button>
+        </div>  
+    </form>
+</div>
+
+
+
+
+
+<script src="${ctxPath}/static/bsp/permit/js/selfService/resetAllPwd.js"></script> 
+</body>
+<link rel="stylesheet" href="${ctxPath}/static/css/bsp/project_ext.css">
+</html>

@@ -1,0 +1,303 @@
+
+.entryShow{
+    height: 53px;
+    font-size: 16px;
+    padding-left: 20px;
+    width: auto;
+    border-bottom: 1px solid #e2e2e2;
+    font-weight: bold;
+    line-height: 53px;
+    color: #333;
+}
+.entryShow>span{
+    margin-left: 26px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 19px;
+    color: #222;
+}
+.inputTitle{
+    width: 600px;
+    float: left;
+    clear: none;
+    margin-top: 20px;
+    font-size: 13px;
+    display: flex;
+    justify-content: flex-start;
+}
+.inputTitle>div:nth-of-type(1){
+    line-height: 30px;
+    width: 80px;
+    text-align: right;
+    float: left;
+    display: block;
+    padding: 0px 15px;
+    font-weight: 400;
+}
+.inputTitle>input{
+    height: 30px;
+    width: 30%;
+}
+.inputTitle>div:nth-of-type(2){
+    line-height: 30px;
+    width: 90px;
+    text-align: right;
+    padding-right: 15px;
+}
+/*.inputTitle>input:hover{*/
+/*    border-color:  #2980ff*/
+/*}*/
+.inputTitle>input:focus{
+    border-color: #2980ff !important
+}
+.inputTitle>input:hover{
+    border-color: #2980ff !important
+}
+/*状态*/
+.inputState{
+    width: 300px;
+    float: left;
+    clear: none;
+    margin-top: 20px;
+    font-size: 13px;
+}
+.inputState>label:nth-of-type(1){
+    line-height: 30px;
+    width: 50px;
+    text-align: right;
+    float: left;
+    display: block;
+    padding: 0px 15px;
+    font-weight: 400;
+}
+.inputState>select{
+    height: 30px;
+    width: 190px;
+}
+.inputState>select:hover{
+    border-color: #2980ff !important
+}
+.inputState>select:focus{
+    border-color: #2980ff !important
+}
+.screening{
+    width: 80px;
+    border: 0;
+    height: 30px;
+    margin-left: 30px;
+    background: #2980ff;
+    color: #fff;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.createEntry{
+    margin-left: 20px;
+    width: 90px;
+    background: #F4B345;
+    border: 0;
+    height: 30px;
+    color: #fff;
+    border-radius: 2px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.entryContent{
+    border-top: 1px solid #efefee;
+    margin: 0px 30px -1px 15px;
+    padding: 20px 0px;
+    border-bottom: 1px solid #efefee;
+}
+.entryContent:last-of-type{
+    border-bottom: 1px solid #efefee;
+}
+.entryContent:hover{
+    background: #FAFAFA;
+}
+.entrytitel{
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    color: #222;
+}
+.entrytitel>span{
+    cursor: pointer;
+    color: #222;
+}
+.entrymain{
+    width: 100%;
+    display: flex;
+    color: #a2a2a2;
+}
+.entrymainLeft{
+    width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    color: #92A0B3;
+    line-height: 42px;
+}
+.entrymainRight{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 25%;
+    margin-left: 100px;
+    font-size: 12px;
+    margin-right: 25px;
+}
+.entrymainRight>p{
+    width: 65px;
+    text-align: center;
+    margin-left: 10px;
+    margin-left: 5px;
+    line-height: 26px;
+    font-size: 12px;
+    border-radius: 2px;
+}
+.audit{
+    cursor: pointer;
+    color: #ffcc00;
+    border: 1px solid #fff1b7;
+}
+.edit{
+    border: 1px solid #c8f6c8;
+    color: green;
+    cursor: pointer;
+}
+.delete{
+    cursor: pointer;
+    color: red;
+    border: 1px solid #ffd6d6;
+}
+.pass {
+    border: 1px solid #dedfff;
+    color: #0188FB;
+    cursor: pointer;
+}
+.entrytime{
+    display: flex;
+    justify-content: space-between;
+    color: #0188FB;
+    font-size: 12px;
+    align-items: center;
+}
+.reject{
+    border: 1px solid #ffd6d6;
+    color: red;
+    cursor: pointer;
+}
+.entrytime>div:nth-of-type(1){
+    color: #0188FB;
+}
+.entrytime>div:nth-of-type(2){
+    font-size: 12px;
+    color: #5ACC9B;
+    margin-right: 25px;
+    margin-top: 2px;
+}
+.entrytime span{
+    margin-left: 10px;
+    line-height: 32px;
+    display: inline-block;
+}
+.entrytime span:nth-of-type(1){
+    margin-left: 0px;
+}
+.entryArea{
+    height: 700px;
+    overflow: auto;
+}
+.entryArea::-webkit-scrollbar {
+    display: none;
+}
+#laypageAre{
+    padding-top: 2px;
+    background-color: #FFFFFF;
+    bottom: 0;
+    width: 100%;
+    height: 62px;
+    text-align: right;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+.layui-laypage{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px 0;
+    font-size: 0;
+}
+.layui-laypage a{
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 15px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0 -1px 5px 10px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    text-decoration: unset;
+}
+.layui-laypage span{
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 15px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0 -1px 5px 10px;
+    color: white;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    background: #2980ff;
+}
+.inputState .layui-form-label{
+    text-align: right !important;
+}
+
+.move-confirm .layui-layer-content {
+    height: calc(100% - 148px) !important;
+    font-size: 15px !important;
+    background: url(../../../../resources/js/img/confire-warn.png) no-repeat 15% 61% !important;
+    text-indent: 20% !important;
+    background-size: 23px;
+    line-height: 68px !important;
+}
+
+.layui-layer-btn .layui-layer-btn1 {
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222;
+    padding: 0;
+    text-align: center;
+    float: right;
+}
+
+/*取消*/
+.layui-layer-btn .layui-layer-btn0 {
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    padding: 0;
+    text-align: center;
+    float: right;
+}
+
+.layui-layer .layui-layer-title {
+    height: 53px;
+    font-size: 16px;
+    line-height: 53px;
+    color: #222;
+    border-bottom: 1px solid #E9EAEB;
+    font-weight: bold;
+}

@@ -1,0 +1,76 @@
+@charset "UTF-8";
+/**
+ * @ClassName: index2018.css
+ * @Description: 公共样式表
+ * @Author: liuxiao
+ * @Date: 2018-01-31
+ */
+body{background: #f7f7fa}
+.main{margin: 24px auto}
+.wrapper{width: 980px;margin: auto}
+.header{background: #0b7be0;;height: 32px;}
+.header a{color: #fff;margin-right: 20px;line-height: 30px}
+.search-box{width: 785px;margin: 40px auto 24px}
+.btn-self{border: 0;background: #0b7be0;color: #fff}
+.btn-self:hover{background: #118eff;}
+.logo{float: left;width: 147px;height: 62px;}
+.search{float: left}
+.searchInputStyle{width: 536px;height: 40px;border: 1px solid #b8b8b8;padding-left: 8px ;background: transparent}
+.searchButtonStyle{line-height: 40px;width: 100px;margin-left: -4px; font-size: 16px}
+.chooseType{line-height: 30px;color: #727272;}
+input[type=checkbox], input[type=radio]{margin: 0 1px 0 10px;border: 1px solid #727272;}
+
+.item-box{float: left;height: 250px;background: #fff;border-radius: 6px;margin-bottom: 10px}
+.person-box{width: 200px;margin-right: 10px}
+.carousel-box{width: 500px;margin-right: 10px}
+.list-box{width: 350px;margin-right: 10px}
+.fileInfo-box,.last-box{width: 260px}
+/*首页-个人信息*/
+.user-phone{padding: 20px 0 14px; }
+.user-phone a{ display: block;width: 90px;height: 90px;border-radius: 50px;margin: auto;text-align: center;overflow: hidden}
+.user-phone a img{width: 90px;height: auto}
+.user-txt{text-align: center;font-size: 14px;padding-bottom:10px;border-bottom: 2px solid #f7f7fa;}
+.user-txt a{color: #323232;line-height: 30px}
+.icon-integral{background:url(../img/index/zongjifen.png) no-repeat left 12px center; height: 30px;padding: 0 30px 0 55px;line-height: 30px ;margin-top: 8px}
+.icon-file{background:url(../img/index/fileup.png) no-repeat left 12px center; height: 30px;padding: 0 30px 0 55px;line-height: 30px ;margin-top: 8px}
+.icon-integral span{float: right;color: #2284e6;}
+.icon-file span{float: right;color: #3dbf53;}
+
+/*轮播图添加*/
+.carousel-box .carousel-inner>.item>a>img,
+.carousel-box  .carousel-inner>.item>img,
+.carousel-box  .img-responsive,
+.carousel-box  .thumbnail a>img,
+.carousel-box  .thumbnail>img{width: 500px;height: 250px;border-radius: 6px}
+
+/*累计文件··*/
+.file-title{padding-top: 10px ;text-align: center;font-size: 14px;color: #323232;line-height: 30px}
+.file-num{text-align: center;line-height: 30px}
+.file-num span{color:  #3dbf53;;font-size: 18px}
+.offerButtonStyle,.upButtonStyle{ width: 106px; height: 28px;background: #0b7be0;border-radius: 6px;margin-right:6px;line-height: 24px;}
+.btnGroup{padding: 8px 10px;border-top: 2px solid #f7f7fa;line-height: 28px}
+.btnGroup span{line-height: 28px}
+.statistics{padding: 9px 50px 0;border-top: 2px solid #f7f7fa;}
+.statistics-btn{color: #323232;border: solid 1px #0b7be0;line-height: 25px;border-radius: 6px}
+.statistics-btn:hover{color: #FFF;background: #0b7be0;}
+
+/*l列表*/
+.list-title{font-size: 14px;color: #323232;line-height: 28px;padding: 0 15px;border-bottom: 1px solid #f7f7fa;}
+.list-head{height: 26px;background: #eaf5ff;line-height: 26px}
+.file-list{line-height: 24px}
+.file-list .col-sm-9{white-space:nowrap;word-wrap:normal;overflow:hidden;text-overflow:ellipsis;}
+.file-list a{color: #0b7be0;}
+.file-list  span{padding: 8px 6px;}
+.file-list .fir{background: url(../img/index/top.png) no-repeat left top 6px;color: #fff}
+
+/*悬赏*/
+.reward-item{padding: 10px 10px 0;line-height: 22px}
+.reward-name{white-space:nowrap;word-wrap:normal;overflow:hidden;text-overflow:ellipsis;}
+.reward-name span{border-radius: 6px;border: solid 1px #f08200;color: #f08200;line-height: 20px;padding: 0 7px;margin-right: 3px}
+.reward-name a{color: #323232}
+.reward span{color: #e8340c;margin-left: 3px}
+
+.breadcrumbs{line-height: 30px}
+.breadcrumbs a{color: #323232;cursor: pointer}
+.breadcrumbs .current{color: #0b7be0}
+footer{ bottom: 10px; position: absolute; width: 100%; text-align: center;color: #868686;line-height: 30px;margin-top: 30px}

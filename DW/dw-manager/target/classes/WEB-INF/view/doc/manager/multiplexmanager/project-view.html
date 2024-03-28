@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>复用登记-选择成果</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <style>
+        tr,td{
+            text-align: center;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        td:nth-child(3){
+
+            text-align: left !important;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .layui-form-label{ width: 90px !important;padding: 0px 20px 0px 0px !important; text-align: right !important;}
+        .we-red{ left: 20px !important;}
+        .layui-table{ width: calc(100% - 50px);margin: 0px 20px 0px 30px;}
+        .layui-form{ padding: 0;}
+        .componentName{
+            max-width: 163px;
+            display: block;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+<div class="weadmin-body" style="padding: 20px;">
+    <div class="layui-form" style="min-height: 390px">
+        <div class="layui-form-item">
+            <input type="text" id="projectId" name="projectId"   hidden value="${projectId}" class="layui-input" style="display: none">
+
+            <div class=" layui-inline" style="width: 100%">
+                <label for="projectName" class="layui-form-label">
+                  项目名称
+                </label>
+                <div class="layui-input-inline"  style="width: calc(100% - 130px)">
+                    <input type="text" id="projectName" name="projectName"   autocomplete="off" class="layui-input" value="${multiplexProject.projectName}" style="width: 100%" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+               复用描述
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="multiplexDesc" name="multiplexDesc"   class="layui-textarea" style="background-color:#f5f5f5;width: 100%;height:150px;" disabled >${multiplexProject.multiplexDesc}</textarea>
+            </div>
+
+        </div>
+
+
+
+        <hr style=" margin-bottom: 20px;margin-top: 20px;margin-left: 30px;margin-right: 20px;}">
+           <table class="layui-table">
+
+
+               <colgroup>
+                    <col width="100px">
+                    <col width="150px">
+                    <col width="150px">
+                    <col  width="150px">
+                   <col  width="150px">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th style="text-align: center">序号</th>
+                    <th style="text-align: center">成果分类</th>
+                    <th style="text-align: center">成果名称</th>
+                    <th style="text-align: center">上传人</th>
+                    <th style="text-align: center">节省工作量(人/天)</th>
+
+                </tr>
+                </thead>
+                <tbody id="componentList" style="max-width: 100%">
+                @for(doc in componentList){
+                <tr>
+                    <td>${docLP.index}</td>
+                    <td> @if(doc.componentType==0){
+                        技术组件
+                        @}  else if(doc.componentType==1){
+                        解决方案
+                        @} else {
+                        其他
+                        @}
+                    </td>
+                    <td ><span class="componentName" title="${doc.componentName}">${doc.componentName}</span></td>
+                    <td>${doc.userName}</td>
+                    <td>${doc.economize}</td>
+
+                </tr>
+                @}
+
+
+                </tbody>
+            </table>
+
+
+        <!-- 人员树 -->
+    </div>
+
+</div>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/multiplexmanager/js/multiplexApply.js?v=${h_version}"></script>
+</body>
+</html>

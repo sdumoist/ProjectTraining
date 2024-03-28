@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.manager.importorganuserdata.dao.ImportOrganMapper">
+
+    <select id="getStruByNameAndParentName" resultType="java.util.Map">
+            SELECT organ.ORGAN_NAME, organ.ORGAN_ID,stru.ORGAN_ID,stru.PARENT_ID,parentStru.STRU_ID,parentStru.ORGAN_ALIAS,parentOrgan.ORGAN_NAME
+            FROM sys_organ organ, sys_stru stru, sys_stru parentStru, sys_organ parentOrgan
+            where organ.ORGAN_ID = stru.ORGAN_ID and stru.PARENT_ID = parentStru.STRU_ID and parentStru.ORGAN_ID = parentOrgan.ORGAN_ID
+            and organ.IN_USE = '1' and stru.IN_USE='1' and parentStru.IN_USE = '1' and parentOrgan.IN_USE = '1'
+            and organ.ORGAN_NAME = #{organName}
+            and parentOrgan.ORGAN_NAME = #{parentOrganName}
+    </select>
+
+    <select id="getStruByNameAndParentId" resultType="java.util.Map">
+        SELECT organ.ORGAN_NAME, organ.ORGAN_ID,stru.ORGAN_ID,stru.PARENT_ID
+        FROM sys_organ organ, sys_stru stru
+        where organ.ORGAN_ID = stru.ORGAN_ID
+        and organ.IN_USE = '1' and stru.IN_USE='1'
+        and organ.ORGAN_NAME = #{organName}
+        and stru.parent_id = '11'
+    </select>
+
+    <select id="getUserByUserAccount" resultType="java.util.Map">
+        select users.USER_ACCOUNT
+        from sys_users users, sys_stru stru
+        where users.EMPLOYEE_ID = stru.STRU_ID
+        and users.USER_ACCOUNT = #{userAccount}
+        and stru.IN_USE = '1'
+    </select>
+</mapper>

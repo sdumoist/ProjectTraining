@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${projectTitle!'金企文库'} - 登录</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    @include("/common/plugins.html"){}
+    <link rel="shortcut icon" href="${ctxPath}/static/resources/img/front/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="${ctxPath}/static/assets/css/login.css?v=${h_version}">
+    <script language="javascript">
+        if (window.parent != window) {
+            top.location.href = window.location.href;
+        }
+    </script>
+    <script src="${ctxPath}/static/resources/js/common/login.js?v=${h_version}"></script>
+    <!--    <link rel="stylesheet" href="${ctxPath}/static/resources/css/front/login_self.css">-->
+    <link rel="stylesheet" href="${ctxPath}/static/resources/css/front/login_new.css?v=${h_version}">
+</head>
+<body>
+<div class="content-box">
+    <div class="wk-box">
+        <div class="logo"></div>
+        <div class="wk-info">
+            <div class="title"></div>
+<!--            <div class="sub-title">-->
+<!--                为您提供全面的文件管理服务-->
+<!--            </div>-->
+<!--            <div class="download"><a href="https://d.jxdinfo.com:8194/jqwkclient"><button class="downloadBtn" >立即下载</button></a></div>-->
+            <div class="wk-img" style=""></div>
+        </div>
+    </div>
+    <div class="login-box">
+        <div class="login">
+            <div class="title"></div>
+            <form class="layui-form" id="tokenForm">
+                <div class="login-form">
+                    <label>用户名</label>
+                    <input name="username" type="text" class="login-input login-input-1" placeholder="请输入用户名">
+                    <div class="errorWrapper error1"><div class="error"></div></div>
+                    <label class="ani-label">密码</label>
+                    <input type="password" class="login-input login-input-2" placeholder="请输入密码" id="password"
+                           autocomplete="new-password">
+                    <div class="see" ifsee = "see"></div>
+                    <div class="errorWrapper error2"><div class="error"></div></div>
+                    <div class="submit-btn">
+                        <button class="login-btn" id="login" lay-submit lay-filter="login" type="button">登录</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        @if(has(clientShow)&&clientShow == '1'){
+        <div class="download-area">
+            <div class="download-mobile">
+                <a href="javascript:void (0)" target="_blank">
+                    <span>APP<br/> 下载</span>
+                </a>
+                <div class="code"></div>
+            </div>
+            <div class="download-client">
+                <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank"><span>客户端<br/> 下载</span></a>
+            </div>
+        </div>
+        @}
+        @include("/common/front-footer.html"){}
+    </div>
+</div>
+<!-- 底部结束 -->
+</body>
+<link rel="stylesheet" href="${ctxPath}/static/resources/css/project_ext.css?v=${h_version}">
+</html>

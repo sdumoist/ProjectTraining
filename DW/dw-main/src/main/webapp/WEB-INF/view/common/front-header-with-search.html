@@ -1,0 +1,100 @@
+<head>
+    <script src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js?v=${h_version}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+</head>
+<body>
+<div class="header-bar header-with-search ">
+    <div class="container clearfix">
+        <div class="logo"><a href="${ctxPath}/"></a></div>
+
+        <ul class="ul-header sec-ul-header">
+            <li class="user-wrapper">
+                <a class="user-name" target="_blank" href="${ctxPath}/personalcenter/">
+                    @if(session.url==null||session.url==""){
+                    <img src="${ctxPath}/static/resources/img/front/index/photo.png "   style="width: 24px">
+                    @}else {
+                    <img src="${session.url}"style="width: 24px;border-radius: 50%">
+                    @}
+                    <span target="_blank" class="user-photo" id="loginName" href="#">${userName}</span>
+                </a>
+                <i class="layui-icon layui-icon-triangle-d"></i>
+
+                <div class="user-dropdown">
+                    <a href="${ctxPath}/personalcenter/" target="_blank" >个人中心</a>
+                    @if(shiro.hasPermission("sys:manager")){
+                    <a target="_blank"  href="${ctxPath}/jqwkmanager/">后台管理</a>
+                    @}
+                    <!--<a href="${ctxPath}/personalcenter?menu=1" target="_blank"  >文档管理</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=2" target="_blank" >我的收藏</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=3" target="_blank" >我的下载</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=4" target="_blank" >我的浏览</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=5" target="_blank" >我的上传</a>-->
+                    <a  id="loginout">退出登录</a>
+                    <s><i></i></s>
+                </div>
+            </li>
+            <li style="margin-left: 0px">
+                @if(shiro.getUser().id!="superadmin"&&shiro.getUser().id!="wkadmin"){
+                <a href="${ctxPath}/personalcenter?menu=6" onclick="void(0)" target="_blank" style="display:block;height: 100%;">
+                    <div class="index-integral" style="line-height: 38px;">
+                        <img src="${ctxPath}/static/resources/img/front/index/index-integral.png " style="vertical-align:unset;width: 10px;margin-left: 4px;margin-top: 0px;">
+                        <span id="totalIntegral"></span>
+
+                    </div>
+                </a>
+                @}
+            </li>
+
+        </ul>
+        <span class="ul-line"></span>
+        <!--<img class="global-search" src="${ctxPath}/static/resources/img/front/search.png">-->
+        <div class="search-wrapper global-search-input">
+            <div class="layui-form search-wrapper-select">
+                <select  id="select">
+                    <option value="0" >全部</option>
+                    <option value="7">文档</option>
+                    <option value="8">图片</option>
+                    <option value="9">视频</option>
+                    <option value="10">音频</option>
+                    <option value="15">作者</option>
+                    @if(session.projectFlag!=true){
+                    <option value="12">成果</option>
+                    @}
+                </select>
+            </div>
+            <input class="search-input" id="headerSearchInput" placeholder="请输入搜索内容"  value="${key!}">
+            <input type="hidden" class="hide"  id="headerSearchInputValue" value="${key!}">
+            <div class="search-close hidden" ></div>
+            <div class="search-btn" id="headerSearchBtn"></div>
+        </div>
+<!--        <div class="search-wrapper global-search-input">-->
+<!--            <input class="search-input" id="searchName" value="" placeholder="全局搜索">-->
+<!--            <div class="search-btn" id="searchBtn">&nbsp;</div>-->
+<!--            &lt;!&ndash;<div class="search-btn" id="searchBtn">&nbsp;</div>&ndash;&gt;-->
+<!--        </div>-->
+        <!--<ul class="ul-header">-->
+        <!--<a href="/frontTopic/messageList?page=1&size=10" target="_blank">-->
+        <!--<div class="message">-->
+        <!--<div class="top" style="margin-top: 0px">   <img src="${ctxPath}/static/resources/img/front/index/message.png " style="height: 18px;margin-top: 0px-->
+        <!--;vertical-align: top;"></div>-->
+        <!--<div class="bottom" style="margin-top: 0px">资讯印象</div>-->
+        <!--</div>-->
+
+        <!--</a>-->
+        <!--</ul>-->
+        <!--<span class="ul-line"></span>-->
+        <!--        <div class="ul-types sec-ul-types"></div>-->
+        <div class="ipad-d-show"> <a href="${ctxPath}/frontFile"  target="_blank">资源管理器</a></div>
+    </div>
+</div>
+<div class="curtain"></div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front-header-with-search.js?v=${h_version}"></script>
+</body>

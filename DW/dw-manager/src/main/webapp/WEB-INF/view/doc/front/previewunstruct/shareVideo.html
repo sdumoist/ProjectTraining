@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${projectTitle}-视频预览</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <style>
+        html{height: 100%;overflow-y: scroll}
+        body#top{position: relative;height: 100%;overflow: hidden;padding-bottom: 0;}
+        .header-with-search{position: relative;top:0}
+        .breadCrumbs{display: none}
+        body#top .container-new{margin-top: 10px;height: calc(100% - 109px);}
+        body#top .pdf-content{height: 100%!important;}
+        body > .container{margin-top: 60px}
+        body > .container.footer{position: absolute;bottom: 0;width: 100%;height: 60px;margin-top:auto}
+
+        body#top .pdf-view > .viewContent{padding-top: 0;padding-left: 0}
+        .content-bottom {height: calc(100% - 36px);}
+        body#top .divtop {height: 100%!important;}
+
+        .btn-rit{display: none}
+        body#top .viewContent{background: none}
+        #video {height: 90% !important;width: auto !important;}
+        .layui-col-sm12 {
+            height: 100%;
+        }
+        .pdf-view {
+            height: 100%;
+        }
+
+    </style>
+    <script type="text/javascript">
+        projectTitle = "${projectTitle}";
+    </script>
+</head>
+<body id="top" class="top">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-rit-share.html"){}
+@include("/common/share-header.html"){}
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="hash" value="${hash}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<div class="container-new container-pdf" id="container-pdf">
+    <div class="container">
+<!--        <div class="breadCrumbs">-->
+<!--            <label></label>-->
+<!--            <div class="pathes"></div>-->
+<!--        </div>-->
+        <div id="title" class="viewTitle"></div>
+<!--        <div class="docView">-->
+<!--            <span class="textOver" id="owner"></span>-->
+<!--            <span class="textOver" id="uploadTime"></span>-->
+<!--            <span class="textOver" id="fileSize"></span>-->
+<!--            <span class="textOver" id="downloadNum"></span>-->
+<!--            <span class="textOver" id="previewNum"></span>-->
+<!--        </div>-->
+<!--        <div class="doc-desc">-->
+<!--            <span id="docAbstract"></span>-->
+<!--        </div>-->
+    </div>
+    <div class="content-bottom">
+        <div class="layui-row divtop container">
+            <div class="layui-col-sm12">
+                <div class="pdf-view">
+                    <div class="viewContent">
+                        <div class="viewContent">
+                            <div class="pdf-content video-content">
+                                <video id="video" controls="true" controlslist="nodownload" loop>
+                                    <source id="v1" src=" " type="video/mp4">
+                                    您的浏览器不支持 video 标签。
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@include("/common/front-footer.html"){}
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/shareVideo.js?v=${h_version}"></script>
+</html>

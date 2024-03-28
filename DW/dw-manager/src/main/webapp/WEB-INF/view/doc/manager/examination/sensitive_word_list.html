@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>敏感词列表</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <input id="saveType" type="hidden">
+        <form class="layui-form clearfix" action="" id="searchForm" onsubmit="initTableView();return false">
+            <div class="layui-form-item clearfix">
+                <div class="layui-input-inline">
+                    <input type="text" id="wordName" name="wordName" placeholder="请输入敏感词" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" data-type="reload" id="searchBtn" type="button"><i
+                            class="layui-icon">&#xe615;</i>查询
+                    </button>
+                </div>
+                <div class="fr">
+                    <button type="button" class="layui-btn" id="addBtn" data-type="newWord"><i
+                            class="layui-icon">&#xea0d;</i>新增
+                    </button>
+                    <button type="button" class="layui-btn" id="editBtn" data-type="editTopic"><i class="layui-icon">&#xea04;</i>修改
+                    </button>
+                    <button type="button" class="layui-btn" id="delBtn" data-type="delTopics"><i
+                            class="layui-icon">&#xea0f;</i>删除
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="tableBox">
+            <table class="layui-table" id="wordsList" lay-filter="wordsList"></table>
+        </div>
+    </div>
+</div>
+
+<script src="${ctxPath}/static/doc/manager/examination/js/sensitive_words.js?v=${h_version}"></script>
+</body>
+</html>

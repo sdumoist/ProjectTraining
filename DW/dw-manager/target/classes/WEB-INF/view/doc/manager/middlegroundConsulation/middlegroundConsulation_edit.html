@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/componentApply.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/button-common.css?v=${h_version}"/>
+    <script type="text/javascript" charset="utf-8"
+            src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/ueditor/ueditor.all.js"> </script>
+
+    <style>
+        .layui-form{padding-right: 60px;padding-bottom: 20px;border-bottom: 1px solid #CDCDCD;margin-bottom: 20px}
+        .layui-form-item{clear: none;}
+        .layui-form-radio{margin: 0;line-height: 30px;border: 1px solid #CCC;padding: 0 34px}
+        .layui-form-radio:last-child{margin-left: -9.5px!important;}
+        .layui-form-radioed{background: #3D92FD;color: #fff}
+        .layui-form-radio i{display: none!important;}
+        .component{background-color:  #ECF5FF;width: 40px;height: 24px;line-height:24px;border:1px solid #bcdcff;color: #66b1ff !important;cursor: pointer}
+        .componentDelete{background-color: rgb(255, 240, 240); width: 40px; height: 24px; line-height: 24px; border: 1px solid rgb(250, 196, 196); cursor: pointer; color: rgb(245, 107, 107) !important;text-align: center}
+        .layui-textarea:hover{border-color: #3D92FD !important;}
+        .titleSpan{
+            width: calc(100% - 12px);
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            position: absolute;
+            top:9px
+        }
+        .bottom-btns {
+            margin-top: 22px;
+            height: 40px;
+        }
+        .fr{
+            line-height: 26px!important;
+        }
+        .layui-laydate-footer span:hover {
+            color:#2980FF!important;
+        }
+        .layui-laydate-footer span {
+            color: #2980FF;
+        }
+
+    </style>
+
+</head>
+
+<body class="weadmin-body" >
+<div class="new-top clearfix">
+    <span class="message"> 修改记录</span>
+</div>
+<div id="collectList">
+
+    <form class="layui-form layui-row">
+        <input type="text" id="consulationId" name="consulationId" hidden value="${consulationId}" class="layui-input" style="display: none">
+        @for(doc in AttachmentList ){
+        <input type="text" name="list" hidden value="${doc.attachmentId}" class="layui-input listId" style="display: none">
+        <input type="text" name="list" hidden value="${doc.attachmentType}" class="layui-input listType" style="display: none">
+        <input type="text" name="list" hidden value="${doc.attachmentName}" class="layui-input listName" style="display: none">
+        @}
+
+
+
+        <div  class="layui-form-item layui-col-sm12 layui-s2">
+            <label class="layui-form-label">咨询部门</label>
+            <div class="layui-input-inline">
+                <input type="text" id="deptName" name="deptName"  autocomplete="off" class="layui-input" value="${middlegroundConsulation.deptName}" readonly>
+                <input type="text" id="deptId" name="deptId" class="layui-input" style="display: none" value="${middlegroundConsulation.deptId}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item layui-col-sm6">
+            <label class="layui-form-label">会议时间</label>
+            <div class="layui-input-inline" >
+                <input type="text" id="meetingTime" name="meetingTime" class="layui-input dateType" autocomplete="off"
+                       value="${middlegroundConsulation.consulationTime}">
+            </div>
+        </div>
+        <div class="layui-form-item layui-col-sm6">
+            <label class="layui-form-label" >项目信息</label>
+            <div class="layui-input-inline " >
+                <input type="text" id="projectMsg" class="layui-input" autocomplete="off" value="${middlegroundConsulation.projectDesc}">
+                <!--                <input type="text" id="projectName" class="layui-input" readonly>
+                                <input type="text" id="projectId" style="display: none">-->
+            </div>
+        </div>
+        <div class="layui-form-item layui-col-sm8">
+            <div class="layui-form-item">
+                <label class="layui-form-label">参与人</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="participant" name="participant" class="layui-input" style="display:inline"  autocomplete="off" value="${middlegroundConsulation.participant}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-col-sm12">
+            <label class="layui-form-label">会议内容</label>
+            <div class="layui-input-inline textarea-div">
+                <!--<textarea id="content" class="layui-input" style="width: 68%!important;height: 100px!important;">${middlegroundConsulation.consulationContent}</textarea>-->
+                <script id="content" type="text/plain">${middlegroundConsulation.consulationContent}</script>
+            </div>
+        </div>
+    </form>
+    <div class="table-box" >
+        <table class="layui-table">
+            <colgroup>
+                <col width="60">
+                <col width="150">
+                <col>
+                <col width="150">
+                <col width="150">
+            </colgroup>
+            <thead>
+            <tr>
+                <th style="text-align: center;">序号</th>
+                <th style="text-align: center;">文件类型</th>
+                <th style="text-align: center;">文件名称</th>
+                <th style="text-align: center;">上传状态</th>
+                <th style="text-align: center;">操作</th>
+            </tr>
+            </thead>
+            <tbody id="fileList">
+            <tr><td style='text-align: center'>1</td> <td style='text-align: center'>会议纪要</td>
+                <td><span class='titleSpan'></span></td>
+                <td style='text-align: center'>未上传</td>
+                <td style='cursor: pointer;color: #3C91FD;text-align: center;'>
+                    <button type='button' class='layui-btn component' style='background-color:  #ECF5FF;width: 40px;height: 24px;line-height:24px;border:1px solid #bcdcff;color: #66b1ff !important;cursor: pointer' id='10'>上传</button>
+                    <button type='button' style='display: none;background-color:  #fff0f0;width: 40px;height: 24px;line-height:24px;border:1px solid #fac4c4;color: #f56b6b !important;cursor: pointer' class='layui-btn del componentDelete' onclick='deleteComponent()' id='10delete'>删除</button>
+                </td>
+            </tr>
+            <tr><td style='text-align: center'>2</td> <td style='text-align: center'>会议录音</td>
+                <td><span class='titleSpan'></span></td>
+                <td style='text-align: center'>未上传</td>
+                <td style='cursor: pointer;color: #3C91FD;text-align: center;'>
+                    <button type='button' class='layui-btn component' style='background-color:  #ECF5FF;width: 40px;height: 24px;line-height:24px;border:1px solid #bcdcff;color: #66b1ff !important;cursor: pointer' id='21'>上传</button>
+                    <button type='button' style='display: none;background-color:  #fff0f0;width: 40px;height: 24px;line-height:24px;border:1px solid #fac4c4;color: #f56b6b !important;cursor: pointer' class='layui-btn del componentDelete' onclick='deleteComponent()' id='21delete'>删除</button>
+                </td>
+            </tr>
+            </tbody>
+
+
+        </table>
+
+        <!-- 人员树 -->
+        <!-- <div class="bot-btns">-->
+
+
+
+        <!--</div>-->
+
+    </div>
+
+
+</div>
+<div class="bottom-btns" style="padding-right:15px;text-align: right" >
+    <button id="saveBtn" type="button" class="self-btn fr"  style="cursor: pointer;margin-right:0px !important;background: #2980FF !important;" lay-filter="add" lay-submit="" >确定</button>
+    <button id="cancel" class="self-btn white-btn fr" lay-filter="cancel" style="margin-right: 15px;" type="button" >返回</button>
+</div>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/manager/middlegroundConsulation/js/middlegroundConsulation_edit.js?v=${h_version}"></script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h = $("#collectList").height() + 150;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    }, 400)
+
+
+</script>
+</body>
+</html>

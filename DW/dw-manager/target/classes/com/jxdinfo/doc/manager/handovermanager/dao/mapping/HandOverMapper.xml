@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.manager.handovermanager.dao.HandOverMapper" >
+    <select id="getMessageList" resultType="com.jxdinfo.doc.manager.handovermanager.model.DocHandOver">
+           SELECT
+      dho. hand_over_id handOverId,
+        dho.hand_over_type handOverType,
+        dho.hand_over_user_id handOverUserId,
+        dho.accept_id acceptId,
+        dho.hand_over_user_name handOverUserName,
+        date_format(dho.hand_over_date,'%Y-%m-%d %H:%i:%s') handOverDate,
+        dho.hand_over_dept_name handOverDeptName,
+        dho.hand_over_dept_id handOverDeptId,
+        dho.accept_name acceptName,
+        dho.accept_dept_name acceptDeptName,ifnull(COL.count,0) num
+        FROM
+        doc_hand_over dho LEFT JOIN (SELECT COUNT(1) count, hand_over_id FROM doc_hand_over_attachment GROUP BY hand_over_id) COL ON dho.hand_over_id = COL.hand_over_id
+		LEFT  JOIN sys_users su on su.user_id = dho.hand_over_user_id
+		where 1=1
+
+			AND dho.hand_over_state = #{state}
+
+		<if test="orgId != ''and orgId != null and adminFlag !=1 ">
+			AND su.DEPARTMENT_ID =#{orgId}
+		</if>
+        <if test="handovername != ''and handovername != null">
+        AND dho.hand_over_user_name LIKE CONCAT('%',#{handovername},'%')
+		</if>
+        <if test="acceptName !='' and  acceptName != null">
+            AND dho.accept_name = LIKE CONCAT('%',#{acceptName},'%')
+        </if>
+        <if test="deptName != ''and deptName != null">
+            AND dho.hand_over_dept_name = #{deptName}
+        </if>
+        <if test="acceptDeptName != ''and acceptDeptName != null">
+            AND dho.accept_dept_name = #{acceptDeptName}
+        </if>
+        <if test="order != null and order != '' ">
+
+                order by
+                convert(${order} using gbk)
+
+
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+
+        </if>
+        <if test="order == null ">
+
+            ORDER BY dho.hand_over_date desc
+        </if>
+
+
+        LIMIT #{beginNum}, #{limit}
+
+    </select>
+
+    <select id="getMessageListCount" resultType="int">
+        SELECT
+       count(1)
+        FROM
+        doc_hand_over dho
+		LEFT  JOIN sys_users su on su.user_id = dho.hand_over_user_id
+		where 1=1
+		<if test="orgId != ''and orgId != null and adminFlag !=1 ">
+			AND su.DEPARTMENT_ID =#{orgId}
+		</if>
+        <if test="handovername != ''and handovername != null">
+            AND dho.hand_over_user_name LIKE CONCAT('%',#{handovername},'%')
+        </if>
+        <if test="acceptName !='' and  acceptName != null">
+            AND dho.accept_name = LIKE CONCAT('%',#{acceptName},'%')
+        </if>
+        <if test="deptName != ''and deptName != null">
+            AND dho.accept_name = #{deptName}
+        </if>
+        <if test="acceptDeptName != ''and acceptDeptName != null">
+            AND dho.accept_dept_name = #{acceptDeptName}
+        </if>
+		<if test="state != ''and state != null">
+			AND dho.hand_over_state = #{state}
+		</if>
+
+
+    </select>
+    <select id="getList" resultType="FsFolderView">
+     SELECT
+	* from (
+		(
+			SELECT
+				di.doc_id fileId,
+				di.title fileName,
+				di.doc_type fileType,
+				1 orderName,
+				di.create_time createTime,
+				su.USER_NAME createUserName,
+				su.USER_ID createUserId,
+				ifnull(dho.hand_over_state, '') state,
+				ss.ORGAN_ALIAS deptName
+			FROM
+				doc_info di
+			LEFT JOIN sys_users su ON su.user_id = di.user_id
+			LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+			LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.doc_id
+			AND dhoa.resource_type = 0
+			LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+		)
+			UNION ALL
+				(
+					SELECT
+						di.component_id fileId,
+						di.component_name fileName,
+						'component' fileType,
+						2 orderName,
+						di.create_time createTime,
+						su.USER_NAME createUserName,
+						su.USER_ID createUserId,
+						ifnull(dho.hand_over_state, '') state,
+						ss.ORGAN_ALIAS deptName
+					FROM
+						component_apply di
+					LEFT JOIN sys_users su ON su.user_id = di.user_id
+					LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+					LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.component_id
+					AND dhoa.resource_type = 1
+					LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+
+				)
+			UNION ALL
+				(
+					SELECT
+						di.folder_id fileId,
+						di.folder_name fileName,
+						'folder' fileType,
+						4 orderName,
+						di.create_time createTime,
+						su.USER_NAME createUserName,
+						su.USER_ID createUserId,
+						ifnull(dho.hand_over_state, '') state,
+						ss.ORGAN_ALIAS deptName
+					FROM
+						fs_folder di
+					LEFT JOIN sys_users su ON su.user_id = di.create_user_id
+					LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+					LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.folder_id
+					AND dhoa.resource_type = 2
+					LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+
+				)
+		) T where 1=1
+        <if test="userId != ''and userId != null">
+            AND createUserId = #{userId}
+        </if>
+        <if test="name != ''and name != null">
+            AND fileName LIKE CONCAT('%',#{name},'%')
+        </if>
+
+	  and fileName !='我的文件夹'
+
+			<if test="type == 1 or type == 2 or type ==4">
+				AND orderName = #{type}
+			</if>
+			<if test="type == 3">
+				AND (orderName = 1 or orderName = 2)
+			</if>
+			<if test="type == 5">
+				AND (orderName = 1 or orderName = 4)
+			</if>
+			<if test="type ==6 ">
+				AND (orderName = 2 or orderName = 4)
+			</if>
+			<if test="type == 7">
+				AND (orderName = 2 or orderName = 4 or orderName = 1)
+			</if>
+		<if test="order != null and order != '' ">
+			<if test="order == 'orderName' ">
+				order by orderName
+
+			</if>
+			<if test="order !='orderName' ">
+				order by orderName  desc ,
+				convert(${order} using gbk)
+			</if>
+
+			<if test='isDesc=="1" '>
+				desc
+			</if>
+
+			, createTime desc
+		</if>
+		<if test="order == null ">
+
+			order by  orderName desc , convert(createTime using gbk) desc
+		</if>
+
+		LIMIT #{pageNumber}, #{pageSize}
+    </select>
+	<select id="getCount" resultType="int">
+		SELECT
+		count(1) from (
+		(
+		SELECT
+		di.doc_id fileId,
+		di.title fileName,
+		di.doc_type fileType,
+		1 orderName,
+		di.create_time createTime,
+		su.USER_NAME createUserName,
+		su.USER_ID createUserId,
+		ifnull(dho.hand_over_state, '') state,
+		ss.ORGAN_ALIAS deptName
+		FROM
+		doc_info di
+		LEFT JOIN sys_users su ON su.user_id = di.user_id
+		LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+		LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.doc_id
+		AND dhoa.resource_type = 0
+		LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+		)
+		UNION ALL
+		(
+		SELECT
+		di.component_id fileId,
+		di.component_name fileName,
+		'component' fileType,
+		2 orderName,
+		di.create_time createTime,
+		su.USER_NAME createUserName,
+		su.USER_ID createUserId,
+		ifnull(dho.hand_over_state, ''),
+		ss.ORGAN_ALIAS
+		FROM
+		component_apply di
+		LEFT JOIN sys_users su ON su.user_id = di.user_id
+		LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+		LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.component_id
+		AND dhoa.resource_type = 1
+		LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+
+		)
+		UNION ALL
+		(
+		SELECT
+		di.folder_id fileId,
+		di.folder_name fileName,
+		'folder' fileType,
+		4 orderName,
+		di.create_time createTime,
+		su.USER_NAME createUserName,
+		su.USER_ID createUserId,
+		ifnull(dho.hand_over_state, ''),
+		ss.ORGAN_ALIAS
+		FROM
+		fs_folder di
+		LEFT JOIN sys_users su ON su.user_id = di.create_user_id
+		LEFT JOIN sys_stru ss ON ss.stru_id = su.DEPARTMENT_ID
+		LEFT JOIN doc_hand_over_attachment dhoa ON dhoa.resource_id = di.folder_id
+		AND dhoa.resource_type = 2
+		LEFT JOIN doc_hand_over dho ON dho.hand_over_id = dhoa.hand_over_id
+
+		)
+		) T where 1=1
+		<if test="userId != ''and userId != null">
+			AND createUserId = #{userId}
+		</if>
+		<if test="name != ''and name != null">
+			AND fileName LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test="type == 1 or type == 2 or type == 4">
+			AND orderName = #{type}
+		</if>
+		<if test="type == 3">
+			AND (orderName = 1 or orderName = 2)
+		</if>
+		<if test="type == 5">
+			AND (orderName = 1 or orderName = 4)
+		</if>
+		<if test="type ==6 ">
+			AND (orderName = 2 or orderName = 4)
+		</if>
+		<if test="type == 7">
+			AND (orderName = 2 or orderName = 4 or orderName = 1)
+		</if>
+		and fileName !='我的文件夹'
+
+	</select>
+</mapper>

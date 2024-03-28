@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.middlegroundConsulation.dao.MiddlegroundConsulationMapper">
+    <resultMap id="treeMap" type="com.jxdinfo.hussar.common.treemodel.JSTreeModel">
+        <id column="ID" property="id" />
+        <result column="TEXT" property="text" />
+        <result column="CODE" property="code" />
+        <result column="PARENT" property="parent" />
+        <result column="ORGANID" property="organId" />
+        <result column="STRUTYPE" property="struType" />
+        <result column="STRULEVEL" property="struLevel" />
+        <result column="STRUORDER" property="struOrder" />
+        <result column="FIRST_ORDER" property="firstOrder" />
+        <result column="TYPE" property="type" />
+        <result column="ISEMPLOYEE" property="isEmployee" />
+        <result column="PARENTTYPECODE" property="parentTypeCode" />
+        <result column="ISLEAF" property="isLeaf" />
+        <result column="SEQ" property="seq" />
+        <result column="ACCOUNTSTATUS" property="accountStatus" />
+    </resultMap>
+
+    <select id="getDeptTree" resultMap="treeMap">
+		SELECT
+            T.*
+        FROM
+            (
+                SELECT
+                    ORG.ORGAN_NAME AS TEXT,
+                    ORG.ORGAN_CODE AS CODE,
+                    STR.STRU_ID AS ID,
+                    STR.PARENT_ID AS PARENT,
+                    STR.PERMISSION_STRU_ID AS PERMITID,
+                    STR.ORGAN_ID AS ORGANID,
+                    STR.STRU_TYPE AS STRUTYPE,
+                    STR.STRU_LEVEL AS STRULEVEL,
+                    STR.STRU_ORDER,
+                    '1' AS FIRST_ORDER,
+                    STR.STRU_TYPE AS TYPE,
+                    '' AS ACCOUNTSTATUS
+                FROM
+                    SYS_STRU STR
+                LEFT JOIN SYS_ORGAN ORG ON STR.ORGAN_ID = ORG.ORGAN_ID
+                WHERE STR.IN_USE='1' AND STR.IS_EMPLOYEE IS NULL
+            ) T
+        ORDER BY
+            T.FIRST_ORDER,
+            T.STRULEVEL,
+            T.STRU_ORDER,
+            T.TEXT
+	</select>
+
+    <select id="getMiddlegroundList" resultType="com.jxdinfo.doc.manager.middlegroundConsulation.model.MiddlegroundConsulation">
+        select consulation_id consulationId
+        ,consulation_title consulationTitle
+        ,dept_id deptId
+        ,dept_name deptName
+        ,date_format(consulation_time,'%Y-%m-%d') consulationTime
+        ,project_id projectId
+        ,project_name projectName
+        ,consulation_participant participant
+        ,consulation_content consulationContent
+        ,date_format(create_time,'%Y-%m-%d')  createTime
+        ,create_user_name createUserName
+        ,create_user_id createUserId
+        ,state
+        ,content_text contentText
+          from  middleground_consulation
+        WHERE 1=1
+        <if test="userName != ''and userName != null">
+            AND create_user_name = #{userName}
+        </if>
+        <if test="deptId != ''and deptId != null">
+            AND dept_id  LIKE CONCAT('%',#{deptId},'%')
+        </if>
+        group by consulationId
+        ORDER BY create_time DESC
+        LIMIT #{pageNum}, #{pageSize}
+    </select>
+
+    <select id="getMiddlegroundCount" resultType="int">
+        SELECT
+        count(*)
+        FROM(
+        select
+        consulation_id,consulation_title,dept_id,dept_name,consulation_time,project_id,project_name,consulation_participant
+        ,consulation_content,create_time,create_user_name,create_user_id,state
+        from middleground_consulation
+        WHERE 1=1
+        <if test="userName != ''and userName != null">
+            AND create_user_name = #{userName}
+        </if>
+        <if test="deptId != ''and deptId != null">
+            AND dept_id  LIKE CONCAT('%',#{deptId},'%')
+        </if>
+        )T
+    </select>
+
+    <delete id="deleteByMiddlegroundConsulationId">
+        DELETE FROM middleground_consulation WHERE consulation_id = #{middleGroundConsulationId}
+    </delete>
+
+    <select id="selectById" resultType="com.jxdinfo.doc.manager.middlegroundConsulation.model.MiddlegroundConsulation">
+        select consulation_id consulationId
+        ,consulation_title consulationTitle
+        ,dept_id deptId
+        ,dept_name deptName
+        ,consulation_time consulationTime
+        ,project_id projectId
+        ,project_name projectName
+        ,consulation_participant participant
+        ,consulation_content consulationContent
+        ,create_time createTime
+        ,create_user_name createUserName
+        ,create_user_id createUserId
+        ,state
+        ,project_desc projectDesc
+        from  middleground_consulation
+        WHERE 1=1
+        <if test="consulationId != ''and consulationId != null">
+            AND consulation_id = #{consulationId}
+        </if>
+    </select>
+</mapper>

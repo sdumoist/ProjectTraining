@@ -1,0 +1,4 @@
+.weadmin-body{padding: 10px 20px;height: 100%;box-sizing: border-box}
+.table-list{height: calc(100% - 40px);}
+.layui-form-label{width: 70px}
+.layui-input-inline{height: 30px;line-height: 30px}

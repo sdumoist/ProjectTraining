@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>积分排行</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/integral/css/integral_rank.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-table-view select[lay-ignore] {
+            display: block;
+            height: 18px;
+        }
+        .layui-table-page .layui-laypage button, .layui-table-page .layui-laypage input{
+            color: #333;
+            line-height: 24px;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <form class="layui-form clearfix rule-form" action="">
+            <button style="display: none">
+            </button>
+        </form>
+        <div class="tableBox">
+            <table class="layui-table" id="rank" lay-filter="rank"></table>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/doc/manager/integral/js/integral_rank.js?v=${h_version}"></script>
+</body>
+</html>

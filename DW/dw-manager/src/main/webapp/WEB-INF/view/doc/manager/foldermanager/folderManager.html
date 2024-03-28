@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>目录维护</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/catalog.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+
+</head>
+<body>
+<script type="text/javascript">
+    // 此段代码处于 顶层（top） 页面中
+    var layerFrameConfig = {};
+</script>
+<div class="background">
+    <div class="content">
+
+        <div class="layui-col-md3  layui-col-sm3 con-full-l leftArea">
+            <div class="pims-tree">
+                <div class="tree-box"  >
+                    <div id="folderTree" class="jsTree" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9  layui-col-sm9 con-full-r rightArea">
+            <div id="marg">
+                <div id="pathDiv">
+                    <div id="upDiv" class="left" >
+                        <img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/uplevelicongreen.png"><span id="upLevel" style="cursor: pointer;color:#26B7B1">返回上级</span>|
+                    </div>
+                    <div class="outer-nav"><i class="layui-icon control-btn-l">&#xe603;</i><div id="path" class="left"></div><i class="layui-icon control-btn-r">&#xe602;</i></div>
+                </div>
+
+                <div class="toolBar">
+                   <!-- <button id="addCategoryBtn" class="white-btn"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/addicon.png">新建</button>
+                    <button id="reName" class="white-btn threeFont"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/renameicon.png">修改</button>
+                    <button id="delCategoryBtn" class="white-btn"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/delicon.png">删除</button>
+                    <button id="cutFolder" class="white-btn"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/cuticon.png">剪切</button>
+                    <button id="pasteFolder" class="white-btn"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/pasteicon.png">粘贴</button>
+                    -->
+                    <button id="addCategoryBtn" class="layui-btn"><i class="layui-icon">&#xea0d;</i>新建</button>
+                    <button style="display: none" id="updateName" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea04;</i>重命名</button>
+                    <button style="display: none" id="delCategoryBtn" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea0f;</i>删除</button>
+                    <!--<button style="display: none" id="cutFolder" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea09;</i>移动</button>-->
+                    <button id="cutFolder" class="layui-btn hideBtn clickBtn">
+                        <img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/move.png">移动
+                    </button>
+
+                    <button style="display: none" id="authorityBtn" class="layui-btn clickBtn"><i class="layui-icon">&#xea11;</i>目录授权</button>
+
+                </div>
+
+                <div class="file-container-flatten">
+                    <div id="view"></div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<input  type="hidden" class="hide"  id="folderId"/>
+<input  type="hidden" class="hide"  id="folderPid"/>
+
+<div id="addDiv" style="display: none;text-align:right" class="addFont ">
+
+    <div class="popup layui-popup">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>目录名称
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="categoryName" autocomplete="off"  maxlength="20" lay-verify="required|categoryName" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                </label>
+                <button id="setAuthority" type="button" class="layui-btn">配置当前目录权限</button>
+            </div>
+            <div class="name-list clearfix"></div>
+            <!--<div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                 前台权限
+                </label>
+                <div class="layui-input-block radio-div" style="display: none;">
+                    <input type="radio" name="visible" lay-filter="visible"  value="0" title="完全公开" >
+                    <input type="radio" name="visible" lay-filter="visible"  value="1" title="部分可见" checked="">
+                </div>
+                <button id="setAuthority" type="button" class="layui-btn">可见范围</button>
+
+            </div>
+            <div class="name-list clearfix"></div>
+            <div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                    后台权限
+                </label>
+
+                <button id="setAuthority1" type="button" class="layui-btn">可见范围</button>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="isEdit" id="isEdit" lay-skin="primary" title="可编辑文件" >
+                    <input type="checkbox" name="isChild" id="isChild" lay-skin="primary" title="可编辑子目录"  >
+                </div>
+            </div>
+            <div class="name-list-power clearfix"></div>-->
+        </form>
+    </div>
+
+</div>
+<div id="editDiv" style="display: none;text-align:right" class="addFont">
+    <div class="popup layui-popup">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>目录名称
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="categoryEditName" autocomplete="off"  maxlength="30" lay-verify="required|categoryName" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                </label>
+                <button id="setEditAuthority1" type="button" class="layui-btn">配置当前目录权限</button>
+            </div>
+            <div class="edit-name-list-power clearfix"></div>
+        </form>
+    </div>
+</div>
+<div id="authorDiv" style="display: none;"  class="formmargin">
+    <div class=" pims-tree">
+        <div class="layui-input-inline personSearch">
+            <input id="authorTreeSearch" placeholder="请输入你想查询的作者" class="layui-input">
+        </div>
+        <!--添加检索结果-->
+        <div class="search-results"></div>
+        <div id="treeArea" style="overflow: auto">
+            <div id="showAuthorTree" class="jsTree"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 目录树 -->
+<div id="folderTreeAuthority" style="display: none;overflow: auto" class="leftArea">
+    <div id="folderTreeAuthority2" class="jsTree"  ></div>
+</div>
+
+<div id="contactsTreeDiv" style="display: none;"  class="formmargin">
+    <div class="layui-input-inline personSearch">
+        <input id="contactsTreeSearch" placeholder="请输入你想查询的联系人" class="layui-input">
+    </div>
+    <!--添加检索结果-->
+    <div class="search-results"></div>
+    <div id="treeArear" style="overflow: auto">
+        <div id="showContactsTree" class="jsTree"></div>
+    </div>
+</div>
+
+<script id="demo" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="file" ondblclick="dbclick('{{item.folderId}}','{{item.folderName}}')"  title="{{item.folderName}}" onclick="clickOneTime(this,'{{item.folderId}}','{{item.folderName}}','{{index}}')"  >
+            <div class="left visible-range">
+                {{#  if((item.visibleRange==0)){ }}
+
+                {{#  }else{ }}
+
+                {{#  } }}
+            </div>
+            <div class="right">
+                <button class="downloadBtn visHide"></button>
+            </div>
+
+            <div  class="file-selection" >
+                <section class="icon">
+                    <img  src="${ctxPath}/static/resources/img/fsfile/folder.png">
+                </section>
+                <section class="profile">
+                    {{#
+                        var sub = function(){
+                            var result=item.folderName;
+                            if(result.length>16){
+                                result=result.substring(0,15)+'...';
+                            }
+                            return result;
+                        };
+                    }}
+                    <h1 id="name{{index}}" class="" >{{ sub() }}</h1>
+                    <input type="text" id="inputName{{index}}"  maxlength="20"  value="{{item.folderName}}" class="layui-input hide">
+                    <input type="text" id="isEdit{{item.folderId}}"  maxlength="20"  value="{{item.isEdit}}" class="layui-input hide">
+                </section>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+
+<script src="${ctxPath}/static/doc/manager/foldermanager/js/folder-manager.js?v=${h_version}"></script></body>
+</html>

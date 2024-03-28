@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.question.dao.QaContinueQaMapper">
+
+    <select id="getContinutQaByAnswer" resultType="Map">
+        SELECT DISTINCT
+          qc.ID AS id,
+          qc.TYPE AS type,
+          qc.BY_REPLY_ID AS replyId,
+          qc.CONTENT AS content,
+          qc.TIME AS time,
+          qc.USER_ID AS userId,
+          qc.USER_NAME AS userName
+        FROM
+            qa_continue_q_a qc
+        WHERE
+            qc.ANS_ID = #{ansId}
+          AND qc.STATE = '0'
+        ORDER BY
+          qc.SHOW_ORDER
+    </select>
+
+</mapper>

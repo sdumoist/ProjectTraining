@@ -1,0 +1,129 @@
+.search-wrapper1{
+    float: right;
+    margin-right: 4px;
+    height: 100%;
+}
+.search-wrapper1>.clear-history>a{
+    font-size: 14px;
+    color: #222;
+    line-height: 30px;
+}
+.delRecord{
+    background-color: #3C91FD;
+    border-radius: 10px;
+    width: 80px;
+    float: left;
+    margin-left:20px;
+    margin-right: 20px;
+    margin-top:5px;
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe{
+    width: 418px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    position: absolute;
+    top: 12px;
+    left: 32px;
+}
+.jsTree>ul.jstree-container-ul>li.jstree-node>a.jstree-anchor>.jstree-themeicon {
+    background: url(../img/root.png) no-repeat center !important;
+}
+.jstree-default .jstree-clicked, .jstree-default .jstree-hovered {
+    color: #3c91fd!important;
+}
+.leftArea{
+    overflow: auto!important;
+}
+.message span.recycle-info{
+    height: 53px;
+    font-size: 14px;
+    padding: 0 0;
+    width: auto;
+    font-weight: 500;
+    line-height: 53px;
+    color: #777;
+}
+.message{
+    height: 53px;
+    font-size: 16px;
+    padding: 0 0;
+    width: auto;
+    float: left;
+    font-weight: bold;
+    line-height: 53px;
+    color: #777;
+}
+.message.recycle{
+    height: 53px;
+    line-height: 53px;
+    color: #333;
+    font-size: 16px;
+    padding-left: 20px !important;
+}
+span#amount {
+    line-height: 43px;
+}
+.clear-history {
+    font-size: 14px;
+    color: #222;
+    background: #fff;
+    border-radius: 1px;
+    border: 1px solid #DBDBDB;
+    opacity: 1;
+    width: 88px;
+    height: 30px;
+    line-height: 30px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 11px;
+    text-align: center;
+    cursor: pointer;
+}
+span.recycle-info {
+    float: left;
+    margin-right: 20px;
+    line-height: 53px;
+    color: 7b7b7b;
+    font-size: 12px;
+}
+/*#marg .file-container-flatten{height: calc(100% - 37px) !important;}*/
+@media only screen and (max-width: 1366px){
+    .message span.recycle-info{
+        height: 47px;
+        font-size: 10px;
+        line-height: 47px;
+        margin-left: 20px;
+    }
+    .message {
+        height: 47px;
+        font-size: 13px;
+        line-height: 47px;
+    }
+    span#amount {
+        line-height: 45px;
+    }
+    .message.recycle{
+        height: 37px;
+        line-height: 37px;
+        font-size: 13px;
+    }
+    .clear-history {
+        font-size: 10px;
+        height: 24px;
+        line-height: 23px;
+        width: 70px;
+        margin-top: 12px;
+    }
+    .search-wrapper1>.clear-history>a{
+        font-size: 10px;
+        line-height: 23px;
+    }
+}
+/*加载中样式*/
+div#transLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}

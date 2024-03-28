@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>新增系统接入配置</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/manager/platformsysteminfo/css/platform_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        button#saveBtn{background: #018cff !important;float: none;border:1px solid #018cff !important;}
+    </style>
+</head>
+<body style="height: 100%">
+    <div class="weadmin-body">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class=" layui-inline">
+                    <label for="systemName" class="layui-form-label">
+                        <span class="we-red">*</span>系统名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="systemName" name="systemName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bot-btns">
+            <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+            <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+        </div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/platformsysteminfo/js/platform_add.js?v=${h_version}"></script>
+</body>
+</body>
+</html>

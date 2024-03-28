@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.componentmanager.dao.MultiplexProjectMapper">
+
+    <select id="multiplexList" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+        SELECT
+        multiplex_id multiplexId,
+        mp.project_id projectId,
+        mp.project_name projectName,
+        mp.project_dept projectDept,
+        ca.component_id componentId,
+        date_format(mp.create_time, '%Y-%m-%d') createTimeStr,
+        GROUP_CONCAT(ca.component_name) componentName,
+        su.USER_NAME userName,
+        ca.component_type componentType,
+        ca.user_name caUserName,
+        ss.ORGAN_ALIAS organAlias,
+        mpc.project_id,
+        t.c projectCount,
+        mpc.project_economize economize
+        FROM
+        (
+        SELECT
+        mpc.project_id,
+        COUNT(*) c
+        FROM
+        multiplex_project_component mpc
+        LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+        GROUP BY
+        mpc.project_id
+        ) AS t
+        LEFT JOIN multiplex_project_component mpc ON mpc.project_id = t.project_id
+        LEFT JOIN component_apply ca ON mpc.component_id = ca.component_id
+        LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+        LEFT JOIN sys_users su ON su.user_id = mp.user_id
+        LEFT JOIN sys_users sus ON sus.USER_ID = ca.user_id
+        LEFT JOIN sys_stru ss ON sus.DEPARTMENT_ID = ss.STRU_ID
+        WHERE
+        1 = 1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="deptNameStr !='' and  deptNameStr != null">
+            AND mp.project_dept = #{deptNameStr}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND mp.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+
+        </if>
+
+        GROUP BY
+        mpc.multiplex_id
+        ORDER BY
+        mp.project_dept,
+        mp.create_time DESC,
+        ca.create_time DESC
+
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+    <select id="multiplexListByDept" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+        SELECT
+        multiplex_id multiplexId,
+        mp.project_id projectId,
+        mp.project_name projectName,
+        mp.project_dept projectDept,
+        ca.component_id componentId,
+        date_format(mp.create_time, '%Y-%m-%d') createTimeStr,
+        GROUP_CONCAT(ca.component_name) componentName,
+        su.USER_NAME userName,
+        ca.component_type componentType,
+        ca.user_name caUserName,
+        ss.ORGAN_ALIAS organAlias,
+        mpc.project_id,
+        t.c componentCount,
+        mpc.project_economize economize
+        FROM
+        (
+        SELECT
+        mpc.component_id,
+        COUNT(1) c
+        FROM
+        multiplex_project_component mpc
+        GROUP BY
+        mpc.component_id
+        ) AS t
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = t.component_id
+        LEFT JOIN component_apply ca ON mpc.component_id = ca.component_id
+        LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+        LEFT JOIN sys_users su ON su.user_id = mp.user_id
+        LEFT JOIN sys_users sus ON sus.USER_ID = ca.user_id
+        LEFT JOIN sys_stru ss ON sus.DEPARTMENT_ID = ss.STRU_ID
+        WHERE
+        1 = 1
+        <if test="title != ''and title != null">
+            AND ca.component_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="caUserName != ''and caUserName != null">
+            AND sus.USER_NAME LIKE CONCAT('%',#{caUserName},'%')
+        </if>
+        <if test="deptNameStr !='' and  deptNameStr != null">
+            AND ss.ORGAN_ALIAS = #{deptNameStr}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        GROUP BY
+        mpc.multiplex_id
+        ORDER BY
+        componentCount desc,
+        mpc.component_id,
+        mp.create_time DESC,
+        ca.create_time DESC
+        <if test="limit != ''and limit != null">
+            LIMIT #{beginIndex}, #{limit}
+        </if>
+
+    </select>
+    <select id="selectComponentProject" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+        SELECT
+        multiplex_id multiplexId,mp.project_id projectId,mp.project_name projectName,mp.project_dept projectDept
+        ,ca.component_id componentId,ca.component_name componentName,ca.component_type componentType,yy.project_user projectUser
+        FROM
+        component_apply ca left join  multiplex_project_component mpc on mpc.component_id =ca.component_id
+        left join multiplex_project mp on mpc.project_id = mp.project_id
+        left join yyzc_project yy on mp.project_id = yy.project_id
+        WHERE ca.component_id=#{componentId}
+        <if test="projectName !='' and projectName !=null">
+            AND mp.project_name  LIKE CONCAT('%',#{projectName},'%')
+        </if>
+
+        ORDER BY mp.create_time desc
+        <if test="beginIndex !='' and beginIndex !=null">
+            LIMIT #{beginIndex}, #{limit}
+        </if>
+
+    </select>
+
+    <select id="componentProjectCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        component_apply ca left join  multiplex_project_component mpc on mpc.component_id =ca.component_id
+        left join multiplex_project mp on mpc.project_id = mp.project_id
+        left join yyzc_project yy on mp.project_id = yy.project_id
+        WHERE ca.component_id=#{componentId}
+        <if test="projectName !='' and projectName !=null">
+            AND mp.project_name = #{projectName}
+        </if>
+    </select>
+
+    <select id="multiplexListCount" resultType="int">
+        select count(*) from(
+        SELECT
+        multiplex_id multiplexId,
+        mp.project_id projectId,
+        mp.project_name projectName,
+        mp.project_dept projectDept,
+        ca.component_id componentId,
+        date_format(mp.create_time,'%Y-%m-%d')createTimeStr,
+        GROUP_CONCAT(ca.component_name) componentName,
+        su.USER_NAME userName,
+        ca.component_type componentType,
+        ca.user_name caUserName,
+        ss.ORGAN_ALIAS organAlias
+        FROM
+        multiplex_project_component mpc
+        LEFT JOIN component_apply ca ON mpc.component_id = ca.component_id
+        LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+        LEFT JOIN sys_users su ON su.user_id = mp.user_id
+        LEFT JOIN sys_users sus ON sus.USER_ID = ca.user_id
+        LEFT JOIN sys_stru ss ON sus.DEPARTMENT_ID = ss.STRU_ID
+        WHERE
+        1 = 1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="deptNameStr !='' and  deptNameStr != null">
+            AND mp.project_dept = #{deptNameStr}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND mp.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+
+        </if>
+        group  by  mpc.multiplex_id
+        )T
+        <!--select count(*) from(-->
+        <!--SELECT-->
+        <!--multiplex_id multiplexId,mp.project_id projectId,mp.project_name projectName,mp.project_dept projectDept-->
+        <!--,ca.component_id componentId,GROUP_CONCAT(ca.component_name) componentName,ca.component_type componentType-->
+        <!--FROM-->
+        <!--multiplex_project_component mpc left join   component_apply ca  on mpc.component_id =ca.component_id-->
+        <!--left join multiplex_project mp on mpc.project_id = mp.project_id-->
+        <!--left join sys_users su on su.user_id = mp.user_id-->
+        <!--WHERE 1=1-->
+        <!--<if test="title != ''and title != null">-->
+            <!--AND mp.project_name LIKE CONCAT('%',#{title},'%')-->
+        <!--</if>-->
+        <!--<if test="deptNameStr !='' and  deptNameStr != null">-->
+            <!--AND mp.project_dept = #{deptNameStr}-->
+        <!--</if>-->
+        <!--<if test="orgId != ''and orgId != null">-->
+            <!--AND su.DEPARTMENT_ID = #{orgId}-->
+        <!--</if>-->
+        <!--group  by  mp.project_id-->
+        <!--)T-->
+    </select>
+
+    <select id="multiplexListCountByDept" resultType="int">
+        select count(*) from(
+        SELECT
+        multiplex_id multiplexId,
+        mp.project_id projectId,
+        mp.project_name projectName,
+        mp.project_dept projectDept,
+        ca.component_id componentId,
+        date_format(mp.create_time,'%Y-%m-%d')createTimeStr,
+        GROUP_CONCAT(ca.component_name) componentName,
+        su.USER_NAME userName,
+        ca.component_type componentType,
+        ca.user_name caUserName,
+        ss.ORGAN_ALIAS organAlias
+        FROM
+        multiplex_project_component mpc
+        LEFT JOIN component_apply ca ON mpc.component_id = ca.component_id
+        LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+        LEFT JOIN sys_users su ON su.user_id = mp.user_id
+        LEFT JOIN sys_users sus ON sus.USER_ID = ca.user_id
+        LEFT JOIN sys_stru ss ON sus.DEPARTMENT_ID = ss.STRU_ID
+        WHERE
+        1 = 1
+        <if test="title != ''and title != null">
+            AND ca.component_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="caUserName != ''and caUserName != null">
+            AND sus.USER_NAME LIKE CONCAT('%',#{caUserName},'%')
+        </if>
+        <if test="deptNameStr !='' and  deptNameStr != null">
+            AND ss.ORGAN_ALIAS = #{deptNameStr}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        group  by  mpc.multiplex_id
+        )T
+    </select>
+
+    <select id="projectList" resultType="com.jxdinfo.doc.manager.componentmanager.model.YYZCProject">
+        SELECT
+        mp.project_id PORJECTID,mp.project_name PROJECTNAME,mp.project_dept PROJECTDEPT
+        ,mp.project_user PROJECTUSER,mp.create_time CREATEDATE
+        FROM
+        yyzc_project mp
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="orgName != ''and orgName != null">
+            AND mp.project_dept = #{orgName}
+        </if>
+
+        ORDER BY mp.create_time desc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+    <select id="projectListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        yyzc_project mp
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="orgName != ''and orgName != null">
+            AND mp.project_dept = #{orgName}
+        </if>
+    </select>
+
+
+    <select id="myComponentList" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT
+        DISTINCT   ca.component_id componentId,ca.component_name componentName ,mp.project_dept projectDept
+        ,mp.project_name projectName,  ca.component_type componentType
+        FROM
+        component_apply  ca left join multiplex_project_component mpc on  ca.component_id =mpc.component_id left join
+        multiplex_project mp on mpc.project_id = mp.project_id
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND ca.component_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="userId != ''and userId != null">
+            AND ca.user_id = #{userId}
+        </if>
+        and ca.component_state = 2
+        ORDER BY ca.create_time desc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+    <select id="myComponentListCount" resultType="int">
+       select count(*) from( SELECT
+        DISTINCT   ca.component_id componentId,ca.component_name componentName ,mp.project_dept projectDept
+        ,mp.project_name projectName,  ca.component_type componentType
+        FROM
+        component_apply  ca left join multiplex_project_component mpc on  ca.component_id =mpc.component_id left join
+        multiplex_project mp on mpc.project_id = mp.project_id
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND ca.component_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="userId != ''and userId != null">
+            AND ca.user_id = #{userId}
+        </if>
+        and ca.component_state = 2
+        )t
+
+    </select>
+    <select id="getComponentList" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT
+   ca.component_id componentId,ca.component_name componentName ,  ca.component_type componentType ,ca.user_name userName,mpc.project_economize economize
+
+        FROM
+        multiplex_project_component mpc  left join component_apply ca on ca.component_id = mpc.component_id
+        WHERE 1=1
+        <if test="projectId != ''and projectId != null">
+            AND mpc.project_id = #{projectId}
+        </if>
+    </select>
+
+    <select id="myMultiplexListCount" resultType="int">
+        select count(*) from (
+        SELECT
+        multiplex_id multiplexId,mp.project_id projectId,mp.project_name projectName,mp.project_dept projectDept
+        ,ca.component_id componentId,GROUP_CONCAT(ca.component_name) componentName,ca.component_type componentType
+        FROM
+        multiplex_project_component mpc left join   component_apply ca  on mpc.component_id =ca.component_id
+        left join multiplex_project mp on mpc.project_id = mp.project_id
+        left join sys_users su on su.user_id = mp.user_id
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="userId != ''and userId != null">
+            AND mp.user_id = #{userId}
+        </if>
+        group  by  mp.project_id
+        )t
+
+    </select>
+    <select id="myMultiplexList" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+        SELECT
+        multiplex_id multiplexId,mp.project_id projectId,mp.project_name projectName,ifnull(ss.organ_alias,'金现代') projectDept,mp.create_time createTime
+        ,ca.component_id componentId,GROUP_CONCAT(ca.component_name) componentName,ca.component_type componentType,su.user_name projectUser
+        FROM
+        multiplex_project_component mpc left join   component_apply ca  on mpc.component_id =ca.component_id
+        left join multiplex_project mp on mpc.project_id = mp.project_id
+        left join sys_users su on su.user_id = mp.user_id
+        left join yyzc_project yyzc on yyzc.project_id = mp.project_id
+        left join sys_stru ss on ss.stru_id=su.DEPARTMENT_ID
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND mp.project_name LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="userId != ''and userId != null">
+            AND mp.user_id = #{userId}
+        </if>
+        group  by  mp.project_id
+        ORDER BY mp.create_time desc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+    <select id="multiplexDateCount" resultType="int">
+        SELECT
+	count(multiplex_id)
+FROM
+	multiplex_project_component mpc LEFT JOIN multiplex_project mp on mpc.project_id=mp.project_id
+WHERE
+	date_format(mp.create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d') ;
+
+    </select>
+
+
+    <select id="multiplexGraphCount" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+
+        SELECT
+
+        so.SHORT_NAME organAlias,
+        count(mpc.component_id) as 're_num'
+        FROM
+        multiplex_project_component mpc LEFT JOIN multiplex_project mp on mpc.project_id=mp.project_id
+        LEFT JOIN sys_users su ON mp.user_id = su.user_name
+        LEFT JOIN sys_stru ss ON su.DEPARTMENT_ID = ss.STRU_ID
+        LEFT JOIN sys_organ so ON so.ORGAN_ID = ss.ORGAN_ID
+        WHERE 1=1
+        AND  so.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND so.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+        <if test="date==1">
+            AND date_format(mp.create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d')
+        </if>
+        <if test="date==3">
+            AND     DATE_SUB(CURDATE(), INTERVAL 3 DAY) &lt; mp.create_time
+        </if>
+        <if test="date==7">
+            AND   DATE_SUB(CURDATE(), INTERVAL 7 DAY)  &lt; mp.create_time
+        </if>
+        <if test="date==30">
+            AND    DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; mp.create_time
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND mp.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+
+        GROUP BY
+        organAlias
+        <if test=" order==null or order=='' or order=='dept'">
+            ORDER BY ss.STRU_ORDER
+        </if>
+        <if test=" order=='account'">
+            ORDER BY re_num desc
+        </if>
+    </select>
+    <select id="multiplexGraphCountBg" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+
+        SELECT
+        IFNULL(
+        soo.SHORT_NAME,
+        so.SHORT_NAME
+        ) organAlias,
+        count(mpc.component_id) AS 're_num'
+        FROM
+        multiplex_project_component mpc LEFT JOIN multiplex_project mp on mpc.project_id=mp.project_id
+        LEFT JOIN sys_users su ON mp.user_id = su.user_name
+        LEFT JOIN sys_stru ss ON su.DEPARTMENT_ID = ss.STRU_ID
+        LEFT JOIN sys_stru sss ON sss.STRU_ID = ss.PARENT_ID
+        AND sss.STRU_TYPE = 5
+        LEFT JOIN sys_organ so ON so.ORGAN_ID = ss.ORGAN_ID
+        LEFT JOIN sys_organ soo ON soo.ORGAN_ID = sss.ORGAN_ID
+
+        WHERE
+        1 = 1
+        AND  so.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND so.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+        <if test="date==1">
+            AND date_format(mp.create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d')
+        </if>
+        <if test="date==3">
+            AND     DATE_SUB(CURDATE(), INTERVAL 3 DAY) &lt; mp.create_time
+        </if>
+        <if test="date==7">
+            AND   DATE_SUB(CURDATE(), INTERVAL 7 DAY)  &lt; mp.create_time
+        </if>
+        <if test="date==30">
+            AND    DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; mp.create_time
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND mp.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND mp.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+
+        GROUP BY
+        organAlias
+
+        <if test=" order==null or order=='' or order=='dept'">
+            ORDER BY ss.STRU_ORDER
+        </if>
+        <if test=" order=='account'">
+            ORDER BY re_num desc
+        </if>
+    </select>
+    <select id="componentMultiplexList"  resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+
+         SELECT
+        mp.project_name projectName,
+        mp.project_dept projectDept,
+        mp.create_time createTime,
+            su.user_name userName,
+            ss.ORGAN_ALIAS deptName,
+        yy.project_user projectUser
+        FROM
+        component_apply ca
+        LEFT JOIN multiplex_project_component mpc ON ca.component_id = mpc.component_id
+        LEFT JOIN multiplex_project mp ON mp.project_id = mpc.project_id
+      LEFT JOIN yyzc_project yy on yy.project_id=mp.project_id
+         LEFT JOIN sys_users su on mp.user_id=su.user_id
+            LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        WHERE 1=1
+        and mpc.component_id = #{componentId}
+        order BY  mp.create_time
+    </select>
+    <select id="componentMultiplexProjectList" resultType="com.jxdinfo.doc.manager.componentmanager.model.MultiplexProject">
+        SELECT
+	ca.component_name componentName,
+	ca.component_type componentType,
+	ca.user_name userName,
+	ca.component_id componentId,
+    mp.multiplex_desc,
+	mp.project_name,
+	mpc.project_economize economize
+FROM
+	multiplex_project mp
+LEFT JOIN multiplex_project_component mpc ON mp.project_id=mpc.project_id
+LEFT JOIN component_apply ca ON mpc.component_id = ca.component_id
+    WHERE 1=1
+    AND mpc.project_id=#{projectId}
+    ORDER BY show_order
+    </select>
+
+</mapper>

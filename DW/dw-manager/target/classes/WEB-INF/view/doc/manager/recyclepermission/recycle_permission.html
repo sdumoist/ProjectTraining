@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>回收权限</title>
+
+    <!--外部css和js开始-->
+    @include("/common/plugins.html"){}
+    <style type="text/css">
+        .hide {
+            display: none;
+        }
+
+        .labelWidth {
+            width: 165px;
+        }
+
+        .must {
+            color: red;
+        }
+
+        .notMust {
+            visibility: hidden
+        }
+
+        .jstree-default .jstree-search {
+            color: #ff0000;
+            font-weight: 700;
+        }
+
+        .treeArea {
+            height: 100%;
+            background-color: white;
+        }
+        button#saveBtn{background: #018cff !important;float: none;border:1px solid #018cff !important;}
+        .back-auth .layui-layer-content{
+            height: 70px;
+        }
+    </style>
+    <!--外部css和js结束-->
+
+    <!--[if lt IE 9]>
+    <script src="${ctxPath}/static/common/IE9/html5shiv.min.js"></script>
+    <script src="${ctxPath}/static/common/IE9/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div class="layui-row  con-full" style="height: 100%">
+    <div class="layui-col-md3 con-full-l" style="height: 100%">
+        <div class=" pims-tree">
+            <div class="layui-input-inline">
+                <input id="userTreeSearch" placeholder="请输入你想查询的内容" class="layui-input">
+            </div>
+            <!--添加检索结果-->
+            <div id="userTreeSearchResult" class="search-results"></div>
+            <div id="treeArea" style="overflow: auto; height: 100% !important;">
+                <div id="userTree" class="jsTree"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md9  weadmin-body" style="overflow: auto">
+        <button type="button" id="recyclePermission" class="layui-btn layui-btn-normal"><i
+                class="layui-icon">&#xe00A;</i>回收权限
+        </button>
+    </div>
+</div>
+
+
+<script src="${ctxPath}/static/doc/manager/recyclepermission/recycle_permission.js"></script>
+</body>
+<link rel="stylesheet" href="${ctxPath}/static/css/bsp/project_ext.css">
+</html>

@@ -1,0 +1,63 @@
+@charset "UTF-8";
+/**
+ * @ClassName: record.css
+ * @Description: 信息样式表
+ * @Author: lx
+ * @Date: 2017-6-28
+ */
+/*--------重定向---------*/
+.item-box-top{height: 166px;}
+.person{width: 200px;margin-right: 10px}
+.person-info{width: 380px;margin-right: 10px}
+.person-view{width: 380px;}
+.item-box-btn{height:405px}
+.table-nav{width: 200px;margin-right: 10px}
+.table-body{width: 770px;}
+.person-info-item{line-height: 30px;padding: 10px 10px 5px;}
+.person-info-item:first-child{border-bottom: 2px solid #f7f7fa;padding-bottom: 14px;}
+.info-head{font-size: 14px;}
+.person-view .info-head,.table-body  .info-head{padding: 0 10px;line-height: 35px}
+.info-body span{padding-left: 15px;color: #f08200;font-size: 18px}
+.info-body .col-sm-4{padding:0}
+.file-lists li{line-height: 30px;height: 30px}
+.file-lists li img{width: 16px;margin-right: 5px}
+.file-lists li span{color: #999}
+.file-lists li a{color: #323232}
+.file-lists li:hover{background: #eee;}
+.upload{padding: 15px 10px}
+.upload-btn{padding: 5px 54px;border-radius: 6px;}
+
+.table-navs{line-height: 32px}
+.lv-1 {font-size:14px;color: #868686;padding-left: 30px}
+.lv1-1{background: url(../img/lv1-1.png) no-repeat left 10px center}
+.lv1-2{background: url(../img/lv1-2.png) no-repeat left 10px center}
+.lv-2 li {border-left: 4px solid transparent}
+.lv-2 li:hover,.lv-2 li.active{border-left: 4px solid #0b7be0;background: #e5f3ff;}
+.lv-2 li a{color:#323232;padding: 0 40px}
+.lv-2 li.active a,.lv-2 li:hover a{color:#0b7be0;padding: 0 40px}
+
+.table-box{height: 350px}
+.star-list{margin: auto;width: 120px;height: 20px;}
+.star{position:relative;float: left;width: 20px;height: 20px;background: url(../img/star.png) no-repeat center;margin:0 2px}
+.light{background: url(../img/star-1.png) no-repeat center;}
+.light-1{background: url(../img/star-1.png) no-repeat center;}
+table{font-size: 12px}
+.table img{margin-right:  5px}
+.table>tbody>tr>th{background: #e5f3ff;}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th
+{padding: 8px  10px;border-top: 0;border-bottom:  1px solid #f7f7fa;; }
+.table-box .table>tbody>tr>th,.table-box .table>tbody>tr>td{text-align: center}
+.table-box .table>tbody>tr>th:first-child,.table-box .table>tbody>tr>td:first-child{text-align: left}
+.table .no{padding: 3px 10px;background: #e5e5e5;border-radius: 6px;cursor: pointer}
+
+.pageSize{line-height: 26px;margin-top: 10px;padding: 10px}
+.pageSize span{margin-right: 45px}
+.btn-page{display:inline-block;padding: 0 10px;border-radius: 6px;border: 1px solid #eee;line-height: 26px;color: #323232;margin:0 5px}
+.btn-page.active,.btn-page:hover{background: #0b7be0;color: #fff}
+.modal-self .modal-dialog{width: 446px}
+.modal-self .modal-header{padding: 9px 10px;font-size: 12px;background: #0b7be0;color: #fff;}
+.modal-self .close{ color: #fff;opacity: 1}
+.modal-self .modal-body span{ margin-bottom: 10px; padding: 0 4px 0 10px;}
+.submit{width: 68px;line-height: 26px;border-radius: 6px}
+.modal-self .modal-footer{padding: 10px 0 15px;border: 0}
+.modal-self .modal-dialog{margin-top: 300px}

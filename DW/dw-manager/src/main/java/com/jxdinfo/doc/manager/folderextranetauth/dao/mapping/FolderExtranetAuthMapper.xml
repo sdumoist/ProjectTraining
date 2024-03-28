@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.folderextranetauth.dao.FolderExtranetAuthMapper">
+
+    <select id="getFoldId" resultType="String">
+        select FOLD_ID from doc_info where DOC_ID=#{docId,jdbcType=VARCHAR}
+    </select>
+    <select id="existsFold" resultType="String">
+        select FOLDER_NAME from folder_extranet_auth where FOLDER_ID = #{foldIder,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectFolderExtranetAuths"
+            resultType="com.jxdinfo.doc.manager.folderextranetauth.model.FolderExtranetAuth">
+        select
+        auth.folder_id folderId,
+        auth.folder_name folderName,
+        auth.create_time createTime,
+        auth.create_user_id createUserId,
+        auth.create_user_name createUserName,
+        fold.folder_path folderPath
+        from folder_extranet_auth auth
+        left join fs_folder fold on auth.folder_id = fold.folder_id
+        where 1=1
+        <if test="folderName != ''and folderName != null">
+            AND auth.folder_name LIKE CONCAT('%',#{folderName},'%')
+        </if>
+    </select>
+</mapper>

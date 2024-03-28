@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dw-client/dw-client.iml" filepath="$PROJECT_DIR$/dw-client/dw-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-common/dw-common.iml" filepath="$PROJECT_DIR$/dw-common/dw-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-fastdfs/dw-fastdfs.iml" filepath="$PROJECT_DIR$/dw-fastdfs/dw-fastdfs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-kms/dw-kms.iml" filepath="$PROJECT_DIR$/dw-kms/dw-kms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-main/dw-main.iml" filepath="$PROJECT_DIR$/dw-main/dw-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-manager/dw-manager.iml" filepath="$PROJECT_DIR$/dw-manager/dw-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-mobile/dw-mobile.iml" filepath="$PROJECT_DIR$/dw-mobile/dw-mobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-parent.iml" filepath="$PROJECT_DIR$/dw-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dw-yyzc/dw-yyzc.iml" filepath="$PROJECT_DIR$/dw-yyzc/dw-yyzc.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>选择审批人页面</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/doc/manager/foldermanager/css/folderAuthority.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/authority_new.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="weadmin-body">
+    <input type="hidden" class="hide" id="folderId" value="${folderId!}"/>
+    <div class="layui-row authority-top">
+        <div class="layui-col-xs5 layui-col-sm5 layui-col-md5 pims-tree">
+            <div class="personSearch con-full-l">
+                <div class="layui-input-inline">
+<!--                    <input id="groupSearch" placeholder="请输入" style="display:none;" class="layui-input">-->
+                    <input id="personSearch" placeholder="请输入" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-tab layui-tab-brief" lay-filter="navigate">
+<!--                <ul class="layui-tab-title" >-->
+<!--                    <li class="layui-this">组织架构</li>-->
+<!--                    <li id="roleMsg">群组</li>-->
+<!--                </ul>-->
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show one" lay-id="one">
+                        <div class="renThree" id="renTree"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs7 layui-col-sm7 layui-col-md7">
+            <div class="rit-top">
+                <form class="layui-form" lay-filter="formFilter" style="height: 30px;">
+                    <div class="layui-inline" style="margin-left: 10px">
+                        <label class="layui-form-label" style="width: auto;margin-left: -15px;">继承上级目录审核人：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" id="parentAuthority" name="parentAuthority" lay-filter="parentAuthority" lay-skin="switch">
+                        </div>
+                    </div>
+                    <button type="button"class="layui-btn" id="delBtn">批量移除</button>
+                </form>
+            </div>
+            <div class="rit-bot">
+                <table id="rit_table" lay-filter="demo"></table>
+            </div>
+            <div class="bot-btns">
+                <div class="btn-div">
+                    <button id="saveBtn" class="layui-btn">确定</button>
+                    <button id="cancelBtn" class="layui-btn">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="${ctxPath}/static/doc/manager/docmanager/js/judgeChoose.js?v=${h_version}"></script>
+<!--html代码-->
+<script type="text/html" id="barDemo">
+    <span class="delete" lay-event="del"></span>
+</script>
+<script type="text/html" id="name">
+    {{#  if(d.type == 0){ }}
+    <span class="people">{{ d.name }}</span>
+    {{#  } else if(d.type == 1 || d.type == 3){ }}
+    <span class="qz">{{ d.name }}</span>
+    {{#  }else{ }}
+    <span class="dept">{{ d.name }}</span>
+    {{# } }}
+</script>
+</body>
+
+</html>

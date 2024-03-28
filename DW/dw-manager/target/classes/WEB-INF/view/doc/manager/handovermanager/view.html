@@ -1,0 +1,41 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/front/personalcenter/css/handoverDetail.css?v=${h_version}">
+</head>
+<body>
+<div class="background">
+    <input type="text" hidden id="id" value="${docHandOver.handOverId}">
+    <div class="top">
+        <div class="layui-container">
+            <div class="layui-row">
+                <div class="layui-col-md4">
+                    <div class="detail-label">交接人：<span>${docHandOver.handOverUserName}</span></div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="detail-label">交接部门：<span>${docHandOver.handOverDeptName}</span></div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="detail-label">接收人：<span>${docHandOver.acceptName}</span></div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md4">
+                    <div class="detail-label">接收部门：<span>${docHandOver.acceptDeptName}</span></div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="detail-label">交接时间：<span>${docHandOver.handOverDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>文件交接信息</p>
+        <table class="layui-hide" id="detailTable"></table>
+    </div>
+
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/handovermanager/js/handoverDetail.js?v=${h_version}"></script>
+</body>

@@ -1,0 +1,52 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.topicmanager.dao.MessageMapper">
+
+    <!--循环插入主题文档-->
+    <insert id="insertMessageList" parameterType="java.util.List">
+        insert into doc_message (message_id,message_title,message_content,create_time,user_name)
+        values
+        <foreach collection="messageList" item="item" index="index" separator="," close=";">
+            (#{item.ARTICLEID,jdbcType=VARCHAR}, #{item.TITLE,jdbcType=VARCHAR}, #{item.CONTENT,jdbcType=VARCHAR}, #{item.ADDTIME} ,#{item.USERNAME})
+        </foreach>
+    </insert>
+
+    <select id="getList" resultType="com.jxdinfo.doc.manager.topicmanager.model.Message">
+        select  DM.message_id  ARTICLEID,DM.message_title TITLE,DM.message_content CONTENT,
+        date_format(DM.create_time,'%Y-%m-%d %H:%i:%s') ADDTIME,DM.user_name USERNAME from doc_message DM
+         WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND (DM.message_title LIKE  CONCAT('%',#{name},'%')or
+            DM.message_content LIKE  CONCAT('%',#{name},'%')
+            )
+        </if>
+        <if test="year != null and year != '' ">
+            AND year(DM.create_time)=#{year}
+        </if>
+        <if test="month != null and month != '' ">
+            AND month(DM.create_time)=#{month}
+        </if>
+ order  by DM.create_time desc
+       limit #{pageNum},#{pageSize}
+    </select>
+    <delete id="deleteMessage">
+             DELETE FROM doc_message;
+    </delete>
+
+    <select id="getListCount" resultType="int" >
+        select count(*) from doc_message DM
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND (DM.message_title LIKE  CONCAT('%',#{name},'%')or
+            DM.message_content LIKE  CONCAT('%',#{name},'%')
+            )
+        </if>
+        <if test="year != null and year != '' ">
+            AND year(DM.create_time)=#{year}
+        </if>
+        <if test="month != null and month != '' ">
+            AND month(DM.create_time)=#{month}
+        </if>
+
+    </select>
+</mapper>

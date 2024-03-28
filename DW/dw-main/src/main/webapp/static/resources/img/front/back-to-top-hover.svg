@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="10px" viewBox="0 0 16 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>形状</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="修改" transform="translate(-855.000000, -485.000000)" fill="#2980FF" fill-rule="nonzero">
+            <g id="编组-14" transform="translate(372.500000, 203.000000)">
+                <g id="vertical-left-copy-2" transform="translate(490.500000, 287.000000) rotate(-90.000000) translate(-490.500000, -287.000000) translate(485.500000, 279.000000)">
+                    <path d="M6.28006925e-16,0.179951262 L6.28006925e-16,1.80688094 C6.28006925e-16,2.02035928 0.0965517241,2.22035478 0.262068966,2.35743035 L7.14022989,8 L0.262068966,13.6425696 C0.0965517241,13.7796452 -2.53657053e-17,13.9796407 -2.53657053e-17,14.1931191 L-2.53657053e-17,15.8200487 C-2.53657053e-17,15.9728543 0.181609195,16.0559985 0.301149425,15.9571243 L10,8 L0.301149425,0.0428756949 C0.181609195,-0.0559984845 1.28137956e-15,0.0271457118 6.28006925e-16,0.179951262 Z" id="形状"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

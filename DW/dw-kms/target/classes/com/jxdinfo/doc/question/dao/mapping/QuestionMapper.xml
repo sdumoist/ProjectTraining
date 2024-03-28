@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.question.dao.QuestionMapper">
+    <select id="getQuestionDetail" resultType="Map">
+        SELECT DISTINCT
+            qq.QUE_ID AS id,
+            qq.TITLE AS title,
+            qq.SUPPLEMENT AS content,
+            qt.CONTENT AS contentText,
+            qq.STATE AS state,
+            qq.REWARD_POINITS AS reward,
+            qq.LABEL AS label,
+            qq.ANSWER_FLAG AS answerFlag,
+            qq.QUE_USER_ID AS userId,
+            qq.QUE_USER_NAME AS userName,
+            qq.QUE_TIME AS queTime,
+            qq.READ_NUM AS readNum,
+            qq.MAJOR_ID AS majorId,
+            qq.MAJOR_NAME AS majorName,
+            CASE
+            WHEN qfi.ID IS NOT NULL THEN
+                '1'
+            ELSE
+                '0'
+            END AS isFollow
+        FROM
+            qa_question qq
+        LEFT JOIN
+          qa_follow_info qfi
+        ON
+          qq.QUE_ID = qfi.QUE_ID AND qfi.USER_ID = #{userId}
+        LEFT JOIN
+          qa_text qt
+        ON qq.QUE_ID = qt.QA_ID
+        WHERE
+            qq.QUE_ID = #{queId}
+    </select>
+
+    <select id="getRelevantQuestion" resultType="Map">
+        SELECT DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName
+        FROM
+            qa_question qa
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+            qa.STATE != '3'
+            AND (select INTE_ARRAY(#{label},qa.LABEL)) > 0
+            AND qa.QUE_ID != #{queId}
+        ORDER BY
+            qa.QUE_TIME DESC
+        LIMIT 0,8
+    </select>
+
+    <select id="getQueTableList" resultType="Map">
+        SELECT DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.READ_NUM readNum,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName,
+            (SELECT COUNT(*) FROM qa_question_answer qqa WHERE qqa.QUE_ID = qa.QUE_ID AND qqa.STATE = '0' ) AS answerNum,
+            CASE
+            WHEN qfi.ID IS NOT NULL THEN
+            '1'
+            ELSE
+            '0'
+            END AS isFollow,
+            CASE
+            WHEN
+            qa.ANSWER_FLAG = '1'
+            OR ( qa.ANSWER_FLAG = '2' AND
+                  FIND_IN_SET( #{userId}, ( SELECT qp.User_ID FROM qa_professional qp WHERE qp.major_ID = qa.MAJOR_ID ) ) > 0
+                ) THEN
+            '1'
+            ELSE
+            '0'
+            END AS canAnswer
+        FROM
+            qa_question qa
+        LEFT JOIN
+            qa_follow_info qfi
+        ON
+            qa.QUE_ID = qfi.QUE_ID AND qfi.USER_ID = #{userId}
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+            qa.STATE != '3'
+        <if test="title != null and title != ''">
+            AND qa.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qa.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qa.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    qa.REWARD_POINITS asc
+                </if>
+                <if test="order == 1">
+                    qa.REWARD_POINITS desc
+                </if>
+                <if test="order == 2">
+                    qa.QUE_TIME asc
+                </if>
+                <if test="order == 3">
+                    qa.QUE_TIME desc
+                </if>
+                <if test="order == 4">
+                    qa.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qa.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qa.QUE_TIME DESC
+    </select>
+
+    <select id="getMyQuestionList" resultType="Map">
+        SELECT DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.READ_NUM readNum,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName,
+            (SELECT COUNT(*) FROM qa_question_answer qqa WHERE qqa.QUE_ID = qa.QUE_ID AND qqa.STATE = '0' ) AS answerNum
+        FROM
+            qa_question qa
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+            qa.STATE != '3'
+            AND qa.QUE_USER_ID = #{userId}
+        <if test="title != null and title != ''">
+            AND qa.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qa.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qa.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    qa.REWARD_POINITS asc
+                </if>
+                <if test="order == 1">
+                    qa.REWARD_POINITS desc
+                </if>
+                <if test="order == 2">
+                    qa.QUE_TIME asc
+                </if>
+                <if test="order == 3">
+                    qa.QUE_TIME desc
+                </if>
+                <if test="order == 4">
+                    qa.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qa.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qa.QUE_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getMyFollowQuestionList" resultType="Map">
+        SELECT DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.READ_NUM readNum,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName,
+            (SELECT COUNT(*) FROM qa_question_answer qqa WHERE qqa.QUE_ID = qa.QUE_ID AND qqa.STATE = '0' ) AS answerNum
+        FROM
+            qa_question qa
+        LEFT JOIN
+            qa_follow_info qfi
+        ON qfi.QUE_ID = qa.QUE_ID AND qfi.USER_ID = #{userId}
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+            qa.STATE != '3'
+            AND qfi.ID IS NOT NULL
+        <if test="title != null and title != ''">
+            AND qa.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qa.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qa.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    qa.REWARD_POINITS asc
+                </if>
+                <if test="order == 1">
+                    qa.REWARD_POINITS desc
+                </if>
+                <if test="order == 2">
+                    qa.QUE_TIME asc
+                </if>
+                <if test="order == 3">
+                    qa.QUE_TIME desc
+                </if>
+                <if test="order == 4">
+                    qa.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qa.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qa.QUE_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getMyAnswerList" resultType="Map">
+        SELECT  DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.READ_NUM readNum,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName,
+            (SELECT COUNT(*) FROM qa_question_answer qqa WHERE qqa.QUE_ID = qa.QUE_ID AND qqa.STATE = '0' ) AS answerNum
+        FROM
+            qa_question qa
+        LEFT JOIN
+            qa_question_answer qqa
+        ON qqa.QUE_ID = qa.QUE_ID AND qqa.ANS_USER_ID = #{userId}
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+            qa.STATE != '3'
+            AND qqa.ANS_ID IS NOT NULL
+        <if test="title != null and title != ''">
+            AND qa.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qa.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qa.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    qa.REWARD_POINITS asc
+                </if>
+                <if test="order == 1">
+                    qa.REWARD_POINITS desc
+                </if>
+                <if test="order == 2">
+                    qa.QUE_TIME asc
+                </if>
+                <if test="order == 3">
+                    qa.QUE_TIME desc
+                </if>
+                <if test="order == 4">
+                    qa.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qa.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qa.QUE_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getInviteMeAnswerList" resultType="Map">
+        SELECT  DISTINCT
+            qa.QUE_ID id,
+            qa.QUE_USER_ID userId,
+            qa.QUE_USER_NAME userName,
+            qa.TITLE title,
+            qa.SUPPLEMENT supplement,
+            qt.CONTENT AS contentText,
+            qa.REWARD_POINITS reward,
+            qa.STATE state,
+            qa.LABEL label,
+            qa.QUE_TIME time,
+            qa.READ_NUM readNum,
+            qa.MAJOR_ID AS majorId,
+            qa.MAJOR_NAME AS majorName,
+            (SELECT COUNT(*) FROM qa_question_answer qqa WHERE qqa.QUE_ID = qa.QUE_ID AND qqa.STATE = '0' ) AS answerNum
+        FROM
+        qa_question qa
+        LEFT JOIN qa_professional qp ON qa.MAJOR_ID = qp.major_ID
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+        qa.STATE != '3'
+        AND FIND_IN_SET(#{userId}, qp.User_ID) > 0
+        <if test="title != null and title != ''">
+            AND qa.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qa.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qa.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    qa.REWARD_POINITS asc
+                </if>
+                <if test="order == 1">
+                    qa.REWARD_POINITS desc
+                </if>
+                <if test="order == 2">
+                    qa.QUE_TIME asc
+                </if>
+                <if test="order == 3">
+                    qa.QUE_TIME desc
+                </if>
+                <if test="order == 4">
+                    qa.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qa.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qa.QUE_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <select id="getQueListByFirstPage" resultType="Map">
+        SELECT DISTINCT
+          qa.QUE_ID id,
+          qa.QUE_USER_ID userId,
+          qa.QUE_USER_NAME userName,
+          qa.TITLE title,
+          qa.SUPPLEMENT supplement,
+          qt.CONTENT AS contentText,
+          qa.REWARD_POINITS reward,
+          qa.STATE state,
+          qa.LABEL label,
+          qa.QUE_TIME time,
+          qa.MAJOR_ID AS majorId,
+          qa.MAJOR_NAME AS majorName,
+          COUNT(qqa.ANS_ID) answerNum
+        FROM
+          qa_question qa
+        LEFT JOIN qa_question_answer qqa
+        ON qa.QUE_ID = qqa.QUE_ID AND qqa.STATE = '0'
+        LEFT JOIN
+            qa_text qt
+        ON qa.QUE_ID = qt.QA_ID
+        WHERE
+          qa.STATE != '3'
+        GROUP BY
+          qa.QUE_ID
+        ORDER BY
+          qa.QUE_TIME DESC
+        LIMIT 0,8
+    </select>
+
+    <update id="delQuestion">
+        UPDATE qa_question_answer SET STATE = '1' WHERE QUE_ID = #{queId};
+        UPDATE qa_comment_reply SET STATE = '1' WHERE QUE_ID = #{queId};
+        UPDATE qa_continue_q_a SET STATE = '1' WHERE QUE_ID = #{queId};
+        UPDATE qa_question SET STATE = '3' WHERE QUE_ID = #{queId};
+    </update>
+
+    <select id="getFollowInfoByQueId" resultType="com.jxdinfo.doc.question.model.QaFollowInfo">
+        SELECT
+            qfi.*
+        FROM
+            qa_follow_info qfi
+        LEFT JOIN qa_question qq ON qfi.QUE_ID = qq.QUE_ID
+        WHERE
+            qq.QUE_ID = #{queId}
+        AND qfi.USER_ID = #{userId}
+    </select>
+</mapper>

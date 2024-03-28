@@ -1,0 +1,74 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.doctop.dao.DocTopMapper">
+
+    <select id="addCheck" resultType="com.jxdinfo.doc.manager.doctop.model.DocTop">
+        SELECT * FROM `doc_top_file` where doc_id in
+        <foreach item="idItem" collection="ids" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+
+    <insert id="add" parameterType="docTop">
+        INSERT doc_top_file(top_id,doc_id,show_order)
+        VALUES
+            (#{topId},#{docId},
+                (select show_order from (SELECT ifnull(max(show_order),0)+1 show_order FROM  doc_top_file)a))
+    </insert>
+
+    <select id="topList" resultType="Map">
+        SELECT
+        a.top_id topId,
+        a.doc_id docId,
+        di.title title,
+        di.create_time createTime,
+        a.show_order showOrder
+
+        FROM
+        doc_top_file a left join doc_info di on a.doc_id= di.doc_id
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND  di.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        ORDER BY a.show_order,  di.create_time asc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+    <select id="topListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_top_file a left join doc_info di on a.doc_id= di.doc_id
+        WHERE 1=1
+        <if test="title != ''and title != null">
+            AND  di.title LIKE CONCAT('%',#{title},'%')
+        </if>
+    </select>
+
+    <delete id="delTops" parameterType="list">
+        DELETE FROM doc_top_file
+        WHERE top_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <delete id="delTopsFile" parameterType="list">
+        DELETE FROM doc_top_file
+        WHERE doc_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <update id="moveTop">
+        UPDATE ${table} AS tab1 JOIN ${table} AS tab2 ON (tab1.${idColumn}= #{idOne} AND tab2.${idColumn}= #{idTwo})
+        OR (tab1.${idColumn}=  #{idTwo}  AND tab2.${idColumn} = #{idOne} )
+        SET tab1.show_order = tab2.show_order,tab2.show_order=tab1.show_order
+    </update>
+
+    <update id="updateTop">
+        UPDATE doc_top_file SET doc_id = #{docId} WHERE doc_id = #{oldDocId}
+    </update>
+
+</mapper>

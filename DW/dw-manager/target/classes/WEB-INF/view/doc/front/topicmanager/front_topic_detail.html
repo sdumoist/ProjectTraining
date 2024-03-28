@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-专题列表详情</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script>
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render()
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/front_topic_detail.css?v=${h_version}"/>
+    <style>
+        .doc-list{min-height: 500px}
+        /*注意,上传按钮是将来要加上*/
+        .btn-rit{display: none!important;}
+        .topic-bread-crumbs-container span, .topic-bread-crumbs-container  a {color:#222;}
+        .topic-bread-crumbs-container span:hover, .topic-bread-crumbs-container  a:hover{color: #2980FF}
+        .topic-bread-crumbs span:last-child{color: #2980FF}
+    </style>
+</head>
+<body id="top">
+@include("/common/front-header_new2.html"){}
+@include("/common/front-rit.html"){}
+<div class="container mainCon ">
+    <div class="topic-bread-crumbs-container row col-md-12">
+        <div class="topic-bread-crumbs">
+            <a target="_blank" id="aTopicName" onclick="dbclick('','','','','aTopicName')">${topic.topicName}</a>
+            <span id="path" style="margin-left: 0px"></span>
+        </div>
+    </div>
+    <div class="row topic-item">
+        <div class="col-md-12 clearfix">
+            <div class="topic-cover">
+                <img class="cover-img" src="${ctxPath}/preview/list?fileId=${topic.topicCover}">
+                <input  type="hidden" class="hide"  id="topicId" value="${topic.TopicId}">
+                <input  type="hidden" class="hide"  id="topicName" value="${topic.topicName}">
+                <input  type="hidden" class="hide"  id="docCount" value="${topic.docCount}">
+                <input  type="hidden" class="hide"  id="count" value="0">
+                <input  type="hidden" class="hide"  id="pathName" value="${path}">
+                <input  type="hidden" class="hide"  id="pathId" value="${pathId}">
+                <input  type="hidden" class="hide"  id="docId" value="${folderId}">
+                <input  type="hidden" class="hide"  id="curr" value="${curr}">
+            </div>
+            <div class="topic-desc">
+                <div class="topic-desc-left fl">
+
+                    <div class='topic-title textOver clearfix' title="${topic.topicName}">
+                        ${topic.topicName}
+                    </div>
+                    <div class="topic-abstract" title="${topic.topicDesc}">
+                        @if(strutil.length (topic.topicDesc) > 90){
+                        ${strutil.subStringTo(topic.topicDesc,0,90)}...
+                        @}else{
+                        ${topic.topicDesc}
+                        @}
+                    </div>
+                </div>
+                <div class="topic-desc-rit fl">
+                    <ul class="topic-detail  hidden-xs">
+                        <li class="detail-item">
+                            <div class="item-key">创建时间</div>
+                            <div class="item-value">${topic.createTime,'yyyy-MM-dd'}</div>
+                        </li>
+                        <li class="detail-item">
+                            <div class="item-key">文档数</div>
+                            <div class="item-value" id="fileCount">-</div>
+                        </li>
+                        <li class="detail-item">
+                            <div class="item-key">浏览量</div>
+                            <div class="item-value"> ${topic.viewNum}</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row doc-list" style="margin-top: 0!important;">
+        @if(isEmpty(topic.docList)){
+        <div class="text-center noresult" style="height: 560px">
+            <img src="${ctxPath}/../../../../../static/resources/img/front/noresult.png"/>
+            <p class="tipTxt">未找到相关内容~</p>
+        </div>
+        @}else{
+        @for(doc in topic.docList){
+        <div class="col-md-12">
+            <div class='doc-item'>
+
+                <div class='doc-title'>
+                    @if(doc.fileType=='folder'){
+                    <span class="doc-type type-folder">&nbsp;</span>
+                    <a  class='doc-name'  title="${doc.title}" onclick=dbclick('${doc.doc_id}','','${doc.fileType}','${doc.title}')>
+                        @if(strutil.length (doc.title) > 50){
+                        ${strutil.subStringTo(doc.title,0,50)}...
+                        @}else{
+                        ${doc.title}
+                        @}
+                    </a>
+                    @}else{
+                    <span class="doc-type type-${doc.fileSuffixName}">&nbsp;</span>
+                    <a  class='doc-name'  title="${doc.title}" onclick=showPdf('${doc.doc_id}','','${doc.fileType}')>
+                        @if(strutil.length (doc.title) > 50){
+                        ${strutil.subStringTo(doc.title,0,50)}...
+                        @}else{
+                        ${doc.title}
+                        @}
+                    </a>
+                    <div class="btn-div">
+
+                        @if(doc.shareFlag=='1'){
+                        <!--<a class="shareBtn" href="javascript:share('${doc.doc_id}','${doc.fileType}','${doc.title}')"><span class="pdfBtn"><i class="layui-icon">&#xe641;</i>分享</span></a>-->
+                        <button type="button" class="shareBtn pdfBtn" title="分享"
+                                onclick="share('${doc.doc_id}','${doc.fileType}','${doc.title}')"><i class="layui-icon">&#xe641;</i></button>
+                        @}
+
+                        @if(doc.collection==0){
+                        <a title="收藏"  id="${doc.doc_id}col"> <button type="button" class="no-favoriteBtn pdfBtn" onclick="collection('${doc.doc_id}','0')"><i class="iconfont">&#xe658;</i></button></a>
+                        <a style="display: none" title="取消收藏" id="${doc.doc_id}con"> <button type="button" class="favoriteBtn pdfBtn" onclick="collection('${doc.doc_id}','1')"><i class="iconfont">&#xe658;</i></button></a>
+                        @} else {
+                        <a title="取消收藏" id="${doc.doc_id}con"> <button type="button" class="favoriteBtn pdfBtn" onclick="collection('${doc.doc_id}','1')"><i class="iconfont">&#xe658;</i></button></a>
+                        <a style="display: none" title="收藏"  id="${doc.doc_id}col"> <button type="button" class="no-favoriteBtn pdfBtn" onclick="collection('${doc.doc_id}','0')"><i class="iconfont">&#xe658;</i></button></a>
+                        @}
+
+                        @if(doc.authority=='1'||adminFlag==1||doc.authority=='2'){
+                        <button onclick="iconDownLoad('${doc.doc_id}','${doc.title}')" type='button' class='downloadBtn pdfBtn' data-code='${doc.title}'>
+                            <i class="iconfont">&#xe018;</i>下载
+                        </button>
+                        @}
+
+                    </div>
+                    @}
+                </div>
+                <div class="doc-content"> ${doc.fileAbstract}</div>
+                <div class="doc-detail">
+
+                    <span>${doc.createTime,'yyyy-MM-dd'}</span>
+                    @if(doc.fileType!='folder'){
+                    <span>${doc.downloadNum}&nbsp;次下载</span><span>${doc.readNum}&nbsp;次预览</span>
+                    @}
+                    <span>上传人:
+
+                            @if(doc.authorName==''||doc.authorName==null){
+                        ${doc.author_id}
+                          @} else {
+                          ${doc.authorName}
+                             @}
+                    </span>
+                </div>
+            </div>
+        </div>
+        @}
+        @}
+    </div>
+    <div class="text-center">
+        @if(isEmpty(topic.docList)){
+        <!--如果为空无分页-->
+        @}else{
+        <div id="laypageAre"></div>
+        @}
+    </div>
+</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+@include("/common/front-footer.html"){}
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/extendPagination.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front_topic_detail.js?v=${h_version}"></script>
+</html>

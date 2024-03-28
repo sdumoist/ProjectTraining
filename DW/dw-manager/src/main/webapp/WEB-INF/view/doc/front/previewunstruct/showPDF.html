@@ -1,0 +1,264 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <script type="text/javascript">
+        hussar_path = "${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path = "${ctxPath}";
+        projectTitle = "${session.projectTitle}";
+    </script>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            form.render()
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/plugins/css/pluginsCss.css?v=${h_version}'/>
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/plugins/plugins.css?v=${h_version}'/>
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/css/luckysheet.css?v=${h_version}'/>
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/assets/iconfont/iconfont.css?v=${h_version}'/>
+    <script src="/static/resources/luckyexcel/luckysheet/plugins/js/plugin.js?v=${h_version}"></script>
+    <script src="/static/resources/luckyexcel/luckysheet/luckysheet.umd.js?v=${h_version}"></script>
+    <style>
+        #pdfContainer {
+            height: 100% !important;
+        }
+
+        .content-bottom {
+            height: calc(100% - 120px)
+        }
+
+        .rit-container .btn-rit-bottom {
+            display: none
+        }
+        #search,#user-message{
+            display: none
+        }
+        #title{
+            margin-top: 10px;
+        }
+        .btn-div{
+            top: 8px !important;
+        }
+    </style>
+
+</head>
+<body id="top">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-header_new2.html"){}
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="fileTypeValue" value="${fileType}"/>
+<input type="hidden" class="hide" id="docId" value="${id}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<input type="hidden" class="hide" id="watermark_user_flag" value="${watermark_user_flag}"/>
+<input type="text" class="hide" style="opacity: 0" id="username" value="${userName}"/>
+<input type="hidden" class="hide" id="watermark_company_flag" value="${watermark_company_flag}"/>
+<input type="hidden" class="hide" id="companyValue" value="${companyValue}"/>
+<input type="hidden" class="hide" id="showType" value="${showType}"/>
+<input type="hidden" class="hide" id="transFlag" value="${transFlag!}"/>
+<div id="outerContainer" style="position: relative;height: calc(100% - 49px);">
+
+    <div class="container-new container-pdf" id="container-pdf" style="margin-top: 0;">
+
+        <div class="container">
+<!--            <div class="breadCrumbs">-->
+<!--                <div style="overflow: hidden">-->
+<!--                    <div class="pathes" style="margin-left: 0!important;"></div>-->
+<!--                </div>-->
+<!--                <i class="layui-icon control-btn-r">&#xe602;</i>-->
+<!--            </div>-->
+            <div id="title" class="viewTitle"></div>
+            <div class="docView">
+                <span class="textOver" id="owner"></span>
+                <span class="textOver" id="uploadTime"></span>
+                <span class="textOver" id="fileSize"></span>
+                <span class="textOver" id="downloadNum"></span>
+                <span class="textOver" id="previewNum"></span>
+            </div>
+            <div class="doc-desc">
+                <span id="docAbstract"></span>
+            </div>
+            <div class="parent-directory"></div>
+        </div>
+        @include("/common/front-operation.html"){}
+        <div class="content-bottom pdf-perview">
+            <div class="layui-row divtop container">
+                <div class="layui-col-sm12">
+                    <div class="pdf-view">
+                        <div class="viewContent">
+                            <div class="pdf-content viewerContainer" id="pdf-contianer">
+                                <div id="excelContent" class="hide">
+                                    <div style="background-color: #eef2f6; width: 100%;height: 100%">
+                                        <div id="toptoolbar"
+                                             style="width: 100%; height: 35px; background-color: #eef2f6"></div>
+                                        <div id="lucky-mask-demo"
+                                             style="position: absolute;z-index: 1000000;left: 0px;top: 0px;bottom: 0px;right: 0px; background: rgba(255, 255, 255, 0.8); text-align: center;font-size: 14px;align-items:center;justify-content: center;display: none;">
+                                            正在生成预览...
+                                        </div>
+                                        <div id="luckysheet"
+                                             style="margin:0px;margin-top:35px;padding:0px;position:absolute;width:98%;left: calc(2%/2);top: 0px;bottom: 5px;outline: none;">
+                                            <div class="cover1" style="font-size: 23.2773px; width: 600px;">
+                                                @if(watermark_user_flag == '1'){
+                                                <br> ${userName}<br>
+                                                @}
+                                                @if(watermark_company_flag == '1'){
+                                                ${companyValue}
+                                                @}
+                                            </div>
+                                        </div>
+                                        <script src="/static/resources/luckyexcel/luckyexcel.umd.js?v=${h_version}"></script>
+                                    </div>
+                                </div>
+                                <iframe frameborder="0" id="pdfContainer" name="pdfContainer" allowfullscreen="true"
+                                        webkitallowfullscreen="true" mozallowfullscreen="true" class="hide"></iframe>
+                                <div class="pdf-loading hide" id="loadingBox">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <div class="onloading">
+                                        正在生成预览...
+                                    </div>
+                                </div>
+                                <div class="div-top">
+                                    <div style="width: 30px;height: 30px;display: none" id="openPage"
+                                         onclick="handleFullScreen()" value="全屏显示ʾ"></div>
+                                </div>
+                                <!--<div style="width: 30px;height: 30px;display: none" id="openPage"></div>-->
+                                <div id="manualConversion" class="manual-conversion">
+                                    <p>文档加载失败，<span id="changePdf" style="cursor: pointer">手动转换试试？</span></p>
+                                </div>
+                                <div class="ant-spin ant-spin-spinning" id="transLoading" class="hide"><span
+                                        class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i
+                                        class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i
+                                        class="ant-spin-dot-item"></i></span></div>
+                            </div>
+                        </div>
+<!--                        <div title="展开" class="open" id="open" style="display: none"></div>-->
+<!--                        <div title="收缩" class="shrink" style="display: none"></div>-->
+                    </div>
+                </div>
+                <ul class="btn-rit-bottom"><!---->
+                    @if(session.contactShow == '1'){
+                    <li>
+                        <div class="phone rit-item">
+                            <!--            <span>联系<br/>电话</span>-->
+                        </div>
+                        <label class="phone-label">电话：18560195621</label>
+                    </li>
+                    <li>
+                        <a class="qq rit-item" href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes"
+                           target="_blank">
+                            <!--            <span>联系<br/>客服</span>-->
+                        </a>
+                        <label class="qq-label"><a href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes"
+                                                   target="_blank">点击联系客服</a></label>
+                    </li>
+                    <li>
+                        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+                            <!--            <span>联系<br/>客服</span>-->
+                        </a>
+                        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+                    </li>
+                    @}
+                    @if(session.clientShow == '1'){
+                    <li>
+                        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端"
+                           class="pcDownload rit-item">
+                            <!--            <span>客户端<br/>下载</span>-->
+                        </a>
+                        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient"
+                                                   target="_blank">点击下载客户端</a></label>
+                    </li>
+                    @}
+                    <li>
+                        <a href="javascript:show_feedback()" class="feedback rit-item">
+                            <!--            <span>意见<br/>反馈</span>-->
+                        </a>
+                        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+                    </li>
+                    <li style="display: none" id="goToTop">
+                        <div class="goToTop rit-item" title="回到顶部">
+                            <!--            <span>返回<br/>顶部</span>-->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--        <div class="pdf-bottom">-->
+        <!--            <h6>©2020 金现代信息产业股份有限公司 电话：0531-88872666</h6>-->
+        <!--        </div>-->
+        <div id="filTree" style="display: none;overflow: auto" class="leftArea">
+            <div class="back-collections"></div>
+            <div id="fileTree2" class="jsTree"></div>
+            <div class="newFolder"><span class="newFolderPic">+</span>创建文件夹</div>
+        </div>
+        <div class="integral"><span class="num" id="num"></span><span class="point">积分</span></div>
+
+    </div>
+</div>
+<div class="file-loading-error" id="error-footer" style="display: none">
+    @include("/common/front-footer.html"){}
+</div>
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/jquery.mousewheel.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/previewunstruct/js/showPDF.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8">
+    var timer;
+    var toScroll = function (x, y, obj) {
+        if (x != 0) {
+            $(obj).scrollLeft(x);
+        }
+        if (y != 0) {
+            $(obj).scrollTop(y);
+        }
+    };
+
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 0) {
+                $("#goToTop").show()
+            } else {
+                $("#goToTop").hide()
+            }
+        });
+    });
+    $("#goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn() {
+            var oTop = $("#outerContainer").scrollTop();
+            if (oTop > 0) {
+                toScroll(0, oTop - 50, $("#outerContainer")[0]);
+                timer = requestAnimationFrame(fn);
+            } else {
+                $("#goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+
+</script>
+</html>

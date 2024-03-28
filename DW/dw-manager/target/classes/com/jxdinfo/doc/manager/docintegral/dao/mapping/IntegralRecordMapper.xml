@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docintegral.dao.IntegralRecordMapper">
+    <!-- 获取当前用户今日已经获得的积分 -->
+    <select id="getIntegralByToday" resultType="int">
+        SELECT sum(integral) FROM `doc_integral_record` where integral_state = '1' and  to_days(operate_time) = to_days(now())
+        and user_id = #{userId} and operate_rule_code !='beDownloaded';
+    </select>
+
+    <!-- 获取该用户获得的总积分 -->
+    <select id="getTotalIntegral" resultType="int">
+        SELECT sum(integral) FROM `doc_integral_record` where integral_state = '1'
+        and user_id = #{userId};
+    </select>
+    <select id="getIntegralByType" resultType="int">
+        SELECT SUM(integral) FROM doc_integral_record
+        WHERE integral_state = '1' AND user_id = #{userId} AND operate_rule_code IN
+        <foreach collection="ruleCodes" item="ruleCode" open="(" separator="," close=")">
+            #{ruleCode}
+        </foreach>
+    </select>
+
+    <!-- 新增积分记录 -->
+    <insert id="insertRecord" parameterType="com.jxdinfo.doc.manager.docintegral.model.IntegralRecord">
+        insert into doc_integral_record
+        (
+        record_id,
+        doc_id,
+        user_id,
+        operate_rule_code,
+        operate_time,
+        integral_state,
+        integral,
+        rule_name,
+        rule_des
+        )
+        values
+
+            (
+            #{IntegralRecord.recordId},
+            #{IntegralRecord.docId},
+            #{IntegralRecord.userId},
+            #{IntegralRecord.operateRuleCode},
+            #{IntegralRecord.operateTime},
+            #{IntegralRecord.IntegralState},
+            #{IntegralRecord.Integral},
+            #{IntegralRecord.ruleName},
+            #{IntegralRecord.ruleDes}
+            )
+
+    </insert>
+
+    <!-- 获取积分排行 -->
+    <select id="getIntegralRank" resultType="Map">
+        SELECT
+            sum(integral),
+            user_id
+        FROM
+            `doc_integral_record`
+        WHERE
+            integral_state = '1'
+            and user_id!='reviewadmin'
+            and user_id!='systemadmin'
+            and user_id!='auditadmin'
+        GROUP BY
+            user_id
+        ORDER BY
+            sum(integral) DESC
+    </select>
+
+    <!-- 根据操作获取当日该操作进行的次数 -->
+    <select id="getIntegralTimesByToday" resultType="int">
+        SELECT count(*) FROM `doc_integral_record` where integral_state = '1' and  to_days(operate_time) = to_days(now())
+        and user_id = #{userId} and operate_rule_code = #{ruleCode};
+    </select>
+
+    <select id="getIntegralHistories" resultType="Map">
+        SELECT rc.record_id,rc.operate_time,rc.doc_id,rc.integral,rc.integral_state,
+        rc.operate_rule_code,rc.user_id,rc.rule_name,rc.rule_des,IFNULL(di.title,'') doc_title,IFNULL(di.doc_type,'') doc_type
+        from doc_integral_record rc
+        LEFT JOIN doc_info di ON di.doc_id = rc.doc_id
+        where rc.user_id = #{userId} and rc.integral_state = #{integralState}
+        <if test="ruleCodes != null and ruleCodes != ''">
+            and rc.operate_rule_code in
+            <foreach collection="ruleCodes" item="ruleCode" open="(" close=")" separator=",">
+                #{ruleCode}
+            </foreach>
+        </if>
+        ORDER BY rc.operate_time DESC
+    </select>
+
+    <!-- 获取积分记录表中的用户总数 -->
+    <select id="getIntegralUserCount" resultType="int">
+select  count(*) from(
+  SELECT
+        sum(integral) integral,
+       su.user_name userId
+        FROM
+        `doc_integral_record` rr left join  sys_users su on rr.user_id=su.user_id
+        WHERE
+        integral_state = '1'
+        and su.user_id  &lt;&gt;  'superadmin' and su.user_id  &lt;&gt;  'wkadmin'
+        and su.user_id  &lt;&gt;  'systemadmin' and su.user_id  &lt;&gt;  'auditadmin'
+        and su.user_id  &lt;&gt;  'reviewadmin'
+
+        GROUP BY
+        su.user_id
+     )t
+    </select>
+
+    <!-- 按分页的方式获取用户排行 -->
+    <select id="getIntegralRankByPage" resultType="java.util.Map">
+        SELECT
+        sum(integral) integral,
+       su.user_name userId
+        FROM
+        `doc_integral_record` rr left join  sys_users su on rr.user_id=su.user_id
+        WHERE
+        integral_state = '1'
+        and su.user_id  &lt;&gt;  'superadmin' and su.user_id  &lt;&gt;  'wkadmin'
+        and su.user_id  &lt;&gt;  'systemadmin' and su.user_id  &lt;&gt;  'auditadmin'
+        and su.user_id  &lt;&gt;  'reviewadmin'
+
+        GROUP BY
+        su.user_id
+        ORDER BY
+        sum(integral) DESC
+        <if test=" pageSize != 0">
+            LIMIT #{startIndex}, #{pageSize}
+        </if>
+    </select>
+
+    <!--获取待下载文件中属于当前登录用户的数量-->
+    <select id="selectDocCountByUser" resultType="int">
+        SELECT COUNT(DISTINCT DOC_ID) FROM DOC_INFO
+        <where>
+            DOC_ID IN
+            <foreach collection="docIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            AND AUTHOR_ID=#{userId}
+        </where>
+    </select>
+
+    <select id="selectDownloadedCount" resultType="int">
+        SELECT
+          COUNT(DISTINCT  DOC_ID)
+        FROM
+          doc_integral_record
+        <where>
+            1=2
+            <if test="docIds != null">
+                OR
+                DOC_ID IN
+                <foreach collection="docIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                AND USER_ID=#{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNoCountIntegral" resultType="int">
+
+    </select>
+
+    <select id="checkInDoc" resultType="int" >
+
+      select count(*)  from doc_free_file where doc_id=#{docId}
+    </select>
+
+
+    <!--获取当前登录用户的排名-->
+    <select id="getRankNum" resultType="int">
+        SELECT ROWNUM FROM(
+            SELECT
+             @rownum:=@rownum+1 rownum,
+             t.*
+            FROM(
+                SELECT
+                    sum(integral) integral,
+                    user_id userId
+                FROM
+                    `doc_integral_record`
+                WHERE
+                    integral_state = '1'
+                GROUP BY
+                    user_id
+                ORDER BY
+                    sum(integral) DESC)t,
+                (
+                SELECT
+                    @rownum := 0
+                )r
+          )f
+          WHERE USERID=#{userId}
+    </select>
+
+    <!--查询当前用户在积分记录表中是否存在数据-->
+    <select id="recordIsNull" resultType="int">
+        select count(*) from doc_integral_record where user_id=#{userId}
+    </select>
+</mapper>

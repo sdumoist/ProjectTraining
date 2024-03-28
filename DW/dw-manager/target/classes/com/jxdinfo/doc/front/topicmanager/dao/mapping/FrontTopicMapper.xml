@@ -1,0 +1,1499 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.topicmanager.dao.FrontTopicMapper">
+
+    <select id="getTopicList" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+          SELECT
+            T.topic_id topicId,
+            T.topic_name topicName,
+            T.CREATE_TIME createTime,
+            tdn.count docCount,
+            t.topic_cover topicCover,
+            T.topic_desc topicDesc,
+            U.USER_NAME authorName,
+            t.view_num viewNum
+        FROM
+            doc_special_topic t
+        LEFT JOIN topic_doc_num tdn
+        ON t.topic_id = tdn.special_topic_id
+        LEFT JOIN sys_users U
+        ON U.USER_ID = T.author_id
+        order by t.show_order,t.create_time DESC
+        LIMIT #{startNum}, #{size}
+    </select>
+    <select id="getNewTopicFileList" resultType="Map">
+        SELECT*FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder,ss.ORGAN_ALIAS deptName,
+        jxd7.path url,
+        dst.topic_name topicName
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_special_topic dst ON dst.topic_id = ds.topic_id
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ifnull(doc.valid_flag,'')!='0'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY tt.createTime desc, tt.showOrder desc
+
+        LIMIT 0,9
+
+
+    </select>
+    <select id="getNewTopicFileListIndex" resultType="Map">
+        SELECT*FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder,ss.ORGAN_ALIAS deptName,
+        jxd7.path url,
+        dst.topic_name topicName
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_special_topic dst ON dst.topic_id = ds.topic_id
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ifnull(doc.valid_flag,'')!='0'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY tt.createTime desc, tt.showOrder desc
+
+        LIMIT 0,9
+
+
+    </select>
+    <select id="getTopicListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_special_topic t
+        WHERE
+        1=1
+        <if test="name != null and name != ''">
+            AND t.topic_name  LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+    </select>
+    <select id="getValidTopicListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_special_topic t
+        WHERE
+        now() BETWEEN t.enable_time and t.disable_time
+        <if test="name != null and name != ''">
+            AND t.topic_name  LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+    </select>
+    <select id="getDocByTopicIdBySuperAdmin" resultType="Map">
+
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        doc.share_flag shareFlag,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        WHERE
+        ds.topic_id = #{topicId} AND   ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+        ds.show_order desc,
+        doc.create_time DESC
+        <if test='size!=0 '>
+        LIMIT #{startNum},#{size}
+        </if>
+    </select>
+    <select id="getDocByTopicIdBySuperAdminIndex" resultType="Map">
+
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        doc.share_flag shareFlag,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        WHERE
+        ds.topic_id = #{topicId} AND   ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+        ds.show_order desc,
+        doc.create_time DESC
+        <if test='size!=0 '>
+            LIMIT #{startNum},#{size}
+        </if>
+    </select>
+    <select id="getNewTopicFileListSuperAdmin" resultType="Map">
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        doc.share_flag shareFlag,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url,
+		dst.topic_name topicName
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_special_topic dst ON dst.topic_id = ds.topic_id
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        WHERE
+        ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+      createTime desc,
+        ds.show_order desc
+
+        LIMIT 0,9
+
+    </select>
+    <select id="getNewTopicFileListSuperAdminIndex" resultType="Map">
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        doc.share_flag shareFlag,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url,
+		dst.topic_name topicName
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_special_topic dst ON dst.topic_id = ds.topic_id
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        WHERE
+        ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+      createTime desc,
+        ds.show_order desc
+
+        LIMIT 0,9
+
+    </select>
+    <select id="getDocByTopicIdBySuperAdminAllCount" resultType="int">
+
+        SELECT
+        count(*)
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        WHERE
+        ds.topic_id = #{topicId} AND   ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+        ds.show_order desc,
+        doc.create_time DESC
+
+    </select>
+
+    <select id="getDocByTopicIdBySuperAdminCount" resultType="int">
+
+        SELECT
+        count(*)
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        WHERE
+        ds.topic_id = #{topicId} AND   ifnull(doc.valid_flag,'')!='0'
+
+        ORDER BY
+        doc.create_time DESC
+
+    </select>
+    <select id="getDocByTopicId" resultType="Map">
+        SELECT*FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ds.topic_id = #{topicId} and ifnull(doc.valid_flag,'')!='0'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY tt.showOrder desc ,
+        tt.createTime DESC
+        <if test="size != 0">
+            LIMIT #{startNum},#{size}
+        </if>
+
+    </select>
+    <select id="getDocByTopicIdMobile" resultType="Map">
+        SELECT*FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN folder_extranet_auth fea ON  ffd2.folder_id =fea.folder_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ds.topic_id = #{topicId} and ifnull(doc.valid_flag,'')!='0'
+        <if test="folderIds!=null and folderIds.size()>0">
+            AND (doc.fold_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+            or ffd2.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+            )
+        </if>
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+
+        ORDER BY tt.showOrder desc ,
+        tt.createTime DESC
+        <if test="size != 0">
+            LIMIT #{startNum},#{size}
+        </if>
+
+    </select>
+    <select id="getDocByTopicIdIndex" resultType="Map">
+        SELECT*FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        ifnull( doc.author_id,ffd2.create_user_id) author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder
+        ,ifnull(ss.ORGAN_ALIAS,ss2.ORGAN_ALIAS) deptName,
+        jxd7.path url
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN sys_stru ss on ss.stru_id = au.DEPARTMENT_ID
+        LEFT JOIN sys_stru ss2 on ss2.stru_id = AU2.DEPARTMENT_ID
+        left join jxd7_xt_headpicture jxd7 on  jxd7.userID = au.EMPLOYEE_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ds.topic_id = #{topicId} and ifnull(doc.valid_flag,'')!='0'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY tt.showOrder desc ,
+        tt.createTime DESC
+        <if test="size != 0">
+            LIMIT #{startNum},#{size}
+        </if>
+
+    </select>
+    <select id="getDocByTopicIdAllCount" resultType="int">
+        SELECT COUNT(*) FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        ifnull(doc.title,ffd2.folder_name) title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        WHEN ffd2.create_user_id =#{userId} THEN
+        '2'
+        <if test="levelCodeString != null and levelCodeString != ''">
+            WHEN  ffd2.level_code IN ${levelCodeString} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        doc.author_id,
+        ff.file_pdf_path PDFPATH,
+        ff.file_path PATH,
+        ff.file_size fileSize,
+        ifnull(au.user_name,AU2.user_name)  authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        ifnull(doc.create_time,ffd2.create_time)  createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        ifnull(COL.collectNum,0) collectNum,
+        doc.share_flag shareFlag,
+        ifnull(doc.doc_type,'folder')  fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId,
+        ds.show_order showOrder
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN fs_folder ffd2 ON ffd2.folder_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN sys_users AU2 ON au2.user_id = ffd2.create_user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON ds.doc_id = COL.RESOURCEID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ds.topic_id = #{topicId} and ifnull(doc.valid_flag,'')!='0'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY tt.showOrder desc ,
+        tt.createTime DESC
+    </select>
+
+    <select id="getDocByTopicIdCount" resultType="int">
+        SELECT count(*)FROM(
+        SELECT
+        ds.doc_id,
+        ds.topic_id,
+        doc.title title,
+        doc.doc_abstract fileAbstract,
+        CASE
+        WHEN doc.author_id =#{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD2.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        doc.author_id,
+        ff.file_size fileSize,
+        au.user_name authorName,
+        doc.contacts_id contactsId,
+        cu.user_name contactsName,
+        doc.create_time createTime,
+        ifnull(doc.download_num,0) downloadNum,
+        ifnull(doc.read_num,0) readNum,
+        doc.share_flag shareFlag,
+        doc.doc_type fileType,
+        SUBSTR(doc.doc_type, 2) fileSuffixName,
+        cu.mobile,
+        ds.topic_file_id topicFileId
+        FROM
+        doc_special_topic_files ds
+        LEFT JOIN doc_info doc ON doc.doc_id = ds.doc_id
+        LEFT JOIN sys_users AU ON au.user_id = doc.author_id
+        LEFT JOIN sys_users cu ON cu.user_id = doc.contacts_id
+        LEFT JOIN fs_file ff ON ff.file_id = ds.doc_id
+        LEFT JOIN fs_folder FFD ON doc.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (FIND_IN_SET(DFA.organ_id, #{deptName}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = doc.doc_id
+        WHERE
+        ds.topic_id = #{topicId} AND doc.valid_flag='1'
+        ) tt
+        WHERE
+        tt.authority != NULL
+        OR tt.authority != ''
+        ORDER BY
+        tt.createTime DESC
+
+    </select>
+    <select id="getTopicDetailById" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+        SELECT
+        T.topic_id topicId,
+        T.topic_name topicName,
+        T.CREATE_TIME createTime,
+        tdn.count docCount,
+        t.topic_cover topicCover,
+        T.view_num viewNum,
+        T.topic_desc topicDesc,
+        U.USER_NAME authorName
+        FROM
+        doc_special_topic t
+        LEFT JOIN
+        topic_doc_num tdn
+        ON t.topic_id = tdn.special_topic_id
+        LEFT JOIN sys_users U
+        ON U.USER_ID = T.author_id
+        WHERE
+        t.topic_id = #{topicId}
+    </select>
+    <select id="getFilesAndFloderBySuperAdmin" resultType="map">
+        SELECT*FROM(  ( SELECT
+        DF.FOLDER_ID doc_id, DF.FOLDER_NAME title, DF.PARENT_FOLDER_ID foldId,'folder' fileType,'folder' fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name contactsName,su.user_name authorName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag,0 readNum,0 downloadNum,'' PDFPATH,
+        '' PATH,DF.create_user_id contactsId,'' fileAbstract
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        )
+        UNION all
+        (SELECT
+        DF.doc_id doc_id, DF.title title, DF.fold_id foldId,SUBSTR(DF.doc_type, 2) fileType, SUBSTR(DF.doc_type, 2) fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size, 1 orderName,1 SHOW_ORDER,DF.user_id createUserId,'' isEdit,su.user_name contactsName,su.user_name authorName
+        ,DF.visible_range visibleRange,DF.set_authority setAuthority ,DF.share_flag shareFlag,ifnull(DF.read_num,0) readNum,ifnull(DF.download_num,0) downloadNum,FF.file_pdf_path PDFPATH,
+        FF.file_path PATH,DF.contacts_id contactsId,DF.doc_abstract fileAbstract
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ))t
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName,ifnull(isEdit,''),SHOW_ORDER,convert(title using gbk)
+        </if>
+        <if test='pageSize!=0 '>
+        LIMIT #{pageNumber}, #{pageSize}
+        </if>
+    </select>
+    <select id="getFilesAndFloderByAdmin" resultType="map">
+        SELECT*FROM(
+        ( SELECT
+        DF.FOLDER_ID doc_id, DF.FOLDER_NAME title, DF.PARENT_FOLDER_ID foldId,'folder' fileType,'folder' fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name contactsName,su.user_name authorName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag,0 readNum,0 downloadNum,'' PDFPATH,
+        '' PATH,DF.create_user_id contactsId,'' fileAbstract
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        DF.doc_id doc_id, DF.title title, DF.fold_id foldId,SUBSTR(DF.doc_type, 2) fileType, SUBSTR(DF.doc_type, 2) fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        CASE
+        WHEN DF.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        FF.FILE_SIZE fileSize,
+        FF.SIZE size,
+        1 orderName,
+        1 SHOW_ORDER,
+        DF.user_id createUserId,
+        '' isEdit,
+        su.user_name contactsName,
+        su.user_name authorName,
+        DF.visible_range visibleRange,
+        DF.set_authority setAuthority,
+        DF.share_flag shareFlag,ifnull(DF.read_num,0) readNum,ifnull(DF.download_num,0) downloadNum,FF.file_pdf_path PDFPATH,
+        FF.file_path PATH,DF.contacts_id contactsId,DF.doc_abstract fileAbstract
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF ON DF.DOC_ID = FF.FILE_ID
+        LEFT JOIN sys_users su ON df.user_id = su.user_id
+        LEFT JOIN fs_folder FFD ON df.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = DF.doc_id
+        WHERE
+        1 = 1
+        AND DF.valid_flag = '1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ) tt
+        WHERE
+        ( tt.authority != NULL
+        OR tt.authority != '')
+        )
+        )T
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') desc ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName,ifnull(isEdit,'') desc,SHOW_ORDER,convert(title using gbk)
+        </if>
+
+        <if test='pageSize!=0 '>
+            LIMIT #{pageNumber}, #{pageSize}
+        </if>
+
+    </select>
+
+    <select id="getFilesAndFloderBySuperAdminCount" resultType="int">
+        SELECT COUNT(*) FROM(  ( SELECT
+        DF.FOLDER_ID doc_id, DF.FOLDER_NAME title, DF.PARENT_FOLDER_ID foldId,'folder' fileType,'folder' fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name contactsName,su.user_name authorName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag,0 readNum,0 downloadNum,'' PDFPATH,
+        '' PATH,DF.create_user_id contactsId,'' fileAbstract
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        and ifnull(DF.IS_EDIT,'') != 1
+        )
+        UNION all
+        (SELECT
+        DF.doc_id doc_id, DF.title title, DF.fold_id foldId,SUBSTR(DF.doc_type, 2) fileType, SUBSTR(DF.doc_type, 2) fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        DF.authority authority,FF.FILE_SIZE fileSize,FF.SIZE size, 1 orderName,1 SHOW_ORDER,DF.user_id createUserId,'' isEdit,su.user_name contactsName,su.user_name authorName
+        ,DF.visible_range visibleRange,DF.set_authority setAuthority ,DF.share_flag shareFlag,ifnull(DF.read_num,0) readNum,ifnull(DF.download_num,0) downloadNum,FF.file_pdf_path PDFPATH,
+        FF.file_path PATH,DF.contacts_id contactsId,DF.doc_abstract fileAbstract
+        FROM
+        DOC_INFO DF
+        LEFT JOIN  sys_users su on df.user_id=su.user_id
+        LEFT JOIN FS_FILE FF on DF.DOC_ID=FF.FILE_ID
+        WHERE
+        1=1
+        AND DF.valid_flag='1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.TITLE LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ))t
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName,ifnull(isEdit,''),SHOW_ORDER,convert(title using gbk)
+        </if>
+
+
+
+    </select>
+    <select id="getFilesAndFloderByAdminCount" resultType="int">
+        SELECT COUNT(*) FROM(
+        ( SELECT
+        DF.FOLDER_ID doc_id, DF.FOLDER_NAME title, DF.PARENT_FOLDER_ID foldId,'folder' fileType,'folder' fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        '' authority, '' fileSize,'' size,0 orderName,SHOW_ORDER,
+        DF.create_user_id createUserId,DF.IS_EDIT isEdit,su.user_name contactsName,su.user_name authorName,DF.visible_range visibleRange,'' setAuthority,'0' shareFlag,0 readNum,0 downloadNum,'' PDFPATH,
+        '' PATH,DF.create_user_id contactsId,'' fileAbstract
+        FROM
+        FS_FOLDER DF
+        LEFT JOIN  sys_users su on df.create_user_id=su.user_id
+        WHERE
+        1=1
+        <if test="levelCodeString != null and levelCodeString != ''">
+            and (
+            DF.level_code IN ${levelCodeString}
+            )
+        </if>
+
+        <if test="id != null and id != ''">
+            AND PARENT_FOLDER_ID = #{id}
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FOLDER_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        )
+
+        UNION all
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        DF.doc_id doc_id, DF.title title, DF.fold_id foldId,SUBSTR(DF.doc_type, 2) fileType, SUBSTR(DF.doc_type, 2) fileSuffixName,DF.create_time createTime,DF.update_time updateTime,
+        CASE
+        WHEN DF.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority,
+        FF.FILE_SIZE fileSize,
+        FF.SIZE size,
+        1 orderName,
+        1 SHOW_ORDER,
+        DF.user_id createUserId,
+        '' isEdit,
+        su.user_name contactsName,
+        su.user_name authorName,
+        DF.visible_range visibleRange,
+        DF.set_authority setAuthority,
+        DF.share_flag shareFlag,ifnull(DF.read_num,0) readNum,ifnull(DF.download_num,0) downloadNum,FF.file_pdf_path PDFPATH,
+        FF.file_path PATH,DF.contacts_id contactsId,DF.doc_abstract fileAbstract
+        FROM
+        DOC_INFO DF
+        LEFT JOIN FS_FILE FF ON DF.DOC_ID = FF.FILE_ID
+        LEFT JOIN sys_users su ON df.user_id = su.user_id
+        LEFT JOIN fs_folder FFD ON df.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = DF.doc_id
+        WHERE
+        1 = 1
+        AND DF.valid_flag = '1'
+        <if test="id != null and id != ''">
+            AND DF.fold_id = #{id}
+        </if>
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.DOC_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ) tt
+        WHERE
+        ( tt.authority != NULL
+        OR tt.authority != '')
+        )
+        )T
+        <if test="orderResult != null and orderResult != '' ">
+            order by orderName,ifnull(isEdit,'') desc ,
+            <if test='orderResult.indexOf("fileSize")!=-1 '>
+                ${orderResult}
+            </if>
+            <if test='orderResult.indexOf("fileSize")==-1 '>
+                convert(${orderResult} using gbk)
+            </if>
+            <if test='isDesc=="1" '>
+                desc
+            </if>
+            , SHOW_ORDER
+        </if>
+        <if test="orderResult == null ">
+            order by orderName,ifnull(isEdit,'') desc,SHOW_ORDER,convert(title using gbk)
+        </if>
+
+
+
+    </select>
+</mapper>

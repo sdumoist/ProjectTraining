@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docconfigure.dao.DocConfigureMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docconfigure.model.DocConfigure">
+        <id column="config_id" property="id" />
+        <result column="config_key" property="configKey" />
+        <result column="config_value" property="configValue" />
+        <result column="config_valid_flag" property="configValidFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        config_id AS id, config_key AS configKey, config_value AS configValue, config_valid_flag AS configValidFlag
+    </sql>
+
+    <!-- 查询配置信息 -->
+    <select id="getConfigure" resultType="DocConfigure">
+        SELECT
+            config_id AS id,
+            config_key AS configKey,
+            config_value AS configValue,
+            config_valid_flag AS configValidFlag
+        FROM
+	        doc_configure
+    </select>
+
+    <update id="upDateFolderName" parameterType="String">
+        UPDATE fs_folder SET folder_name = #{folderName} WHERE parent_folder_id='root';
+    </update>
+
+</mapper>

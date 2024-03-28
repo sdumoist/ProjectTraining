@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docaudit.dao.DocInfoAuditMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docaudit.model.DocInfoAudit">
+        <id column="audit_id" property="auditId" />
+        <result column="doc_id" property="docId" />
+        <result column="audit_user_id" property="auditUserId" />
+        <result column="audit_user_name" property="auditUserName" />
+        <result column="audit_time" property="auditTime" />
+        <result column="audit_result" property="auditResult" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="last_editor" property="lastEditor" />
+        <result column="last_time" property="lastTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        audit_id AS auditId, doc_id AS docId, audit_user_id AS auditUserId, audit_user_name AS auditUserName, audit_time AS auditTime, audit_result AS auditResult, creator AS creator, create_time AS createTime, last_editor AS lastEditor, last_time AS lastTime
+    </sql>
+
+    <select id="getApprovalList" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+        di.doc_id fileId,
+        di.title fileName,
+        di.read_num readNum,
+        di.download_num downloadNum,
+        di.user_id createUserId,
+        di.create_time createTime,
+        di.doc_type fileType,
+        di.share_flag shareFlag,
+        di.fold_id foldId,
+        ff.file_size fileSize,
+        ff.file_pdf_path pdfPath,
+        ifnull(COL.collectNum, 0) collectNum,
+        ffr.level_code folderLocal,
+        ifnull(ffr.own_id, '') ownId,
+        su.user_name createUserName,
+        di.audit_user approvalUser,
+        di.audit_time approvalTime
+        FROM
+        doc_info_audit dai
+        LEFT JOIN doc_info di ON di.doc_id = dai.doc_id
+        LEFT JOIN fs_file ff ON di.file_id = ff.file_id
+        LEFT JOIN (
+        SELECT
+        COUNT(1) collectNum,
+        RESOURCE_ID RESOURCEID
+        FROM
+        doc_resource_log
+        WHERE
+        OPERATE_TYPE = '5'
+        GROUP BY
+        RESOURCE_ID
+        ) COL ON di.doc_id = COL.RESOURCEID
+        LEFT JOIN sys_users su ON di.user_id = su.user_id
+        LEFT JOIN fs_folder ffr ON di.fold_id = ffr.folder_id
+        WHERE
+        dai.audit_user_id = #{userId}
+        AND di.valid_flag = '2'
+        AND dai.audit_result = '1'
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY fileName DESC
+                </if>
+                <if test="order == 1">
+                    ORDER BY fileName ASC
+                </if>
+                <if test="order == 2">
+                    order by di.create_time ASC
+                </if>
+                <if test="order == 3">
+                    order by di.create_time DESC
+                </if>
+                <if test="order == 6">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 7">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+
+                <if test="order == 9">
+                    order by di.approval_flag ASC
+                </if>
+                <if test="order == 10">
+                    order by di.approval_flag DESC
+                </if>
+                <if test="order == 11">
+                    order by di.approval_flag ASC
+                </if>
+                <if test="order == 12">
+                    order by di.approval_flag DESC
+                </if>
+                <if test="order == 13">
+                    order by di.approval_user ASC
+                </if>
+                <if test="order == 14">
+                    order by di.approval_user DESC
+                </if>
+                <if test="order == 15">
+                    order by di.approval_time ASC
+                </if>
+                <if test="order == 16">
+                    order by di.approval_time DESC
+                </if>
+            </when>
+            <otherwise>
+                order by di.create_time desc
+            </otherwise>
+        </choose>
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="getApprovalListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info_audit dai
+        LEFT JOIN doc_info di ON di.doc_id = dai.doc_id
+        WHERE
+        dai.audit_user_id = #{userId}
+        AND di.valid_flag = '2'
+        AND dai.audit_result = '1'
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getApprovalListByAdmin" resultType="com.jxdinfo.doc.manager.docmanager.model.FsFolderView">
+        SELECT
+        di.doc_id fileId,
+        di.title fileName,
+        di.read_num readNum,
+        di.download_num downloadNum,
+        di.user_id createUserId,
+        di.create_time createTime,
+        di.doc_type fileType,
+        di.share_flag shareFlag,
+        di.fold_id foldId,
+        ff.file_size fileSize,
+        ff.file_pdf_path pdfPath,
+        ifnull(COL.collectNum, 0) collectNum,
+        ffr.level_code folderLocal,
+        ifnull(ffr.own_id, '') ownId,
+        su.user_name createUserName,
+        di.audit_user approvalUser,
+        di.audit_time approvalTime
+        FROM
+        doc_info di
+        LEFT JOIN fs_file ff ON di.file_id = ff.file_id
+        LEFT JOIN (
+        SELECT
+        COUNT(1) collectNum,
+        RESOURCE_ID RESOURCEID
+        FROM
+        doc_resource_log
+        WHERE
+        OPERATE_TYPE = '5'
+        GROUP BY
+        RESOURCE_ID
+        ) COL ON di.doc_id = COL.RESOURCEID
+        LEFT JOIN sys_users su ON di.user_id = su.user_id
+        LEFT JOIN fs_folder ffr ON di.fold_id = ffr.folder_id
+        WHERE
+        di.valid_flag = '2'
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY fileName DESC
+                </if>
+                <if test="order == 1">
+                    ORDER BY fileName ASC
+                </if>
+                <if test="order == 2">
+                    order by di.create_time ASC
+                </if>
+                <if test="order == 3">
+                    order by di.create_time DESC
+                </if>
+                <if test="order == 6">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 7">
+                    order by  SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+
+                <if test="order == 9">
+                    order by di.approval_flag ASC
+                </if>
+                <if test="order == 10">
+                    order by di.approval_flag DESC
+                </if>
+                <if test="order == 11">
+                    order by di.approval_flag ASC
+                </if>
+                <if test="order == 12">
+                    order by di.approval_flag DESC
+                </if>
+                <if test="order == 13">
+                    order by di.approval_user ASC
+                </if>
+                <if test="order == 14">
+                    order by di.approval_user DESC
+                </if>
+                <if test="order == 15">
+                    order by di.approval_time ASC
+                </if>
+                <if test="order == 16">
+                    order by di.approval_time DESC
+                </if>
+            </when>
+            <otherwise>
+                order by di.create_time desc
+            </otherwise>
+        </choose>
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+
+    <select id="getApprovalListCountByAdmin" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_info di
+        WHERE
+        di.valid_flag = '2'
+        <if test="name != null and name != '' ">
+            AND di.title LIKE  CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+</mapper>

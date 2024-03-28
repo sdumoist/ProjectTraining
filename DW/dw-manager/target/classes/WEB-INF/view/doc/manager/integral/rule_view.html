@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>积分规则配置页面</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/integral/css/rule_view.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-table-view select[lay-ignore] {
+            display: block;
+            height: 18px;
+        }
+        .layui-table-page .layui-laypage button, .layui-table-page .layui-laypage input{
+            color: #333;
+            line-height: 24px;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <form class="layui-form clearfix rule-form" action="">
+            <button type="button" class="layui-btn" id="addBtn" data-type="addRule"><i
+                    class="layui-icon">&#xe654;</i>新增规则
+            </button>
+            <button type="button" class="layui-btn" id="editBtn" data-type="editRule"><i
+                    class="layui-icon">&#xe642</i>修改规则
+            </button>
+            <button type="button" class="layui-btn" id="delBtn" data-type="delRule"><i
+                    class="layui-icon">&#xe640;</i>删除规则
+            </button>
+        </form>
+        <div class="tableBox">
+            <table class="layui-table" id="ruleList" lay-filter="ruleList"></table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="valid">
+    {{# if (d.valid == "0") {}}
+    无效
+    {{# } else if (d.valid == "1") {}}
+    有效
+    {{# } }}
+</script>
+<script type="text/html" id="maxTimes">
+    {{# if (d.maxTimes == "-1") {}}
+    无上限
+    {{# } else {}}
+    {{d.maxTimes}}
+    {{# } }}
+</script>
+<script src="${ctxPath}/static/doc/manager/integral/js/rule_view.js?v=${h_version}"></script>
+</body>
+</html>

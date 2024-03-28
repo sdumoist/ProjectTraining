@@ -1,0 +1,49 @@
+##########################################################
+###################  正式环境的profile  ###################
+##########################################################
+
+spring:
+  profiles: show
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1       #redis服务器地址
+    port: 6379            #redis服务器端口
+    password: admin123    #redis 密码
+    database: 1           #默认连接的库
+    timeout: 2000ms         #连接超时时间（毫秒）
+    jedis:
+      pool:
+        max-active: 3000        # 连接池最大连接数（使用负值表示没有限制）
+        max-idle: 3000          # 连接池中的最大空闲连接
+        min-idle: 0             # 连接池中的最小空闲连接
+        max-wait: -1            # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        time-between-eviction-runs: 60000ms  #空闲链接检测线程检测周期。如果为负值，表示不运行检测线程。（单位：毫秒，默认为-layer）
+###################  mongodb配置  ###################
+  data:
+    mongodb:
+      host: 192.168.2.83
+      port: 27017
+      database: log4j
+###################  mysql配置  ###################
+  datasource:
+    url: jdbc:mysql://192.168.2.221:3306/knowledge?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
+    username: knowledge
+    password: knowledge
+    db-name: knowledge
+    filters: log4j,wall,mergeStat
+    driverClassName: com.mysql.jdbc.Driver
+    maxActive: 30
+docbase:
+  es-host: 192.168.2.221:9300
+  es-base: docbase
+  file.validate.type: pdf,docx,doc,xlsx,xls,ppt,pptx,txt,jpg,png,gif,ceb,exe,mp3,mp4
+  tempdir: C://knowledge/tmp/
+  uploadPath: C://knowledge/uploads
+  zipDownloadPath: C://knowledge/uploads//zip
+fastdfs:
+  #是否启用fastdfs
+  using: true
+
+SPACE:
+  SIZE: 1024.0    #单位MB

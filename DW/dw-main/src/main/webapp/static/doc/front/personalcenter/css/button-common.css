@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+/*------分页样式修改-----*/
+#laypageAre{padding-top: 2px;background-color: #FFFFFF;text-align: center;bottom: 0;position: absolute;bottom:-45px !important;width: 100%;}
+#laypageAre .layui-laypage a,#laypageAre .layui-laypage span{margin: 0}
+/*new*/
+.layui-form-item .layui-input-inline.miaoshu{width: 846px}
+.layui-form-item .range-bot{bottom :0!important;}
+.layui-form-item  .power-bot{bottom: -5px!important;;right: -30px!important;}
+
+/*.layui-table.table_list thead{opacity: 0}*/
+.layui-form-item .pow-inline{width: 400px!important;;}
+.view-inline{width:  309px}
+.setFileAuthority{margin-left: 5px;cursor: pointer;color:#3C91FD}
+.layui-form-checked i, .layui-form-checked:hover i{   background-color: #3C91FD!important;color: #fff;}
+#dndArea{top:67px!important;border-style: none!important;height: auto !important;position: static!important;
+    padding-top: 3px;}
+.search-wrapper{margin-top: 20px; width: 246px;position: absolute;right: 20px;}
+.search-wrapper input{display: inline-block;margin-right: 8px;width: 243px;height: 26px ;background:rgba(250,252,255,1);border:1px solid rgba(209,222,237,1);opacity:1;border-radius:13px;color: #333;}
+.search-btn {height:18px;width:18px;position: absolute;right: 16px;top: 4px;background: url("../../../../resources/img/front/search.png") no-repeat center;cursor: pointer;}
+.search-wrapper:hover .search-btn{background: url("../../../../resources/img/front/search_hover.png") no-repeat center}
+
+.layui-form-item .layui-input-inline.miaoshu{width: 846px}
+.layui-form-item .range-bot{bottom :0!important;}
+.layui-form-item  .power-bot{bottom: -5px!important;;right: -30px!important;}
+
+/*.layui-table.table_list thead{opacity: 0}*/
+.layui-form-item .pow-inline{width: 400px!important;;}
+/*.layui-icon{margin-right: 10px;padding-top: 4px;}*/
+.hoverSpan  .layui-icon{
+    color:#3C91FD;
+}
+.hoverSpan  .layui-icon:hover{
+    opacity: 0.7;
+}
+.hoverSpan  .moreicon p:hover{
+    background:rgba(246,248,249,1);
+    opacity:1;
+}
+
+.moreicon p:hover{
+    background:rgba(246,248,249,1);
+    opacity:1;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+    background-color: #3C91FD!important;
+}
+
+
+.front-layui-btn{
+    background-color:#3C91FD;
+}
+.layui-layer-btn .layui-layer-btn0{
+    border-color: #3C91FD!important;
+    background-color: #3C91FD!important;
+    color: #fff;
+}
+.new-upload{
+    line-height: 63px;
+    float: left; color:#3C91FD;width: 60px
+}
+
+.layui-form-checked, .layui-form-checked:hover{
+    border-color: #3C91FD;
+}
+
+.layui-table td, .layui-table th{
+    padding: 9px 0px;
+}
+.layui-form-checkbox{
+    margin-right: 5px;
+}
+
+.layui-form-checked, .layui-form-checked:hover{
+    border-color: #3C91FD;
+}
+.layui-table-view .layui-form-checked[lay-skin=primary] i, .layui-table-view .layui-form-checkbox[lay-skin=primary]:hover i{
+    border-color: #3C91FD!important; background-color:#3C91FD!important; ;
+}
+.layui-laypage a:hover{color: #3C91FD!important;}
+
+.layui-layer-ico1 {
+    background: url(../../../../resources/img/icon1-blue.png) no-repeat!important;
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe>.fileName:hover{color: #3C91FD!important;cursor: pointer!important;}

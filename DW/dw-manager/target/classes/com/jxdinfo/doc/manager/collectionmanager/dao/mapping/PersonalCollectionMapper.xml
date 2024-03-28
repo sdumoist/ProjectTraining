@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.collectionmanager.dao.PersonalCollectionMapper">
+    <!-- 获取用户操作记录：3->预览，4->下载 -->
+    <select id="getCollectionList" resultType="java.util.Map">
+        SELECT
+        T1.id id,
+        FF.file_id fileId,
+        T1.fileName fileName,
+        T1.resourceId resourceId,
+        FF.file_path filePath,
+        ifnull(FF.file_type,'folder') fileType,
+        FF.file_pdf_path,
+        FF.file_size fileSize,
+        FF.size size,
+        FF.CREATE_TIME uploadTime,
+        D.author_id author,
+        D.share_flag shareFlag,
+        SU.user_name authorName,
+        SU2.user_name collectionUserName,
+        T1.optime optime,
+        ifnull(COL.collectNum,0) collectNum,
+        D.download_num downloadNum,
+        CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END authority
+        FROM
+        (
+        SELECT
+        DC.resource_id resourceId,
+        DC.collection_id id,
+        MAX(DC.create_time) optime,
+        DC.resource_name fileName,
+        DC.resource_type fileType,
+        DC.create_user_id collectionUserId
+        FROM doc_collection DC
+        WHERE DC.create_user_id=#{userId} AND DC.parent_folder_id=#{parentFolderId}
+        GROUP BY DC.RESOURCE_ID
+
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.resourceId
+        LEFT JOIN doc_info D ON D.DOC_ID=FF.FILE_ID
+        LEFT JOIN sys_users SU ON D.author_id = SU.user_id
+        LEFT JOIN sys_users SU2 ON T1.collectionUserId = SU2.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,resource_id RESOURCEID FROM doc_collection GROUP BY resource_id) COL ON D.DOC_ID = COL.RESOURCEID
+        left join fs_folder ffd on d.fold_id=ffd.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = D.doc_id
+        <where>
+            <if test="name != null and name != ''">
+                T1.fileName like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+        ORDER BY T1.fileType DESC
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    , T1.fileName desc
+                </if>
+                <if test="order == 1">
+                    , T1.fileName asc
+                </if>
+                <if test="order == 2">
+                    , T1.optime asc
+                </if>
+                <if test="order == 3">
+                    , T1.optime desc
+                </if>
+                <if test="order == 4">
+                    ,  SU.user_name asc
+                </if>
+                <if test="order == 5">
+                    ,  SU.user_name desc
+                </if>
+            </when>
+            <otherwise>
+                , T1.optime DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="getCollectionListMobile" resultType="java.util.Map">
+        SELECT
+        T1.id id,
+        FF.file_id fileId,
+        T1.fileName fileName,
+        T1.resourceId resourceId,
+        FF.file_path filePath,
+        ifnull(FF.file_type,'folder') fileType,
+        FF.file_pdf_path,
+        FF.file_size fileSize,
+        FF.size size,
+        FF.CREATE_TIME uploadTime,
+        D.author_id author,
+        D.share_flag shareFlag,
+        SU.user_name authorName,
+        SU2.user_name collectionUserName,
+        T1.optime optime,
+        ifnull(COL.collectNum,0) collectNum,
+        D.download_num downloadNum,
+        CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END authority
+        FROM
+        (
+        SELECT
+        DC.resource_id resourceId,
+        DC.collection_id id,
+        MAX(DC.create_time) optime,
+        DC.resource_name fileName,
+        DC.resource_type fileType,
+        DC.create_user_id collectionUserId
+        FROM doc_collection DC
+        WHERE DC.create_user_id=#{userId} AND DC.parent_folder_id=#{parentFolderId}
+        GROUP BY DC.RESOURCE_ID
+
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.resourceId
+        LEFT JOIN doc_info D ON D.DOC_ID=FF.FILE_ID
+        LEFT JOIN sys_users SU ON D.author_id = SU.user_id
+        LEFT JOIN sys_users SU2 ON T1.collectionUserId = SU2.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,resource_id RESOURCEID FROM doc_collection GROUP BY resource_id) COL ON D.DOC_ID = COL.RESOURCEID
+        left join fs_folder ffd on d.fold_id=ffd.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = D.doc_id
+        <where>
+            <if test="name != null and name != ''">
+                T1.fileName like CONCAT('%',#{name},'%')
+            </if>
+            <if test="folderIds != null and folderIds.size >0">
+                AND D.fold_id IN
+                <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY T1.fileType DESC
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    , T1.fileName desc
+                </if>
+                <if test="order == 1">
+                    , T1.fileName asc
+                </if>
+                <if test="order == 2">
+                    , T1.optime asc
+                </if>
+                <if test="order == 3">
+                    , T1.optime desc
+                </if>
+                <if test="order == 4">
+                    ,  SU.user_name asc
+                </if>
+                <if test="order == 5">
+                    ,  SU.user_name desc
+                </if>
+            </when>
+            <otherwise>
+                , T1.optime DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="getCollectionToFolderList" resultType="java.util.Map">
+
+        SELECT
+        DC.resource_id resourceId,
+        DC.collection_id id,
+        MAX(DC.create_time) optime,
+        DC.resource_name fileName,
+        DC.resource_type fileType,
+        DC.create_user_id collectionUserId,
+        DC.parent_folder_id parentFolderId,
+        ifnull(DC.synopsis,'')  synopsis,
+        case
+			when
+				 DC.resource_id = 'abcde4a392934742915f89a5869abcde'
+					then '0'
+				else '1' end as showOrder
+        FROM doc_collection DC
+        WHERE DC.create_user_id=#{userId}
+        AND DC.parent_folder_id=#{parentFolderId}
+        AND DC.resource_type = '1'
+        GROUP BY DC.RESOURCE_ID
+        ORDER BY showOrder,DC.resource_name
+    </select>
+
+    <insert id="insertCollection" parameterType="java.util.List">
+        insert into doc_collection
+        (
+        collection_id,
+        resource_id,
+        resource_type,
+        parent_folder_id,
+        create_user_id,
+        create_time,
+        resource_name
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.collectionId},
+            #{item.resourceId},
+            #{item.resourceType},
+            #{item.parentFolderId},
+            #{item.createUserId},
+            #{item.createTime},
+            #{item.resourceName}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertCollectionFolder">
+        insert into doc_collection
+        (
+        collection_id,
+        resource_id,
+        resource_type,
+        parent_folder_id,
+        create_user_id,
+        create_time,
+        resource_name,
+        level_code,
+        synopsis
+        )
+        values
+            (
+            #{collectionId},
+            #{resourceId},
+            #{resourceType},
+            #{parentFolderId},
+            #{createUserId},
+            #{createTime},
+            #{resourceName},
+            #{levelCode},
+            #{synopsis}
+            )
+    </insert>
+
+    <!-- 删除收藏记录的sql -->
+    <delete id="deleteCollection">
+        DELETE FROM doc_collection     WHERE collection_id IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <!-- 取消收藏的sql -->
+    <delete id="cancelCollection">
+        DELETE FROM doc_collection
+        WHERE
+        create_user_id=#{userId}
+        AND resource_id=#{docId}
+        <if test="parentFolderId != null and parentFolderId != ''">
+          AND parent_folder_id=#{parentFolderId};
+        </if>
+    </delete>
+
+    <!-- 获取历史记录总数 -->
+    <select id="getMyCollectionCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        DC.resource_id,
+        MAX(DC.create_time) optime
+        FROM doc_collection DC
+        WHERE DC.create_user_id=#{userId} AND DC.parent_folder_id=#{parentFolderId}
+        <if test="name != null and name != ''">
+            AND DC.resource_name like CONCAT('%',#{name},'%')
+        </if>
+        AND create_user_id=#{userId}
+        GROUP BY DC.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+    </select>
+
+    <select id="getMyCollectionCountMobile" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        DC.resource_id,
+        MAX(DC.create_time) optime
+        FROM doc_collection DC
+        LEFT JOIN doc_info D ON DC.resource_id = D.file_id
+        WHERE DC.create_user_id=#{userId} AND DC.parent_folder_id=#{parentFolderId}
+        <if test="name != null and name != ''">
+            AND DC.resource_name like CONCAT('%',#{name},'%')
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND D.fold_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND create_user_id=#{userId}
+        GROUP BY DC.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+    </select>
+
+
+    <select id="getCurrentMaxLevelCode" resultType="String">
+        SELECT max(level_code) FROM `doc_collection` where parent_folder_id=#{parentId};
+
+    </select>
+
+    <select id="addCheck" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT resource_id resourceId, resource_name resourceName
+        FROM
+        doc_collection
+        WHERE  parent_folder_id = #{pid}
+        AND resource_name = #{name}
+        AND create_user_id=#{userId}
+        AND resource_type = '1'
+    </select>
+
+    <select id="addCheckFile" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT resource_id resourceId, resource_name resourceName
+        FROM
+        doc_collection
+        WHERE  parent_folder_id = #{pid}
+        AND resource_name = #{name}
+        AND create_user_id=#{userId}
+        AND resource_type = '0'
+    </select>
+
+    <select id="selectByResourceId" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT
+        collection_id collectionId,
+        resource_id resourceId,
+        resource_type resourceType,
+        parent_folder_id parentFolderId,
+        create_user_id createUserId,
+        create_time createTime,
+        resource_name resourceName,
+        level_code levelCode
+        FROM
+        doc_collection
+        WHERE
+        1=1
+        <if test="resourceId!=null and resourceId!=''">
+            AND resource_id = #{resourceId}
+        </if>
+        <if test="userId!=null and userId!=''">
+            AND create_user_id=#{userId}
+        </if>
+        <if test="parentFolderId!=null and parentFolderId!=''">
+            AND parent_folder_id=#{parentFolderId}
+        </if>
+
+    </select>
+
+    <select id="getTreeData" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT
+        DC.resource_id resourceId,
+        DC.resource_name resourceName,
+        DC.parent_folder_id parentFolderId
+        FROM
+        doc_collection DC
+        WHERE
+        DC.parent_folder_id = #{id}
+        <if test="userId!=null and userId!=''">
+            AND create_user_id=#{userId}
+        </if>
+         AND resource_type = '1'
+    </select>
+
+    <select id="getChildList" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT
+        DC.resource_id resourceId,
+        DC.resource_name resourceName,
+        DC.parent_folder_id parentFolderId
+        FROM
+        doc_collection DC
+        WHERE
+        1=1
+        <if test="docCollectionList != null and docCollectionList.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="docCollectionList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND create_user_id=#{userId}
+        AND resource_type = '1'
+    </select>
+
+    <select id="getChildCountList" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        doc_collection DC
+        WHERE 1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND create_user_id=#{userId}
+        AND resource_type = '1'
+        GROUP BY parent_folder_id
+
+    </select>
+
+    <update id="updateFolder">
+        UPDATE doc_collection
+        SET
+            parent_folder_id=#{parentFolderId}
+        WHERE
+          resource_id=#{ids}
+          AND create_user_id=#{userId}
+           AND resource_type = '1'
+    </update>
+
+    <update id="updateFile">
+        UPDATE doc_collection
+        SET
+        parent_folder_id=#{parentFolderId}
+        WHERE
+        resource_id=#{ids}
+        AND create_user_id=#{userId}
+        AND resource_type = '0'
+    </update>
+
+    <update id="updateLevelCodeById">
+        UPDATE doc_collection
+        SET
+        level_code=#{levelCode}
+        WHERE
+        resource_id=#{resourceId}
+        AND create_user_id=#{userId}
+        AND resource_type = '1'
+    </update>
+    <select id="getChildByParentId" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT   resource_id resourceId,parent_folder_id parentFolderId
+        FROM `doc_collection`
+        where parent_folder_id=#{parentFolderId}
+        AND create_user_id=#{userId}
+        AND resource_type = '1'
+
+    </select>
+
+    <select id="selectByLevelCode" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+       	SELECT collection_id collectionId,resource_id resourceId,resource_type resourceType
+       	FROM doc_collection
+       	WHERE parent_folder_id in(
+            SELECT   resource_id resourceId
+            FROM `doc_collection`
+            where level_code like CONCAT(#{levelCode},'%')
+            AND create_user_id=#{userId}
+            AND resource_type = '1')
+		OR level_code = #{levelCode}
+	    AND create_user_id = #{userId}
+    </select>
+
+    <select id="selectByCollectionId" resultType="com.jxdinfo.doc.manager.collectionmanager.model.DocCollection">
+        SELECT
+        collection_id collectionId,
+        resource_id resourceId,
+        resource_type resourceType,
+        parent_folder_id parentFolderId,
+        create_user_id createUserId,
+        create_time createTime,
+        resource_name resourceName,
+        level_code levelCode
+        FROM
+        doc_collection
+        WHERE  collection_id = #{collectionId}
+        <if test="userId!=null and userId!=''">
+            AND create_user_id=#{userId}
+        </if>
+    </select>
+    <!-- 根据文件id获取历史记录数量 -->
+    <select id="getMyCollectionCountByFileId" resultType="int">
+        SELECT
+        count(*)
+        FROM doc_collection DC
+        <where>
+            <if test="userId != null and userId != ''">
+                DC.create_user_id=#{userId} AND
+            </if>
+            DC.resource_id=#{resourceId}
+        </where>
+    </select>
+
+    <update id="updateFolderName">
+        UPDATE doc_collection
+        SET
+        resource_name=#{folderName}
+        <if test="synopsis != null and synopsis != ''">
+            ,synopsis=#{synopsis}
+        </if>
+        WHERE
+        collection_id=#{collectionId}
+    </update>
+    <!--获取收藏夹文件总数-->
+    <select id="getChildFileCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        DC.resource_id,
+        MAX(DC.create_time) optime
+        FROM doc_collection DC
+        WHERE DC.create_user_id=#{userId}
+        AND DC.parent_folder_id=#{parentFolderId}
+        AND DC.resource_type = '0'
+        GROUP BY DC.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+    </select>
+</mapper>

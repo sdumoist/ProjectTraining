@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.personalcenter.dao.PersonalOperateMapper">
+    <!-- 获取用户操作记录：3->预览，4->下载 -->
+    <select id="getMyHistory" resultType="java.util.Map">
+        SELECT
+         T1.id id,
+         FF.file_id fileId,
+         FF.file_name fileName,
+         FF.file_path filePath,
+         FF.file_type fileType,
+         FF.file_pdf_path,
+         FF.file_size fileSize,
+         FF.size size,
+         FF.CREATE_TIME uploadTime,
+         D.author_id author,
+         D.share_flag shareFlag,
+         SU.user_name authorName,
+         T1.optime optime,
+        ifnull(COL.collectNum,0) collectNum,
+        D.download_num downloadNum,
+      CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END authority
+        FROM
+        (
+        SELECT
+         DRL.RESOURCE_ID,
+         DRL.ID id,
+         MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        GROUP BY DRL.RESOURCE_ID
+
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN doc_info D ON D.DOC_ID=FF.FILE_ID
+        LEFT JOIN sys_users SU ON D.author_id = SU.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.DOC_ID = COL.RESOURCEID
+        left join fs_folder ffd on d.fold_id=ffd.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = D.doc_id
+        <where>
+            <if test="name != null and name != ''">
+                FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="typeArr != null and typeArr.length >0">
+                AND FF.file_type IN
+                <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY  convert(SU.user_name using gbk) desc
+
+                </if>
+                <if test="order == 1">
+                    ORDER BY  convert(SU.user_name using gbk) asc
+
+                </if>
+                <if test="order == 2">
+                    order by T1.optime asc
+                </if>
+                <if test="order == 3">
+                    order by T1.optime desc
+                </if>
+                <if test="order == 4">
+                    order by  convert(SU.user_name using gbk) ASC
+                </if>
+                <if test="order == 5">
+                    order by   convert(SU.user_name using gbk) desc
+
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY T1.optime DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+    <select id="getMyHistoryMobile" resultType="java.util.Map">
+        SELECT
+        T1.id id,
+        FF.file_id fileId,
+        FF.file_name fileName,
+        FF.file_path filePath,
+        FF.file_type fileType,
+        FF.file_pdf_path,
+        FF.file_size fileSize,
+        FF.size size,
+        FF.CREATE_TIME uploadTime,
+        D.author_id author,
+        D.share_flag shareFlag,
+        SU.user_name authorName,
+        T1.optime optime,
+        ifnull(COL.collectNum,0) collectNum,
+        D.download_num downloadNum,
+        CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END authority
+        FROM
+        (
+        SELECT
+        DRL.RESOURCE_ID,
+        DRL.ID id,
+        MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        GROUP BY DRL.RESOURCE_ID
+
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN doc_info D ON D.DOC_ID=FF.FILE_ID
+        LEFT JOIN sys_users SU ON D.author_id = SU.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.DOC_ID = COL.RESOURCEID
+        left join fs_folder ffd on d.fold_id=ffd.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = D.doc_id
+        <where>
+            <if test="name != null and name != ''">
+                FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="typeArr != null and typeArr.length >0">
+                AND FF.file_type IN
+                <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+            <if test="folderIds != null and folderIds.size >0">
+                AND ffd.folder_id IN
+                <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY  convert(SU.user_name using gbk) desc
+
+                </if>
+                <if test="order == 1">
+                    ORDER BY  convert(SU.user_name using gbk) asc
+
+                </if>
+                <if test="order == 2">
+                    order by T1.optime asc
+                </if>
+                <if test="order == 3">
+                    order by T1.optime desc
+                </if>
+                <if test="order == 4">
+                    order by  convert(SU.user_name using gbk) ASC
+                </if>
+                <if test="order == 5">
+                    order by   convert(SU.user_name using gbk) desc
+
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY T1.optime DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="getMyHistoryClient" resultType="java.util.Map">
+        SELECT
+        T1.id id,
+        FF.file_id fileId,
+        FF.file_name fileName,
+        FF.file_path filePath,
+        FF.file_type fileType,
+        FF.file_pdf_path,
+        FF.file_size fileSize,
+        FF.CREATE_TIME uploadTime,
+        D.author_id author,
+        D.share_flag shareFlag,
+        SU.user_name authorName,
+        T1.optime optime,
+        ifnull(COL.collectNum,0) collectNum,
+        D.download_num downloadNum,
+        CASE
+        WHEN D.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END authority
+        FROM
+        (
+        SELECT
+        DRL.RESOURCE_ID,
+        DRL.ID id,
+        MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&gt;= 0
+            </otherwise>
+        </choose>
+        GROUP BY DRL.RESOURCE_ID
+
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN doc_info D ON D.DOC_ID=FF.FILE_ID
+        LEFT JOIN sys_users SU ON D.author_id = SU.user_id
+        LEFT JOIN (SELECT COUNT(1) collectNum,RESOURCE_ID RESOURCEID FROM doc_resource_log GROUP BY RESOURCE_ID) COL ON D.DOC_ID = COL.RESOURCEID
+        left join fs_folder ffd on d.fold_id=ffd.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = D.doc_id
+        <where>
+            <if test="name != null and name != ''">
+                FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="typeArr != null and typeArr.length >0">
+                AND FF.file_type IN
+                <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY FF.file_name desc
+                </if>
+                <if test="order == 1">
+                    ORDER BY FF.file_name asc
+                </if>
+                <if test="order == 2">
+                    order by T1.optime asc
+                </if>
+                <if test="order == 3">
+                    order by T1.optime desc
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY T1.optime DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <!-- 获取历史记录总数 -->
+    <select id="getMyHistoryCount" resultType="int">
+        SELECT
+          COUNT(*)
+        FROM
+        (
+        SELECT
+         DRL.RESOURCE_ID,
+         MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        GROUP BY DRL.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN DOC_INFO D ON D.DOC_ID=T1.RESOURCE_ID
+        <where>
+
+            <if test="name != null and name != ''">
+                AND FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getMyHistoryCountMobile" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        DRL.RESOURCE_ID,
+        MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        GROUP BY DRL.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN DOC_INFO D ON D.DOC_ID=T1.RESOURCE_ID
+
+        <where>
+
+            <if test="name != null and name != ''">
+                AND FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="folderIds != null and folderIds.size >0">
+                AND D.fold_id IN
+                <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取历史记录总数 -->
+    <select id="getMyHistoryCountClient" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        (
+        SELECT
+        DRL.RESOURCE_ID,
+        MAX(DRL.OPERATE_TIME) optime
+        FROM doc_resource_log DRL
+        WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType} AND DRL.valid_flag='1'
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),DRL.OPERATE_TIME)&gt;= 0
+            </otherwise>
+        </choose>
+        GROUP BY DRL.RESOURCE_ID
+        ORDER BY optime desc
+        )T1
+        LEFT JOIN fs_file FF ON FF.file_id=T1.RESOURCE_ID
+        LEFT JOIN DOC_INFO D ON D.DOC_ID=T1.RESOURCE_ID
+        <where>
+
+            <if test="name != null and name != ''">
+                AND FF.file_name like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 删除历史记录 -->
+    <update id="deleteHistory">
+        UPDATE DOC_RESOURCE_LOG DRL SET DRL.valid_flag='0' WHERE DRL.RESOURCE_ID IN
+        <foreach collection="histories" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        AND DRL.USER_ID=#{userId}
+        AND DRL.OPERATE_TYPE=#{opType}
+    </update>
+
+    <!-- 清空历史记录 -->
+    <update id="clearHistory">
+        UPDATE DOC_RESOURCE_LOG DRL SET DRL.valid_flag='0' WHERE DRL.USER_ID=#{userId} AND DRL.OPERATE_TYPE=#{opType}
+    </update>
+
+    <!-- 根据文件id获取历史记录数量 -->
+    <select id="getMyHistoryCountByFileId" resultType="int">
+
+        SELECT
+       count(*)
+        FROM doc_resource_log DRL
+        <where>
+        <if test="userId != null and userId != ''">
+            DRL.USER_ID=#{userId} AND
+        </if>
+            DRL.OPERATE_TYPE=#{opType} AND DRL.RESOURCE_ID=#{docId}
+        </where>
+    </select>
+    <!-- 取消收藏的sql -->
+    <delete id="cancelCollection">
+        DELETE FROM doc_resource_log  WHERE
+         USER_ID=#{userId} AND OPERATE_TYPE=#{opType} AND RESOURCE_ID=#{docId}
+    </delete>
+
+    <!-- 删除收藏记录的sql -->
+    <delete id="deleteCollection">
+        DELETE FROM DOC_RESOURCE_LOG     WHERE ID IN
+        <foreach collection="ids" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+</mapper>

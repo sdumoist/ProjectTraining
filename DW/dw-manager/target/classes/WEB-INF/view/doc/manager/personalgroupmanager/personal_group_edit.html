@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>用户组管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/doc/manager/personalgroupmanager/css/authority_per.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="weadmin-body zq">
+    <div class="layui-form">
+        <input  type="hidden" class="hide"  id="groupId" value="${docGroup.groupId}">
+        <div class="layui-form-item">
+            <label for="groupName" class="layui-form-label" style="width: 100px">
+                <span class="we-red">*</span>用户组名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="groupName" name="groupName" maxlength="30" value="${docGroup.groupName}"   autocomplete="off" class="layui-input" style="width:202px;">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <div class="layui-unselect layui-form-select">
+                    <div class="layui-select-title">
+                        <input type="text" id="authorName" name="authorName"  placeholder="请选择部门" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+                        <input  type="hidden" class="hide"  id="authorId" name="authorId" >
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="layui-input-inline">
+                 <div class="layui-unselect layui-form-select">
+                     <div class="layui-select-title">
+                         <input type="text" placeholder="请选择层级" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+                     </div>
+                 </div>
+             </div>-->
+            <div class="layui-input-inline">
+                <input type="text" id="userName" name="userName" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline searchBtn">
+                <button class="layui-btn" data-type="reload" id="searchBtn" type="button">
+                    <i class="layui-icon">&#xe615;</i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="layui-tab layui-tab-brief" lay-filter="roleManageTab">
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show" >
+                <div class="cont  clearfix">
+                    <div class="tableBox">
+                        <table class="layui-table" id="personTable" lay-filter="personTable"></table>
+                    </div>
+                    <div class="cont-center">
+                        <button id="addPerson" class="layui-btn">></button>
+                        <button id="delPerson" class="layui-btn"><</button>
+                        <button id="addAllPerson" class="layui-btn">>></button>
+                        <button id="delAllPerson" class="layui-btn"><<</button>
+                    </div>
+                    <!--添加检索结果-->
+                    <div class="tableBox">
+                        <table class="layui-table" id="personAddTable" lay-filter="personAddTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="cancel"  class="layui-btn btn-close" lay-filter="cancel" lay-submit=""><i class="iconfont">&#x1006;</i>取消</button>
+        <button type="button" id="saveBtn" class="layui-btn btn-save" lay-filter="add"><i class="iconfont">&#xe009;</i>确定</button>
+    </div>
+</div>
+<!-- 人员树 -->
+<div id="employeeTreeDiv" style="display: none;"  class="formmargin">
+    <div id="showEmployeeTree" class="jsTree"></div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-form.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/zTree/js/jquery.ztree.all.js"></script>
+<script src="${ctxPath}/static/doc/manager/personalgroupmanager/js/personal_group_edit.js?v=${h_version}"></script>
+</html>

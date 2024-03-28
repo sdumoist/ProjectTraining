@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.question.dao.QuestionShareMapper">
+
+    <insert id="newShareResource">
+        INSERT INTO qa_share_info (
+        ID,
+        QUE_ID,
+        SHARE_USER_ID,
+        SHARE_USER_NAME,
+        SHARE_TIME,
+        SHARE_URL,
+        INVALID_TIME,
+        REAL_URL,
+        REDA_NUM
+        )VALUES(
+        #{shareId},
+        #{questionId},
+        #{creatorId},
+        #{creatorName},
+         sysdate(),
+        #{hash},
+       DATE_ADD(now(),interval #{validTime} day),
+        #{href},
+      0
+        )
+    </insert>
+
+    <!--获取分享资源的信息-->
+    <select id="getShareResource" resultType="Map">
+        SELECT DISTINCT
+        S.REAL_URL href,
+        A.USER_NAME shareUser,
+        S.SHARE_USER_ID shareUserId,
+        S.SHARE_USER_NAME ShareUsersName,
+        D.STATE STATE,
+        D.TITLE title,
+        DATE_FORMAT(S.SHARE_TIME,'%Y-%m-%d %H:%i') createTime,
+        S.QUE_ID questionId
+        FROM qa_share_info S
+        LEFT JOIN  SYS_USERS A ON A.USER_ID = S.SHARE_USER_ID
+        LEFT JOIN (SELECT QUE_ID,STATE,TITLE FROM qa_question) D ON S.QUE_ID = D.QUE_ID
+        WHERE S.SHARE_URL = #{hash}
+    </select>
+</mapper>

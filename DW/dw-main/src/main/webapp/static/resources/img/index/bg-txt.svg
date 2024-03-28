@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="291px" height="89px" viewBox="0 0 291 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>编组 10备份 16</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0.5" y="0.704144533" width="290" height="88" rx="2"></rect>
+        <rect id="path-3" x="22.450903" y="22.7041445" width="20" height="20" rx="2"></rect>
+        <filter x="-12.5%" y="-7.5%" width="125.0%" height="130.0%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="0.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.880164315   0 0 0 0 0.89930934   0 0 0 0 0.948539402  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图" transform="translate(-235.000000, -79.000000)">
+            <g id="分组-15-copy-17" transform="translate(235.000000, 78.750000)">
+                <g id="编组-10备份-16">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Mask" fill="#EDF0FF" xlink:href="#path-1"></use>
+                    <text id="……………………..-……………………." opacity="0.654017857" mask="url(#mask-2)" font-family="PingFangSC-Regular, PingFang SC" font-size="12" font-weight="normal" line-spacing="7" fill="#DBE0F0">
+                        <tspan x="215" y="64.4572861">……………………..</tspan>
+                        <tspan x="215" y="71.4572861">……………………..</tspan>
+                        <tspan x="215" y="78.4572861">……………………..</tspan>
+                        <tspan x="215" y="85.4572861">……………………..</tspan>
+                        <tspan x="215" y="92.4572861">……………………..</tspan>
+                        <tspan x="215" y="99.4572861">……………………..</tspan>
+                    </text>
+                    <text id="……………………..-……………………." opacity="0.654017857" mask="url(#mask-2)" font-family="PingFangSC-Regular, PingFang SC" font-size="12" font-weight="normal" line-spacing="7" fill="#D4DAE9">
+                        <tspan x="-84.5" y="21.2468584">……………………..</tspan>
+                        <tspan x="-84.5" y="28.2468584">……………………..</tspan>
+                        <tspan x="-84.5" y="35.2468584">……………………..</tspan>
+                        <tspan x="-84.5" y="42.2468584">……………………..</tspan>
+                        <tspan x="-83.636" y="53.6708584"></tspan>
+                    </text>
+                    <circle id="椭圆形" stroke="#E8EAF5" stroke-width="6" opacity="0.544759115" mask="url(#mask-2)" cx="245.535899" cy="1.40882036" r="13.0358994"></circle>
+                    <circle id="椭圆形-copy" stroke="#DCE0EE" stroke-width="8" opacity="0.325288318" mask="url(#mask-2)" cx="31.450903" cy="90.5192548" r="19.5556855"></circle>
+                    <g id="矩形" mask="url(#mask-2)">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <rect stroke="#FFFFFF" stroke-width="0.5" stroke-linejoin="square" fill="#7B89AD" fill-rule="evenodd" x="22.700903" y="22.9541445" width="19.5" height="19.5" rx="2"></rect>
+                    </g>
+                    <path d="M24.2168867,29.6068604 L29.2922681,29.6068604 L29.2922681,30.2228469 L27.10595,30.2228469 L27.10595,35.8014286 L26.4032048,35.8014286 L26.4032048,30.2228469 L24.2168867,30.2228469 L24.2168867,29.6068604 Z M29.8958605,29.6068604 L30.772123,29.6068604 L32.4465651,32.0187511 L34.129683,29.6068604 L35.0059455,29.6068604 L32.8716825,32.5826824 L35.1707869,35.8014286 L34.2945245,35.8014286 L32.4465651,33.1466137 L30.6072815,35.8014286 L29.7310191,35.8014286 L32.0127718,32.5826824 L29.8958605,29.6068604 Z M35.6095378,29.6068604 L40.6849193,29.6068604 L40.6849193,30.2228469 L38.4986011,30.2228469 L38.4986011,35.8014286 L37.795856,35.8014286 L37.795856,30.2228469 L35.6095378,30.2228469 L35.6095378,29.6068604 Z" id="TXT" stroke="#FFFFFF" stroke-width="0.5" fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-2)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

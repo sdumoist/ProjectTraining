@@ -1,0 +1,305 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jxdinfo.hussar</groupId>
+		<artifactId>dw-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>dw-common</artifactId>
+	<name>${project.artifactId}</name>
+	<version>2.5.0</version>
+	<description>文库-通用类</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<!-- 基础配置信息 -->
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.test.skip>true</maven.test.skip>
+		<shiro-ehcache.version>1.9.1</shiro-ehcache.version>
+		<shiro-spring.version>1.9.1</shiro-spring.version>
+		<shiro-web.version>1.9.1</shiro-web.version>
+		<shiro-core.version>1.9.1</shiro-core.version>
+		<fastjson.version>1.2.83</fastjson.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>2.17.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<!--hussar -->
+		<dependency>
+			<groupId>com.jxdinfo.hussar</groupId>
+			<artifactId>hussar-framework</artifactId>
+			<version>2.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.data</groupId>
+					<artifactId>spring-data-mongodb</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-ehcache</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-nosql</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>hussar-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.jxdinfo.hussar</groupId>
+			<artifactId>hussar-core</artifactId>
+			<version>3.0.6-cus-docbase</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba</groupId>
+					<artifactId>fastjson</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--系统监控 -->
+		<dependency>
+			<groupId>com.jxdinfo.hussar</groupId>
+			<artifactId>smon-spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba</groupId>
+					<artifactId>fastjson</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--<dependency>-->
+		<!--<groupId>com.artofsolving</groupId>-->
+		<!--<artifactId>jodconverter</artifactId>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>org.jodconverter</groupId>
+			<artifactId>jodconverter-core</artifactId>
+			<version>4.0.0-RELEASE</version>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>com.fasterxml.jackson.dataformat</groupId>-->
+		<!--			<artifactId>jackson-dataformat-yaml</artifactId>-->
+		<!--		</dependency>-->
+		<!-- 接口调用 -->
+		<dependency>
+			<groupId>net.dongliu</groupId>
+			<artifactId>requests</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.17</version>
+		</dependency>
+		<!--全文检索服务Client -->
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-client</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+
+		<!-- 处理es特殊字符处理 -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>8.4.1</version>
+		</dependency>
+
+
+
+		<!-- 图片处理 -->
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+		</dependency>
+		<!-- pdf转图片 -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+		</dependency>
+		<!--apache文件解压依赖，解决中文乱码问题 -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+		</dependency>
+		<!-- 导入rar解压包 -->
+		<dependency>
+			<groupId>com.github.junrar</groupId>
+			<artifactId>junrar</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<!-- 内容提取 -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk15on</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcmail-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.levigo.jbig2</groupId>
+			<artifactId>levigo-jbig2-imageio</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jai-imageio</groupId>
+			<artifactId>jai-imageio-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jai-imageio</groupId>
+			<artifactId>jai-imageio-jpeg2000</artifactId>
+		</dependency>
+
+		<!--PDF页数获取开始 -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-asian</artifactId>
+		</dependency>
+		<!--PDF页数获取结束 -->
+		<!-- 水印 -->
+
+		<dependency>
+			<groupId>com.jacob</groupId>
+			<artifactId>jacob</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itextasian</artifactId>
+		</dependency>
+
+		<!-- fastdfs-client -->
+		<dependency>
+			<groupId>com.github.penggle</groupId>
+			<artifactId>fastdfs-client-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!--fastjson-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+		<!--shiro-->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${shiro-core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro-web.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${shiro-spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>${shiro-ehcache.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>ehcache-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArguments>
+						<verbose />
+						<bootclasspath>${java.home}\lib\rt.jar;${java.home}\lib\jce.jar</bootclasspath>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/webapp</directory>
+
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>

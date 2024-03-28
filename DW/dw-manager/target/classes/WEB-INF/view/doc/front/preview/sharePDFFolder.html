@@ -1,0 +1,97 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <!-- 分享显示的标题-->
+    <meta itemprop="name" content="查看分享" />
+    <!-- 分享显示的缩略图-->
+    <meta itemprop="image" content="" />
+    <!-- 分享显示的简介-->
+    <meta name="description" itemprop="description" content="更多精彩尽在金企文库" />
+    <title>${projectTitle}-预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/folderPreview.css?v=${h_version}"/>
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/plugins/css/pluginsCss.css' />
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/plugins/plugins.css' />
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/css/luckysheet.css' />
+    <link rel='stylesheet' href='/static/resources/luckyexcel/luckysheet/assets/iconfont/iconfont.css' />
+    <script src="/static/resources/luckyexcel/luckysheet/plugins/js/plugin.js"></script>
+    <script src="/static/resources/luckyexcel/luckysheet/luckysheet.umd.js"></script>
+    <script type="text/javascript">
+        projectTitle = "${projectTitle}";
+    </script>
+</head>
+<body id="top">
+@include("/common/share-header.html"){}
+<a name="goTop" id="goTop"></a>
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<input type="hidden" class="hide" id="id" value="${id}"/>
+<input type="hidden" class="hide" id="watermark_company_flag" value="${watermark_company_flag}"/>
+<input type="hidden" class="hide" id="companyValue" value="${companyValue}"/>
+<input type="text" class="hide" style="opacity: 0" id="shareUser" value="${shareUser}"/>
+<input type="hidden" class="hide" id="watermark_user_flag" value="${watermark_user_flag}"/>
+<div class="container-new container-pdf" id="container-pdf">
+<!--    <div class="breadCrumbs">-->
+<!--        <label></label>-->
+<!--        <div class="pathes"></div>-->
+<!--    </div>-->
+    <div class="container">
+        <div id="title" class="viewTitle"></div>
+    </div>
+    <div class="content-bottom " style="padding-bottom: 20px">
+        <div class="layui-row divtop container" >
+            <div class="layui-col-sm12">
+                <div class="pdf-view">
+                    <div class="viewContent">
+                            <div class="pdf-content">
+                                <div id="excelContent" class="hide">
+                                    <div style="background-color: #eef2f6; width: 100%;height: 100%">
+                                        <div id="toptoolbar" style="width: 100%; height: 35px; background-color: #eef2f6">
+                                            <div style="width: 30px; height: 30px;" id="openPage" onclick="handleFullScreen()" value="全屏显示ʾ"></div>
+                                        </div>
+                                        <div id="lucky-mask-demo" style="position: absolute;z-index: 1000000;left: 0px;top: 0px;bottom: 0px;right: 0px; background: rgba(255, 255, 255, 0.8); text-align: center;font-size: 14px;align-items:center;justify-content: center;display: none;">正在生成预览...</div>
+                                        <div id="luckysheet" style="margin:0px;margin-top:35px;padding:0px;position:absolute;width:98%;left: calc(2%/2);top: 0px;bottom: 5px;outline: none;">
+                                            <div class="cover2" style="font-size: 23.2773px; width: 600px;">
+                                                @if(watermark_user_flag == '1'){
+                                                <br>${shareUser}<br>
+                                                @}
+                                                @if(watermark_company_flag == '1'){
+                                                ${companyValue}
+                                                @}
+                                            </div>
+                                        </div>
+                                        <script src="/static/resources/luckyexcel/luckyexcel.umd.js"></script>
+                                    </div>
+                                </div>
+                                <iframe frameborder="0" id="pdfContainer" name="pdfContainer"  class="hide"></iframe>
+                                <div class="pdf-loading hide" id="loadingBox">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <div class="onloading">
+                                        正在生成预览...
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/sharePDFFolder.js?v=${h_version}"></script>
+
+</html>

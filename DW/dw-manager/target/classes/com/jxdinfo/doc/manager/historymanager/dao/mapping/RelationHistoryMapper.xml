@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.manager.historymanager.dao.RelationHistoryMapper" >
+    <!-- 获取用户操作记录表中存在的用户id -->
+    <select id="getUsers" resultType="java.util.Map">
+        SELECT DISTINCT(user_id) userId from doc_resource_log
+    </select>
+
+    <!-- 获取当前查询用户的操作记录 -->
+    <select id="getUserResourceLog" resultType="java.util.Map">
+        SELECT
+         DRL.RESOURCE_ID docId,
+         USER_ID userId,
+         OPERATE_TIME operateTime
+        FROM doc_resource_log DRL
+        WHERE DRL.OPERATE_TYPE='3' AND USER_ID = #{userId}
+        <if test="isEmpty != null and isEmpty != ''">
+            AND operate_time &lt;= SYSDATE() AND operate_time &gt;= ADDDATE(SYSDATE(),-1)
+        </if>
+        ORDER BY OPERATE_TIME
+    </select>
+
+    <!-- 查询是否存在该current-child关系 -->
+    <select id="selectCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        DOC_PREVIEW_RELATION
+        WHERE CURRENT_DOC_ID=#{currentId} AND CHILD_DOC_ID=#{childId}
+    </select>
+
+    <!-- 将current文章和child文章插入relation表中 -->
+    <insert id="insertIntoDocRelation">
+        INSERT INTO DOC_PREVIEW_RELATION (RELATION_ID,CURRENT_DOC_ID,CHILD_DOC_ID,TIMES) VALUES (#{id}, #{currentId}, #{childId}, #{times})
+    </insert>
+
+    <!-- 如果存在该current-child关系，则将原来的次数+1 -->
+    <update id="updateDocRelation">
+        UPDATE DOC_PREVIEW_RELATION
+        SET TIMES = TIMES + 1
+        WHERE CURRENT_DOC_ID=#{currentId} AND CHILD_DOC_ID=#{childId}
+    </update>
+
+    <!-- 查询relation表是否为空 -->
+    <select id="selectRelationCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        DOC_PREVIEW_RELATION
+    </select>
+</mapper>

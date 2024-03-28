@@ -1,0 +1,171 @@
+
+th, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.layui-layer {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.layui-btn{
+    border-radius:0;
+}
+#componentApply,#updateComponentApply{
+    border-radius:2px 0 0 2px!important;
+}
+
+#multiplexList,#delComponentBtn{
+    border-radius:0 2px 2px 0!important;
+}
+.layui-form-checked[lay-skin=primary] i{
+    border-color: #2980ff!important;
+    background-color: #2980ff!important;
+}
+.message{width:374px !important;height: 100%;line-height: 53px;font-size: 16px;color: #333;}
+.layui-tab-brief{width:100%;float: left;height: 170px;}
+.layui-tab-title{top: -41px !important;}
+.layui-tab-brief>.layui-tab-title .layui-this{border-bottom:2px solid #2980ff !important;color:#2980ff !important;}
+.fileButtonGroup .layui-form{height: calc(100% - 40px);overflow: hidden;}
+.fileButtonGroup .layui-form-item{height:auto;margin-bottom: 0px !important;}
+.layui-form-checkbox[lay-skin=primary] i{line-height: 8px !important;margin-top: 1px;    padding-top: 3px;margin-left: 5px;}
+.newFolder{float: right !important;}
+.componame{top:41px !important;left:0 !important;}
+.titleName{left:0 !important;top:8px !important;}
+.rows{height:33.3%;line-height: 34px;  width: 100% !important;  white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis;}
+.layui-input-block{margin-left: 45px; !important;}
+.layui-form-label{width:45px !important;padding: 0 !important;color: #92A0B3 !important;line-height: 30px;}
+.rows:nth-child(2),.rows:nth-child(3){color: #92A0B3 !important;}
+.layui-table tr:first-child td{border-top-width: 1px !important;}
+.table_list.layui-table tr td:first-child{padding-left: 0 !important;}
+.newFolder{margin-bottom: 10px !important;margin-top: 0 !important;line-height: 22px;bottom: -30px !important;}
+.spans{width: 65px;height: 26px;line-height: 26px;text-align: center;display: inline-block;font-size: 12px;border-radius:2px;}
+.layui-form-item .layui-form-checkbox[lay-skin=primary]{margin-top:7px !important;float: left;}
+.layui-tab-title{position: absolute;width: 130px;left:40%;font-weight:400;color:rgba(52,64,81,1) !important;text-align: center;border-bottom-width: 0 !important;border-bottom-style: none !important;}
+.layui-tab-content{padding: 0 !important;}
+#marg .file-container-flatten{margin-top:0px ;    height: auto !important;}
+.layui-form-checkbox span{padding: 0 !important;}
+.layui-tab-title li{margin: 0 15px !important;padding: 0 !important;min-width: 30px !important;font-size: 16px;line-height: 39px !important;border-bottom: 2px solid transparent !important;}
+.layui-form-checkbox[lay-skin=primary]:hover i{border-color: #2980ff !important;}
+.row-title{ width:80%;float: left;height:100%;line-height: 34px}
+.title-span{width:90%;text-align: left;color:#344051;font-size: 16px;}
+.status{width:20%;float: left;height:100%;line-height: 34px;padding: 3px 0;text-align: right}
+.nameTitpe>a:hover{cursor: pointer;color: #2980ff !important}
+.nameTitpes{width:90%;text-align: left;color:#344051;font-size: 16px;}
+.nameTitpes a{color: #344051 !important}
+.tdStyle{width:50%;height:120px;border-color: rgba(223,231,241,1) !important;}
+.tdStyle:hover{width:50%;height:120px;border-color:#fff !important;}
+/*按钮*/
+.addBtn{margin-right: 0 !important;}
+.item-last{width: 90%;overflow: hidden}
+/*展开收缩*/
+.fileButtonGroup,.layui-form{position: relative}
+
+.openStyle span{display: inline-block;color: #5aa3ff;cursor: pointer}
+.openStyle span img{width: 16px;padding-bottom: 3px;padding-left: 5px}
+.opens{width: 100%}
+.closes{width: 100%;display: none }
+
+
+
+.openStyle {
+    width: 50px;
+    height: 32px;
+    line-height: 35px;
+    position: absolute;
+    bottom: 11px;
+    right: 0;
+}
+.table-top{
+    height: 53px;
+    padding-left: 10px;
+    position: fixed;
+    background: #fff;
+    width: 100%;
+    z-index: 2;
+}
+.fast-button {
+    padding: 0 10px;
+}
+div#uploader{
+    height: calc(100% - 119px) !important;
+    margin-top: 53px;
+}
+.fast-button {
+    height: 100% !important;
+}
+.layui-tab.layui-tab-brief {
+    position: fixed;
+    width: calc(100% - 60px);
+    z-index: 999;
+    background: #fff;
+    margin-top: -3px;
+    padding-top: 13px;
+}
+.layui-tab-brief>.layui-tab-title .layui-this:after{
+    border-bottom: none;
+}
+div#view {
+    height: auto !important;
+    width: 100%;
+}
+div#dndArea {
+    overflow: auto;
+}
+.fileButtonGroup{width:100%;height: 187px;overflow: hidden;}
+.fileButtonGroup-open{height: auto !important;}
+.download-info .layui-layer-btn .layui-layer-btn0{margin-bottom: 10px}
+@media screen and (min-width: 700px) and (max-width: 1600px){
+    .table-top {
+        height: 47px;
+    }
+    .message{line-height: 47px;}
+    div#uploader{
+        height: calc(100% - 89px) !important;
+        margin-top: 47px;
+    }
+    .layui-tab-title{top: -41px !important;}
+    .layui-form-checkbox[lay-skin=primary] i {
+        margin: 0;
+        padding: 0;
+        margin-top: 3px;
+    }
+    .layui-form-item .layui-form-checkbox[lay-skin=primary] {
+        margin-top: 7px !important;
+        float: left;
+        width: auto !important;
+        text-indent: 8px;
+        margin-left: 15px;
+    }
+    .layui-form-checkbox[lay-skin=primary] span {
+        padding-left: 0;
+        padding-right: 15px;
+        line-height: 18px;
+        background: 0 0;
+        color: #666;
+        display: inline-block;
+        width: auto !important;
+    }
+    .message{font-size: 13px;}
+}
+@media only screen and (max-width: 1366px){
+    .layui-form-checkbox i {
+        width: 13px !important;
+        height: 13px !important;
+        font-size: 9px !important;
+        line-height: 12px !important;
+        text-indent: 0 !important;
+    }
+    .layui-form-checkbox[lay-skin=primary] i {
+        line-height: 9px !important;
+    }
+}
+/*加载中样式*/
+div#transLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}

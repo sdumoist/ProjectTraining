@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docsearch.dao.DocHistorySearchMapper">
+    <select id="selectHotKeywords" resultType="java.util.Map">
+        select count(*) searchNum,keywords from doc_history_search  where  keywords &lt;&gt;''
+        GROUP BY keywords ORDER BY searchNum desc LIMIT 8
+    </select>
+
+    <select id="getList" resultType="com.jxdinfo.doc.front.docsearch.model.DocHistorySearch">
+
+        select   keywords,MAX(create_time) createTime from doc_history_search  where  user_id =#{userId}   and keywords &lt;&gt;'' and valid_flag = '1'   GROUP  BY keywords ORDER BY createTime desc limit #{pageNumber},#{pageSize}
+    </select>
+    <update id="updateFlag">
+          UPDATE doc_history_search set
+          valid_flag = '0'
+            where user_id=#{userId}
+        <if test="keyword != null and keyword != ''">
+            and keywords = #{keyword}
+        </if>
+    </update>
+
+    <select id="distinctSuggest" resultType="String">
+        SELECT DISTINCT
+          T.suggestText
+        FROM
+        (
+        <foreach item="idItem" collection="suggestList" separator="UNION ALL">
+            SELECT
+              #{idItem} AS suggestText
+            FROM
+              dual
+        </foreach>
+        ) T
+    </select>
+</mapper>

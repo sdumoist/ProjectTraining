@@ -1,0 +1,71 @@
+<div class="header-bar">
+    <ul class="ul-header">
+        <li class="user-wrapper">
+          <!--  <img src="${ctxPath}/static/resources/img/front/user-default-icon1.png">-->
+            <span target="_blank" class="user-photo" id="loginName" href="#">
+                ${userName}
+            </span>
+            <div class="user-dropdown">
+                @if(shiro.hasPermission("sys:manager")){
+                <a target="_blank"  href="${ctxPath}/manager/">个人中心</a>
+                @}
+                <a id="loginout">退出登录</a>
+            </div>
+        </li>
+    </ul>
+    <!--<span class="ul-line"></span>-->
+    <!--<ul class="ul-header">-->
+        <!--<a href="/frontTopic/messageList?page=1&size=10" target="_blank">-->
+            <!--<div class="message">-->
+                <!--<div class="top">   <img src="${ctxPath}/static/resources/img/front/index/message.png " style="height: 18px;    vertical-align: top;"></div>-->
+                <!--<div class="bottom">资讯印象</div>-->
+            <!--</div>-->
+
+        <!--</a>-->
+    <!--</ul>-->
+    <span class="ul-line"></span>
+    <div class="ul-types">
+        @for(FsFile in fsFileList){
+
+        @if(FsFileLP.index<6){
+            <a class="fold-type" title="${FsFile.folderName}" target="_blank" href="${ctxPath}/frontFile?fileId=${FsFile.folderId}&fileName=${FsFile.folderName}">
+                @if(strutil.length (FsFile.folderName) > 10){
+                ${strutil.subStringTo(FsFile.folderName,0,6)}...
+                @}else{
+                ${FsFile.folderName}
+                @}
+            </a>
+        @}}
+        @if(fsFileList.~size>= 6){
+        <div class="fold-more">
+            <span>更多</span>
+            <div class="moreBox">
+                @for(FsFile in fsFileList){
+                @if(FsFileLP.index >= 6 && FsFileLP.index<10){
+                    <a class="fold-type" title="${FsFile.folderName}" target="_blank" href="${ctxPath}/frontFile?fileId=${FsFile.folderId}&fileName=${FsFile.folderName}">
+                        @if(strutil.length (FsFile.folderName) > 10){
+                        ${strutil.subStringTo(FsFile.folderName,0,6)}...
+                        @}else{
+                        ${FsFile.folderName}
+                        @}
+                    </a>
+                @}
+                @}
+                @if(fsFileList.~size>= 10){
+                <a href="${ctxPath}/frontFile"  class="all" target="_blank">全部>></a>
+                @}
+            </div>
+        </div>
+        @}
+
+        <!--<a class="fold-type">制度</a>-->
+        <!--<a class="fold-type">制度</a>-->
+        <!--<a class="fold-type">制度</a>-->
+        <!--<a class="fold-type">制度</a>-->
+        <!--<a class="fold-type">制度</a>-->
+        <!--<a class="fold-type">制度</a>-->
+
+    </div>
+</div>
+<div class="curtain"></div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front-header.js?v=${h_version}"></script>

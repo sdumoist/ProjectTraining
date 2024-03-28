@@ -1,0 +1,135 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docbanner.dao.BannerMapper">
+
+    <!--专题列表查询-->
+    <select id="bannerList" resultType="com.jxdinfo.doc.manager.docbanner.model.DocBanner">
+        SELECT
+        a.banner_id bannerId,
+        a.doc_id docId,
+        a.banner_href bannerHref,
+        a.banner_name bannerName,
+        a.create_time createTime,
+        a.show_order showOrder,
+        a.banner_path bannerPath,
+        a.classify classify
+        FROM
+        doc_banner_file a
+        WHERE 1=1
+        <if test="bannerName != ''and bannerName != null">
+            AND a.banner_name LIKE CONCAT('%',#{bannerName},'%')
+        </if>
+        ORDER BY a.show_order,a.create_time asc
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <!--获取数据条数-->
+    <select id="bannerListCount" resultType="int">
+        SELECT
+        count(* )
+        FROM
+        doc_banner_file a
+        WHERE 1=1
+        <if test="bannerName != ''and bannerName != null">
+            AND a.banner_name LIKE CONCAT('%',#{bannerName},'%')
+        </if>
+    </select>
+    <!--新增专题-->
+    <insert id="addBanner" parameterType="docBanner">
+        INSERT doc_banner_file(banner_id,banner_name,doc_id,banner_href,create_time,banner_path,classify,show_order)
+        VALUES
+            (#{bannerId},#{bannerName},#{docId},#{bannerHref},#{createTime},#{bannerPath},#{classify},
+                (select show_order from (SELECT ifnull(max(show_order),0)+1 show_order FROM doc_banner_file)a))
+    </insert>
+    <!--查重-->
+    <select id="checkBannerExist" resultType="int" parameterType="docBanner">
+        SELECT count(banner_id) FROM doc_banner_file
+        WHERE banner_id != #{bannerId}
+        AND banner_name = #{bannerName}
+    </select>
+    <!--更新-->
+    <update id="editBanner" parameterType="docBanner">
+        UPDATE doc_banner_file
+        SET banner_name = #{bannerName},
+        banner_href=#{bannerHref}  ,
+        doc_id = #{docId},
+        classify = #{classify}
+        <if test="bannerPath != null and bannerPath != '' ">
+           , banner_path = #{bannerPath}
+        </if>
+        WHERE banner_id = #{bannerId}
+    </update>
+    <!--删除-->
+    <delete id="delBanners" parameterType="list">
+        DELETE FROM doc_banner_file
+        WHERE banner_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--发布-->
+    <update id="publishTopic" parameterType="list">
+        UPDATE doc_special_topic
+        SET disable_time =now()
+        WHERE topic_id IN
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <!--删除专题下的文件-->
+    <delete id="delDoc" >
+        DELETE FROM doc_special_topic_files WHERE id  =#{id}
+    </delete>
+    <update id="updateViewNum">
+        UPDATE doc_special_topic set view_num = #{num}
+         WHERE topic_id = #{topicId}
+    </update>
+    <update id="moveBanner">
+        UPDATE ${table} AS tab1 JOIN ${table} AS tab2 ON (tab1.${idColumn}= #{idOne} AND tab2.${idColumn}= #{idTwo})
+        OR (tab1.${idColumn}=  #{idTwo}  AND tab2.${idColumn} = #{idOne} )
+        SET tab1.show_order = tab2.show_order,tab2.show_order=tab1.show_order
+    </update>
+
+    <select id="getMaxOrder" resultType="int" >
+ 		SELECT ifnull(max(show_order),1) FROM `doc_banner_file`;
+    </select>
+
+    <select id="searchBannerDetail" parameterType="String" resultType="com.jxdinfo.doc.manager.docbanner.model.DocBanner">
+        SELECT
+			t.banner_id bannerId,
+			t.banner_name bannerName,
+			t.banner_href bannerHref,
+				t.banner_path bannerPath,
+			t.create_time createTime,
+			t.show_order showOrder,
+			t.doc_id docId,
+			t.classify classify
+		FROM
+			doc_banner_file t
+		WHERE
+			t.banner_id = #{id}
+    </select>
+
+    <delete id="delBannerFile" parameterType="list">
+        DELETE FROM doc_banner_file  where doc_id in
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <update id="updateBanner">
+        UPDATE doc_banner_file
+        SET banner_href=#{bannerHref}  ,
+        doc_id = #{docId}
+        WHERE doc_id = #{oldDocId}
+    </update>
+
+    <select id="selectBannerById" parameterType="String" resultType="com.jxdinfo.doc.manager.docbanner.model.DocBanner">
+        SELECT
+        *
+        FROM
+        doc_banner_file t
+        WHERE
+        t.doc_id = #{docId}
+    </select>
+</mapper>

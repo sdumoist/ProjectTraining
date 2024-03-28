@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${session.projectTitle}-问题反馈</title>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/front-feedback.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/viewer.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script src="${ctxPath}/static/doc/front/docmanager/js/front-feedback.js?v=${h_version}"></script>
+    <script src="${ctxPath}/static/doc/front/docmanager/js/viewer.js?v=${h_version}"></script>
+    <style>
+        .viewer-list{
+            width: auto!important;
+        }
+        .btn.active, .btn:active{
+            box-shadow: none!important;
+        }
+        .layui-input:focus, .layui-textarea:focus {
+            border-color: #d1deed !important;
+        }
+        .layui-input:hover, .layui-textarea:hover {
+            border-color: #d1deed !important;
+        }
+    </style>
+</head>
+<body>
+
+<form class="form-horizontal" id="feedback_form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">问题类型<span style="color: red">*</span></label>
+        <div class="btn-group checkbox" data-toggle="buttons">
+            <label class="btn btn-radio-left radio-active">
+                <input type="radio" name="feedbackType" value="1"
+                       autocomplete="off" checked>使用问题&nbsp;
+            </label>
+            <label class="btn btn-radio-right">
+                <input type="radio" name="feedbackType" value="2"
+                       autocomplete="off">功能改进&nbsp;
+            </label>
+        </div>
+    </div>
+    <div class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">问题描述<span style="color: red">*</span></label>
+        <div>
+            <textarea class="layui-textarea textarea" rows="4" name="feedbackDescribe"
+                      placeholder="请输入您在使用中遇到的问题，或对我们的建议~"
+                      lay-verify="required|numLimit"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">相关图片</label>
+        <div class="layui-upload-list">
+            <div class="img_div layui-inline" id="img-div">
+                <div class="layui-inline add_img" id="addPic"></div>
+            </div>
+        </div>
+        <span class="add_msg">提示：文件大小不超过2M</span>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系方式<span style="color: red">*</span></label>
+        <div>
+            <input class="layui-input textbox" type="text" lay-verify="required|multiple"
+                   name="contackWay" placeholder="请留下联系方式（手机号、QQ、邮箱）">
+        </div>
+    </div>
+    <div class="layui-form-item btn-center">
+        <div>
+            <input type="button" class="layui-btn feedback_submit" lay-submit lay-filter="feedback_submit" value="提交反馈">
+        </div>
+    </div>
+    </div>
+</form>
+
+</body>
+</html>

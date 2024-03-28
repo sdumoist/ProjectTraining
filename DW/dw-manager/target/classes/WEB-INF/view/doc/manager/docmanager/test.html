@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type"   content="multipart/form-data; charset=utf-8" />
+    @include("/common/plugins.html"){}
+    <title>Title</title>
+</head>
+
+
+<body>
+<form id="uploadForm" enctype="multipart/form-data">
+    文件:<input id="file" type="file" name="file"/>
+    <input id="topicId" name="topicId" value="8bc09f3658314a6f9f994ba0be94e05b" hidden>
+    <input id="userId" name="userId" value="杨金石" hidden>
+    <input id="categoryId" name="categoryId" value="5c8cee3afd0f47aba7ed4893d6ed9e66" hidden>
+</form>
+<button id="upload">上传文件</button>
+<script type="text/javascript">
+    $(function () {
+        $("#upload").click(function () {
+            var formData = new FormData($('#uploadForm')[0]);
+            $.ajax({
+                type: 'post',
+                url: "/JqxUpload/uploadFile",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async:false
+            }).success(function (data){
+                var result=  JSON.parse(data);
+                if(result.code=='0'){
+                    alert("上传成功");
+                }
+                if(result.code=='1'){
+                    alert("上传文件内容为空");
+                }
+                if(result.code=='2'){
+                    alert("已分配存储空间不足");
+                }
+                if(result.code=='4'){
+                    alert("文件已经存在");
+                }
+                if(result.code=='5'){
+                    alert("秒传成功");
+                }
+                if(result.code=='6'){
+                    alert("用户名过长");
+                }
+                if(result.code=='7'){
+                    alert("用户名名称不合法");
+                }
+                if(result.code=='8'){
+                    alert("文档格式不支持");
+                }
+                if(result.code=='3'){
+                    alert("上传失败");
+                }
+
+            }).error(function () {
+                alert("上传失败");
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

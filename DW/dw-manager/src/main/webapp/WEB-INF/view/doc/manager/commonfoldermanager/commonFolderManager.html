@@ -1,0 +1,181 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/collection.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+    <style>
+        #path span{margin-left: 2px}
+        /*.alias{*/
+        /*    left: 0px;*/
+        /*}*/
+        span.hoverSpan{
+            margin-left: 80%;
+            display: inline-block;
+        }
+        .aliasModification{
+            width: 80%;
+            height: 40%;
+            margin-left: 10%;
+            margin-top: 5%;
+        }
+        .nofolder>a{
+            color:#222 !important;
+        }
+        .alias:hover{
+            color: #2980FF!important;
+            cursor: pointer!important;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content clearfix" id="collectList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="fileButtonGroup">
+<!--                        <button id="updateName" class="newFolderNew layui-btn  clickBtn hideBtn" >重命名</button>-->
+                        <button id="upMove" class="newFolderNew layui-btn hideBtn clickBtn" onclick="moveFileUp()">上移</button>
+                        <button id="downMove" class="newFolderNew layui-btn  clickBtn hideBtn" onclick="moveFileDown()">下移</button>
+                        <button id="removeFolder" class="newFolderNew layui-btn  clickBtn hideBtn"  onclick="batchRemove()">移除</button>
+                    </div>
+                </div>
+                <div class="message" style="padding-left: 30px"> 常用目录<span id="amount"></span><span class="total"><span id="path" style="margin-left: 0px"></span></span></div>
+
+                <div class="fast-button">
+                    <div id="uploader" class="wu-example">
+                        <div class="shadow">
+                        </div>
+                        <div id="dndArea">
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="noDataTip">未找到相关内容~</div>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col width="33%">
+                <col width="33%">
+                <col >
+            </colgroup>
+            <thead>
+            <tr style="color: #8796AB;">
+                <th lay-data="{field:'folderName'}" style="text-indent:0px;text-align:left;cursor: pointer">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)" id="selectDomAll" style="float: left;font-size: 12px;line-height: 12px;width: 14px!important;height: 14px!important;padding-right:12px;margin-top:8px">
+                        <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                    </div>
+                    <div onclick="orderByName()" style="text-indent: 10px" class="allSelect">名称
+                        <i class="layui-icon" id="orderName"style="cursor: pointer ;font-size: 13px;display: none">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                        <i class="layui-icon" id="orderName1"  style="cursor: pointer ;font-size: 13px;display: none">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div></th>
+                <th  lay-data="{field:'commonFolderName'}" style="text-align:left;cursor:pointer;">
+                    <div onclick="orderByCfName()" style="text-indent: 10px">别名
+                    <i class="layui-icon" id="orderCfName1"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderCfName"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div>
+                </th>
+                <th  lay-data="{field:'createTime'}" style="text-align:left;cursor:pointer;">
+                    <div onclick="orderByTime()" style="text-indent: 10px">加入时间
+                    <i class="layui-icon" id="orderTime"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div>
+                </th>
+                <!--<th onclick="orderByUser()" lay-data="{field:'author'}" style="text-align: left;cursor:pointer">-->
+                    <!--上传人-->
+                    <!--<i class="layui-icon" id="orderUser"style="cursor: pointer ;font-size: 13px;display: none">-->
+                        <!--<img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>-->
+                    <!--<i class="layui-icon" id="orderUser1"  style="cursor: pointer ;font-size: 13px;display: none">-->
+                        <!--<img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>-->
+                <!--</th>-->
+
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="member-center-list">
+        <table id="tableData" class="layui-table table_list" >
+            <colgroup>
+                <col width="33%">
+                <col width="33%">
+                <col >
+            </colgroup>
+            <tbody>
+            {{#  layui.each(d.list, function(index, item){ }}
+            {{# if(null != item.commonFolderName && item.createTime!=null){}}
+            <tr class='hoverEvent' ondblclick="dbclick('{{item.folderId}}','{{item.folderName}}')"  onclick="clickCheck(this,'{{item.commonFolderId}}','folder','{{item.folderName}}','{{index}}','{{item.createUserId}}')">
+                <td>
+                    <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.commonFolderId}}','folder','{{item.folderName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >
+                    <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.commonFolderId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                        <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                    </div>
+                    <input  class="checkFileId" hidden value="{{item.commonFolderId}}" name="checkFileId">
+                    <input  class="checkFileName" hidden value="{{item.commonFolderName}}" name="checkFileName">
+                    <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                    <input id="{{item.commonFolderId}}" value="{{index}}"hidden>
+                    <img class="folder-img" src="${ctxPath}/static/resources/img/fsfile/folder_member1.png">
+                    <span id="name1{{index}}"  class =" nofolder" title="{{item.commonFolderName}}" style="cursor: default" ><a class="fileName" onclick="cancelBubble();dbclick('{{item.folderId}}','{{item.folderName}}')">{{ item.folderName }}</a></span>
+
+<!--                    <input type="text" id="inputName{{index}}" maxlength="130"  value="{{item.folderName}}" class="layui-input hide " onfocus="this.select()" style="width: 300px!important;">-->
+                </td>
+                <td>
+                    <span id="name{{index}}" style="left:10px !important;" class ="nameTitpe nofolder alias" title="{{item.commonFolderName}}" style="cursor: default" ><a class="fileName" onclick="cancelBubble();dbclick('{{item.folderId}}','{{item.commonFolderName}}')">{{ item.commonFolderName }}</a></span>
+                    <span style="display: none" class="hoverSpan">
+                        <span style="display: inline-block;float: right">
+                            <i class="layui-icon wenku-font wenku-font-revise" title="重命名" onclick="updateNameCollectionFolder(this,'{{item.commonFolderId}}','folder','{{item.commonFolderName}}','','{{index}}')" style="font-size: 14px;cursor: pointer;margin-right: 0px!important"></i>
+                            <i class="layui-icon" title="移除" onclick="singleDeleteFile(this,'{{item.commonFolderId}}','{{item.fileType}}')" style="font-size: 14px;font-weight:bold;cursor: pointer;margin-right: 0px!important">&#xe640;</i>
+                        </span>
+                    </span>
+                    <input type="text" id="inputName{{index}}" maxlength="130"  value="{{item.commonFolderName}}" class="layui-input hide ishover" onfocus="this.select()" style="width: 300px!important;">
+                </td>
+                <td>
+                    {{item.createTime.substring(0,item.createTime.lastIndexOf(':'))}}
+                </td>
+            </tr>
+            {{#  }}}
+            {{#  }); }}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/common-folder.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#collectList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+
+</script>
+</body>

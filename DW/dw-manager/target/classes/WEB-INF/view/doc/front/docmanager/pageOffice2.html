@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>在线编辑</title>
+    <script type="text/javascript">
+        function Save() {
+            document.getElementById("PageOfficeCtrl1").WebSave();
+        }
+    </script>
+    <script type="text/javascript">
+        function AddSeal() {
+            try{
+                document.getElementById("PageOfficeCtrl1").ZoomSeal.AddSeal();
+            }catch (e){ };
+        }
+        function AfterDocOpened() {
+            try{
+                document.getElementById("PageOfficeCtrl1").FullScreen = true;
+            }catch (e){ };
+        }
+    </script>
+
+</head>
+<body>
+
+
+<div style="width:1000px;height:700px;">${pageoffice}</div>
+</body>
+</html>

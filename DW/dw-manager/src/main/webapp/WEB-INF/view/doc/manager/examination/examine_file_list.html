@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>审核文件列表</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/foldermanager/css/folder-manager.css?v=${h_version}" />
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_list.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <input id="saveType" type="hidden">
+        <form class="layui-form clearfix" action="" id="searchForm" onsubmit="initTableView();return false">
+            <div class="layui-form-item clearfix">
+                <div class="layui-input-inline">
+                    <select class="layui-select" id="rState" name="rState" lay-filter="rState">
+                        <option value="0" selected>未复核</option>
+                        <option value="1">已恢复</option>
+                        <option value="2">已删除</option>
+                        <option value="-1">全部</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" id="wordName" name="wordName" placeholder="请输入文件名" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" data-type="reload" id="searchBtn" type="button"><i
+                            class="layui-icon">&#xe615;</i>查询
+                    </button>
+                </div>
+                <div class="fr">
+                    <button type="button" class="layui-btn" id="passBtn" data-type="passFile"><i
+                            class="layui-icon">&#xe618;</i>通过
+                    </button>
+                    <button type="button" class="layui-btn" id="delBtn" data-type="delFile"><i
+                            class="layui-icon">&#xea0f;</i>删除
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="tableBox">
+            <table class="layui-table" id="fileList" lay-filter="fileList"></table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="state">
+    {{# if (d.reviewState == "0") {}}
+    未复核
+    {{# } else if (d.reviewState == "1") {}}
+    已恢复
+    {{# } else if (d.reviewState == "2") {}}
+    已删除
+    {{# } }}
+</script>
+<script type="text/html" id="docName">
+    <div onclick="dbclick('{{d.docId}}','{{d.fileType}}','{{d.title}}')" title="{{d.title}}" style="color:#00a4ff;position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box; width: 243px">{{d.title}} </div>
+</script>
+<script src="${ctxPath}/static/doc/manager/examination/js/examine_file.js?v=${h_version}"></script>
+</body>
+</html>

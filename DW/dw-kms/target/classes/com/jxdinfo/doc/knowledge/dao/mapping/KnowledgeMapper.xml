@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.knowledge.dao.KnowledgeMapper">
+
+
+    <select id="getKnowledgeList" resultType="Map">
+        SELECT DISTINCT
+            qkb.KNOW_ID knowId,
+            qkb.TITLE title,
+            qkb.STATE state,
+            qkb.LABEL label,
+            qkb.INPUT_USER_ID inputUserId,
+            qkb.INPUT_USER_NAME inputUserName,
+            qkb.INPUT_TIME inputTime,
+            qkb.READ_NUM readNum,
+            qkb.INPUT_TYPE inputType,
+            qkb.QUE_ID queId,
+            qkb.CONTENT content,
+            qkb.CONTENT_TEXT contentText
+        FROM
+            qa_knowledge_base qkb
+        WHERE
+            qkb.STATE != '2'
+        <if test="title != null and title != ''">
+            AND qkb.TITLE LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="label != null and label != ''">
+            AND qkb.LABEL LIKE CONCAT('%',#{label},'%')
+        </if>
+        <if test="state != null and state != ''">
+            AND qkb.STATE = #{state}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 2">
+                    qkb.INPUT_TIME asc
+                </if>
+                <if test="order == 3">
+                    qkb.INPUT_TIME desc
+                </if>
+                <if test="order == 4">
+                    qkb.READ_NUM asc
+                </if>
+                <if test="order == 5">
+                    qkb.READ_NUM desc
+                </if>
+            </when>
+        </choose>
+        <if test="order != null and order != ''">
+            ,
+        </if>
+        qkb.INPUT_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+
+
+</mapper>

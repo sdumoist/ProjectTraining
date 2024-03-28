@@ -1,0 +1,93 @@
+@charset "UTF-8";
+/**
+ * @ClassName: mobile-device.css
+ * @Description: 移动样式表
+ * @Author: gxj
+ * @Date: 2018-08-6
+ */
+/*----------mac笔记本样式单独调整-----------*/
+@media only screen and (max-width:1240px ){
+.btn-rit,.btn-rit-bottom{right: 0}
+}
+/* ipad */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px){
+    #customScaleOption{display: none!important;height: 0;border: 0}
+    .mainCon .logo{margin-top: 30px}
+    input, button, select, textarea{ -webkit-appearance: none;}
+    /*------头部按钮-----*/
+    .header-bar {padding: 0 8px;height: 44px;line-height: 44px;}
+    .header-bar .logo { width: 135px;height: 44px;background: url(../../img/front/pad-toplogo.png) no-repeat center!important;background-size: auto 30px!important;}
+    .header-bar .ul-header li.index-go{text-align: center;margin: 0;    width: 130px;}
+    .header-bar .ul-header li.index-go .page-before{display: none}
+    .header-bar .ul-header li.index-go .endMng,.header-bar .ul-header li.index-go .endMng:hover{ display: inline-block;height: 27px;line-height: 25px;width: 83px;padding: 0 2px;margin: 8px 0;background: url(../../img/front/pad-endMsg.png) no-repeat center;background-size: 100% auto;text-align: center;font-size: 12px}
+    .header-bar .ul-header li.index-go .endMng i{margin: 0}
+    .header-bar .search-wrapper{width: 224px;height: 44px}
+    .header-bar .search-input{height: 27px;font-size: 12px;line-height: 12px;}
+    .header-bar .search-wrapper .search-close{position: absolute;right: 35px;top: 9px;z-index:100;width: 20px;height: 24px;background: #fff url(../../img/front/search-close.png) no-repeat center right;background-size: 14px auto;border: 0}
+    .header-bar .search-btn{top: 10px;right: 8px;z-index: 200}
+    .ul-line {margin: 10px 0 0 2px;}
+    .header-bar .search-wrapper input{line-height: 20px!important; -webkit-appearance: none;}
+    .search-wrapper-select{top:12px!important;}
+    .mainCon .index-topic .article-list{min-height: 140px}
+    .mainCon .index-topic .topic-cover .cover-img{height: 100%}
+    .rightArea{padding: 0}
+    .mainCon .layui-form .search-type {height: 40px;line-height: 35px;}
+    .ul-types>a, .ul-types .fold-more {margin-left: 10px;font-size: 13px}
+    .header-with-search .ul-types>a, .ul-types .fold-more>a {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;max-width: 60px;}
+
+    .user-photo{font-size: 13px}
+    /*滚动条样式*/
+    ::-webkit-scrollbar {/*隐藏滚轮*/display: none;}
+    .footer{padding: 50px auto ;position: relative;width: 100%;bottom: 0;}
+}
+/*----ipad竖屏------*/
+@media only screen
+and (min-device-width :768px)
+and (max-device-width :1024px)
+and (orientation: portrait) {
+    .ipad-d-show{display: block;float: right}
+    .ipad-d-show a{line-height: 44px; padding: 3px 10px;border-left: 1px solid #d9e1ef;color: #3e5b82;font-size: 13px}
+    .mainCon .index-topic .topic-cover a{height: 192px}
+    .mainCon  .doc-list ,.mainCon  #middleDiv{min-height: 70%}
+}
+/*----ipad横屏------*/
+@media only screen
+and (min-device-width :768px)
+and (max-device-width :1024px)
+and (orientation : landscape){
+    .sec-ul-types{display: block; }
+    .header-bar .search-wrapper {
+        width: 224px;
+        height: 44px;
+    }
+    .mainCon .index-topic .topic-cover a{height: 120px}
+}
+/*手机端*/
+@media screen and (max-width:600px){
+    /*滚动条样式*/
+    ::-webkit-scrollbar {/*隐藏滚轮*/
+        display: none;
+    }
+    .footer{
+        position: relative;
+        bottom: auto;
+        margin: 2rem auto 1rem;
+    }
+    .header-bar{display: none}
+    body#top .wrapper {
+        margin: 0 !important;
+        height: 100% !important;
+        padding-bottom: 0 !important;
+    }
+    .mainCon {
+        padding-top: 0 !important;
+    }
+    .search-box {
+        padding: 0 !important;
+        padding-top: .3rem !important;
+    }
+    .btn-rit{display: none}
+    .footer span.bottom-jszc{display: block;line-height: 24px;}
+}
+
+

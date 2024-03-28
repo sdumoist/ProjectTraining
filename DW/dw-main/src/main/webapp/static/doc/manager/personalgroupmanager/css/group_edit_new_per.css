@@ -1,0 +1,107 @@
+
+.layui-form .layui-input-block{margin-left: 80px;width: 26%}
+.layui-form .layui-form-item {margin-bottom: 0;}
+.authority-top>div.content{height: calc(100% - 45px);padding: 0;width: 100%}
+.content>div{height: 100% ;}
+.rit-bot {height: calc(100% - 50px);box-sizing: border-box;}
+.layui-tab {height: calc(100% - 50px);}
+.layui-tab-content {height: calc(100% - 10px);overflow: auto;}
+.layui-form{padding: 7px 10px 0 10px;}
+.authority-top>.layui-form{padding: 7px 10px 7px 10px;  border-bottom: 1px solid #eee;}
+.authority-top>.layui-form .layui-inline{display: flex;align-items: center;float: left;margin: 0}
+.authority-top>.layui-form .layui-inline .layui-form-label{margin: 0}
+.layui-form .layui-input-block{margin-left: 80px;width: 26%}
+.layui-form .layui-form-item {margin-bottom: 0;}
+.content>div{height: 100% ;}
+.rit-bot {
+    padding: 0;
+    height: calc(100% - 50px);
+    box-sizing: border-box;
+}
+.layui-tab {
+    height: calc(100% - 50px);
+}
+.layui-tab-content {
+    height: 100%;
+    overflow: auto;
+}
+.weadmin-body{padding: 0;width: 100%;height: 100%;text-align: center;box-sizing: border-box;}
+.authority-top{height: calc(100% - 52px);}
+.authority-top>div{height: 100%;}
+.bot-btns{padding: 10px 15px 8px;height: 52px;border-top: 1px solid #E3ECEC;}
+.layui-tab{height: calc(100% - 50px);box-sizing: border-box;margin: 0}
+.personSearch{padding: 0 10px;;height: 50px;text-align: left;}
+.personSearch .layui-input{display: inline-block;width: 60%;}
+.layui-col-md5{border-right: 1px solid #e3ecec}
+.layui-tab-title{border-bottom-color: #e3ecec}
+.delete{display: block;width: 100%;height: 100%;background: url(../../../../resources/img/fsfile/authority/delete.png) no-repeat center;cursor: pointer}
+.rit-top{position: relative;padding: 10px;border-bottom: 1px solid #e3ecec;text-align: left}
+.rit-top span{display: inline-block;line-height: 30px}
+.rit-top button{position: absolute;right: 10px;top: 10px}
+.rit-bot{padding: 10px;height: calc(100% - 50px);box-sizing: border-box}
+.rit-bot .layui-table-body.layui-table-main{overflow-x: hidden}
+#rit_table{width: 100%}
+.people{padding-left: 20px;width: 100%;height: 100%;line-height: 30px;background: url(../../../../resources/img/fsfile/authority/people.png) no-repeat left center;}
+.qz{padding-left: 20px;width: 100%;height: 100%;line-height: 30px;background: url(../../../../resources/img/fsfile/authority/qz.png) no-repeat left center;}
+.dept{padding-left: 20px;width: 100%;height: 100%;line-height: 30px;background: url(../../../../resources/img/fsfile/authority/dept.png) no-repeat left center;}
+
+
+
+#searchGroupBtn{
+    margin-left: 3px;
+}
+.layui-table-view{
+    padding-bottom: 5px;
+    box-sizing: content-box;
+}
+/*修改树的样式*/
+
+.jstree-children li:first-child.jstree-closed>.jstree-ocl,.jstree-default .jstree-closed>.jstree-ocl{
+    background: url(../../../../resources/img/fsfile/authority/root-2.png) no-repeat 7px center !important;
+}
+.jstree-children li:last-child.jstree-open>.jstree-ocl,.jstree-default  .jstree-open>.jstree-ocl,.jstree-children li:first-child.jstree-open>.jstree-ocl{
+    background: url(../../../../resources/img/fsfile/authority/root-1.png) no-repeat left 8px center !important;
+}
+.jstree-default .jstree-icon {
+    /*background-image: url(../../../../resources/img/fsfile/authority/wenjian.png);*/
+    background-position: center;
+    background-repeat: no-repeat;
+}.jstree-default .jstree-node {position:relative;background-image: none}
+
+.jsTree>ul.jstree-container-ul>li.jstree-node>a.jstree-anchor>.jstree-themeicon{    background-image: url(/static/assets/img/treeContext/blue/root.png)!important;}
+/*---------信息弹窗----------*/
+.layui-form-label .green{cursor: pointer;color:#27b7b0}
+.popWin{  display: none;position: absolute;width: 350px;top: 30px;background: #fff;z-index: 2;box-shadow: 0 0 15px rgba(187, 196, 204, 0.8);}
+.layui-form-switch i{ top:2px}
+.layui-tab-brief>.layui-tab-title .layui-this {color:#27b7b0; border-bottom:  1px solid #27b7b0!important;}
+.layui-btn{
+    background-color:#27b7b0 !important;
+}
+button#saveBtn{background:#27b7b0 !important;float: none !important;;border:1px solid #27b7b0 !important;}
+.bot-btns button{
+    border: 1px solid #27b7b0;
+}
+.layui-tab-content::-webkit-scrollbar{
+    display: block;
+}
+.layui-tab-content::-webkit-scrollbar-thumb{
+    background-clip: inherit;
+}
+.layui-input:hover, .layui-textarea:hover, .layui-input:focus, .layui-textarea:focus{border-color: #2980ff!important;}
+.layui-btn,button#saveBtn.layui-btn{background: #2980ff!important;border-radius: 2px;border-color: #2980ff!important;}
+button#batchDel.layui-btn{background: #fff!important;color: #2980ff!important;border:1px solid #2980ff!important;}
+button#cancel.layui-btn{  border:1px solid #dedede!important;;color:#333!important;background: #fff!important;}
+.layui-table-view .layui-table td, .layui-table-view .layui-table th{border-right: 0}
+.layui-table-header .layui-table{margin-bottom: 0}
+.layui-table-cell .layui-form-checkbox[lay-skin=primary]{margin-left: 0!important;}
+.layui-layer-max,.layui-layer-min{display: none!important;}
+.jstree-default .jstree-clicked, .jstree-default .jstree-hovered{color: #2980ff}
+.layui-table-header{border: 0}
+.con-full-l .layui-input-inline input {
+    background: #fff url(../../../../resources/img/fsfile/authority/ic-search-active-small.svg) no-repeat right 10px center;
+    border:1px solid #DBDBDB;
+    border-radius:1px;
+}
+.con-full-l .layui-input-inline input:hover, .con-full-l .layui-input-inline input:focus{
+    background: #fff url(../../../../resources/img/fsfile/authority/ic-search-active-small.svg) no-repeat right 10px center;
+}

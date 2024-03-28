@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docrecycle.dao.DocRecycleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docrecycle.model.DocRecycle">
+        <id column="recycle_id" property="recycleId" />
+        <result column="doc_id" property="docId" />
+        <result column="file_id" property="fileId" />
+        <result column="fold_id" property="foldId" />
+        <result column="user_id" property="userId" />
+        <result column="author_id" property="authorId" />
+        <result column="contacts_id" property="contactsId" />
+        <result column="title" property="title" />
+        <result column="category_id" property="categoryId" />
+        <result column="tag" property="tag" />
+        <result column="doc_abstract" property="docAbstract" />
+        <result column="doc_type" property="docType" />
+        <result column="download_points" property="downloadPoints" />
+        <result column="download_num" property="downloadNum" />
+        <result column="read_num" property="readNum" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="visible_range" property="visibleRange" />
+        <result column="authority" property="authority" />
+        <result column="valid_flag" property="validFlag" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="delete_user_id" property="deleteUserId" />
+        <result column="clear_flag" property="clearFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        recycle_id AS recycleId, doc_id AS docId, file_id AS fileId, fold_id AS foldId, user_id AS userId, author_id AS authorId, contacts_id AS contactsId, title AS title, category_id AS categoryId, tag AS tag, doc_abstract AS docAbstract, doc_type AS docType, download_points AS downloadPoints, download_num AS downloadNum, read_num AS readNum, create_time AS createTime, update_time AS updateTime, visible_range AS visibleRange, authority AS authority, valid_flag AS validFlag, delete_time AS deleteTime, delete_user_id AS deleteUserId, clear_flag AS clearFlag
+    </sql>
+
+    <select id="getDocRecycleList" resultType="com.jxdinfo.doc.manager.docrecycle.model.DocRecycle">
+SELECT
+	DR.RECYCLE_ID AS recycleId,
+	DR.FILE_ID AS fileId,
+    FF.FILE_NAME AS title,
+    FF.FILE_SIZE AS fileSize,
+    FF.FILE_TYPE AS docType,
+	dr.VALID_FLAG AS validFlag,
+	DR.DELETE_TIME AS deleteTime,
+	DR.CLEAR_FLAG AS clearFlag
+    FROM
+	DOC_RECYCLE DR LEFT JOIN FS_FILE FF ON DR.FILE_ID=FF.FILE_ID
+        WHERE  DR.CLEAR_FLAG ='1'
+        <if test="fileName != null and fileName != ''">
+            AND FF.FILE_NAME like CONCAT(CONCAT('%',#{fileName}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND DR.DELETE_USER_ID = #{userId}
+        </if>
+        ORDER BY DR.DELETE_TIME DESC
+    </select>
+    <select id="getDocRecycleOrderedList" resultType="com.jxdinfo.doc.manager.docrecycle.model.DocRecycle">
+        SELECT
+        DR.RECYCLE_ID AS recycleId,
+        DR.FILE_ID AS fileId,
+        FF.FILE_NAME AS title,
+        FF.FILE_SIZE AS fileSize,
+        FF.FILE_TYPE AS docType,
+        dr.VALID_FLAG AS validFlag,
+        DR.DELETE_TIME AS deleteTime,
+        DR.CLEAR_FLAG AS clearFlag,
+        D.user_id AS userId,
+        SU.USER_NAME AS userName
+        FROM
+        DOC_RECYCLE DR
+        LEFT JOIN FS_FILE FF ON DR.FILE_ID=FF.FILE_ID
+        LEFT JOIN doc_info D ON DR.file_id=D.doc_id
+        LEFT JOIN sys_users SU ON D.user_id = SU.USER_ID
+        LEFT JOIN  fs_folder fd on d.fold_id=fd.folder_id
+        WHERE  DR.CLEAR_FLAG ='1'
+        <if test="fileName != null and fileName != ''">
+            AND FF.FILE_NAME like CONCAT(CONCAT('%',#{fileName}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND (DR.DELETE_USER_ID = #{userId} OR d.user_id = #{userId}
+            OR fd.level_code IN   ${levelCodes}
+            )
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY FF.file_name desc
+                </if>
+                <if test="order == 1">
+                    ORDER BY FF.file_name asc
+                </if>
+                <if test="order == 2">
+                    order by DR.DELETE_TIME asc
+                </if>
+                <if test="order == 3">
+                    order by DR.DELETE_TIME desc
+                </if>
+                <if test="order == 4">
+                    order by SU.USER_NAME desc
+                </if>
+                <if test="order == 5">
+                    order by SU.USER_NAME asc
+                </if>
+                <if test="order == 6">
+                    order by SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+                <if test="order == 7">
+                    order by SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 8">
+                    ORDER BY DR.DELETE_TIME DESC
+                </if>
+                <if test="order == 9">
+                    ORDER BY DR.DELETE_TIME asc
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY DR.DELETE_TIME DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getDocRecycleOrderedListMobile" resultType="com.jxdinfo.doc.manager.docrecycle.model.DocRecycle">
+        SELECT
+        DR.RECYCLE_ID AS recycleId,
+        DR.FILE_ID AS fileId,
+        FF.FILE_NAME AS title,
+        FF.FILE_SIZE AS fileSize,
+        FF.FILE_TYPE AS docType,
+        dr.VALID_FLAG AS validFlag,
+        DR.DELETE_TIME AS deleteTime,
+        DR.CLEAR_FLAG AS clearFlag,
+        D.user_id AS userId,
+        SU.USER_NAME AS userName
+        FROM
+        DOC_RECYCLE DR
+        LEFT JOIN FS_FILE FF ON DR.FILE_ID=FF.FILE_ID
+        LEFT JOIN doc_info D ON DR.file_id=D.doc_id
+        LEFT JOIN sys_users SU ON D.user_id = SU.USER_ID
+        LEFT JOIN  fs_folder fd on d.fold_id=fd.folder_id
+        WHERE  DR.CLEAR_FLAG ='1'
+        <if test="fileName != null and fileName != ''">
+            AND FF.FILE_NAME like CONCAT(CONCAT('%',#{fileName}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND (DR.DELETE_USER_ID = #{userId} OR d.user_id = #{userId}
+            OR fd.level_code IN   ${levelCodes}
+            )
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND D.fold_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+
+        </if>
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 0">
+                    ORDER BY FF.file_name desc
+                </if>
+                <if test="order == 1">
+                    ORDER BY FF.file_name asc
+                </if>
+                <if test="order == 2">
+                    order by DR.DELETE_TIME asc
+                </if>
+                <if test="order == 3">
+                    order by DR.DELETE_TIME desc
+                </if>
+                <if test="order == 4">
+                    order by SU.USER_NAME desc
+                </if>
+                <if test="order == 5">
+                    order by SU.USER_NAME asc
+                </if>
+                <if test="order == 6">
+                    order by SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 desc
+                </if>
+                <if test="order == 7">
+                    order by SUBSTRING_INDEX(FF.FILE_SIZE,'k',1)+0 asc
+                </if>
+                <if test="order == 8">
+                    ORDER BY DR.DELETE_TIME DESC
+                </if>
+                <if test="order == 9">
+                    ORDER BY DR.DELETE_TIME asc
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY DR.DELETE_TIME DESC
+            </otherwise>
+        </choose>
+    </select>
+    <select id="checkDocExist" resultType="int">
+        SELECT count(0) FROM DOC_INFO DF
+        WHERE
+         DF.valid_flag='1'
+        <if test="foldId != null and foldId != ''">
+            AND DF.fold_id = #{foldId}
+        </if>
+        <if test="fileName != null and fileName != '' ">
+            AND DF.TITLE in (${fileName})
+        </if>
+    </select>
+    <update id="updateDocRecycle" parameterType="com.jxdinfo.doc.manager.docrecycle.model.DocRecycle" >
+        UPDATE DOC_RECYCLE R INNER JOIN
+        (SELECT DR.RECYCLE_ID FROM DOC_RECYCLE DR
+        LEFT JOIN DOC_INFO D ON DR.FILE_ID = D.DOC_ID
+        LEFT JOIN  fs_folder fd on d.fold_id=fd.folder_id
+        WHERE CLEAR_FLAG ='1'
+        <if test="deleteUserId != null and deleteUserId != ''">
+            AND (DR.DELETE_USER_ID = #{deleteUserId} OR D.USER_ID = #{deleteUserId}
+            OR fd.level_code IN ${levelCodes})
+        </if>
+         ) T
+        SET R.CLEAR_FLAG = 0  WHERE R.RECYCLE_ID  IN (T.RECYCLE_ID );
+    </update>
+
+    <select id="checkAuditDocExist" resultType="int">
+        SELECT count(0) FROM DOC_INFO DF
+        WHERE
+        DF.valid_flag='2'
+        <if test="foldId != null and foldId != ''">
+            AND DF.fold_id = #{foldId}
+        </if>
+        <if test="fileName != null and fileName != '' ">
+            AND DF.TITLE in (${fileName})
+        </if>
+    </select>
+</mapper>

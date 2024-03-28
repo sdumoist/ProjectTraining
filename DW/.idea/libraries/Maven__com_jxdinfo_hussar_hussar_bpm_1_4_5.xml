@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.jxdinfo.hussar:hussar-bpm:1.4.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-bpm/1.4.5/hussar-bpm-1.4.5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-bpm/1.4.5/hussar-bpm-1.4.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../项目实训/maven1/repository/com/jxdinfo/hussar/hussar-bpm/1.4.5/hussar-bpm-1.4.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

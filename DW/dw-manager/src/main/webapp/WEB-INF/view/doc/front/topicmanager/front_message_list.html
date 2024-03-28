@@ -1,0 +1,126 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-资讯印象列表</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+    <script>
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render()
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/front_message_list.css?v=${h_version}"/>
+    <style>
+        html{overflow-y: scroll}
+        body{position: relative;padding-bottom: 60px;height: auto!important;overflow: hidden}
+        .topic-item .search-wrapper{margin-top: 0}
+        .footer{position: absolute;bottom: 0;width: 100%}
+        .mainCon{padding-top: 49px!important;}
+        .mainCon + .text-center{height: 48px}
+        .btn-rit{display: none}
+        .header-with-search-2{position: fixed!important;}
+    </style>
+</head>
+<body>
+@include("/common/front-header_new2.html"){}
+@include("/common/front-rit-top.html"){}
+
+<div class="container mainCon">
+    <input  type="hidden" class="hide"  id="topicCount" value="${topicCount}">
+    <input  type="hidden" class="hide"  id="curr" value="${curr}">
+    <input  type="hidden" class="hide"  id="curyear" value="${year}">
+    <input  type="hidden" class="hide"  id="curmonth" value="${month}">
+    <input  type="hidden" class="hide"  id="curname" value="${name}">
+    <div class="row topic-item" style="height: 56px;padding: 13px 5px">
+            <div class="search-wrapper part-search">
+                <input class="search-input" id="searchName"  style="background: #fff" placeholder="按照标题或内容查找" maxlength="130" value="${name}">
+                <div class="search-btn" id="searchBtn">&nbsp;</div>
+                <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+        </div>
+        <div class="filter"><span class="tspan"> 筛选：</span>
+        <span class="year">年份</span>
+            <div class="search-wrapper2">
+            <div class="layui-form search-wrapper-select2" >
+            <select id="year"  lay-filter="year" >
+                <option selected>请选择</option>
+                <option>2020</option>
+                <option>2019</option>
+                <option>2018</option>
+                <option>2017</option>
+            </select>
+                </div>
+                </div>
+            <span class="month">月份</span>
+            <div class="search-wrapper2">
+                <div class="layui-form search-wrapper-select2">
+            <select id="month" lay-filter="month">
+                <option selected>请选择</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+            </select>
+            </div>
+           </div>
+        </div>
+    </div>
+    @if(isEmpty(topicList)){
+    <div class="text-center noresult">
+        <img src="../../../../../static/resources/img/front/noresult.png"/>
+        <p style="font-size: 17px;font-size: 16px;color: #8796ab;text-align: center">暂无资讯印象~</p>
+    </div>
+    @}else{
+    @for(topic in topicList){
+
+        <div class="row topic-item">
+            <div class="col-md-12 clearfix">
+
+                <div class="topic-desc clearfix">
+                    <div class="topic-desc-left fl">
+                        <div class='topic-title clearfix textOver' title="${topic.TITLE}">
+                            ${topic.TITLE} <span class="message-author">—&nbsp;${topic.USERNAME}</span>
+                        </div>
+                        <div class="topic-abstract" title="${topic.CONTENT}">
+                            ${topic.CONTENT}
+                        </div>
+                        <div class="message-time">
+                            ${topic.ADDTIME}
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    @}
+    @}
+</div>
+<div class="text-center">
+    @if(isEmpty(topicList)){
+    <!--如果为空无分页-->
+    @}else{
+    <div id="laypageAre"></div>
+    @}
+
+</div>
+@include("/common/front-footer.html"){}
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/extendPagination.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front_message_list.js?v=${h_version}"></script>
+</html>

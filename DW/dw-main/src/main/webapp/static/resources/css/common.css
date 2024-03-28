@@ -1,0 +1,100 @@
+@charset "UTF-8";
+/**
+ * @ClassName: base.css
+ * @Description: 公共样式表
+ * @Author: zww
+ * @Date: 2017-5-20
+ */
+
+/*首页*/
+.pageBody,.pageBody .bg-img{width: 100%;height: 100%;}
+.pageBody .text-img{position:absolute;top:62px;left: 123px;width: 546px;height: 91px;}
+.layui-table {width: 100%!important;}
+/*列表页面  左边树*/
+.body_main .mini-tree{width: 90%;}
+.tree-body {background: #fff;padding: 10px 5px 0 5px;}
+.body_tree {margin-left:0;width: auto;height: 100%;}
+.body_tree .mini-layout{width: 100%;height: 100%;background-color: #fff;padding: 0;}
+.mini-layout-region{border: 0;}
+.mini-layout-region-header {background: #edf4fa;border-bottom: solid 1px #e1e1e1;}
+.mini-layout-region-title{font-family:"Microsoft YaHei", 微软雅黑;}
+.mini-layout-region-west {border: 1px solid #e1e1e1;}
+.mini-layout-proxy { border: solid 1px #e1e1e1;}
+.searchClass{width: 180px;margin: 10px auto;position: relative;}
+.searchBox{	display: block;width: 100%;height: 23px;border: 1px solid #ccc;border-radius: 3px;}
+.searchClass .mini-textbox{width: 100%;height: 100%;}
+.searchClass .mini-textbox .mini-textbox-border{border: none;width: 160px;}
+.searchClass .mini-textbox .mini-textbox-input{	padding-left: 3px;	height: 23px;line-height: 23px;	background: #fff;}
+.searchClass a.mini-button,
+.searchClass a:hover.mini-button,
+.searchClass a:active.mini-button{position: absolute;top: 1px;right: 0;background: none;border: none;height: 23px;}
+.searchClass .mini-button .mini-button-text {width: 15px;line-height: 18px;padding: 2px 14px;}
+.mini-tree-nowrap {margin-left: 10px;margin-top: 0;}
+#mainframe{width:100%;height:99.7%;background-color: #fff;border:none;}
+
+/*列表页面  右边列表*/
+/*列表查询区域*/
+.list-body{	background: #fff;border: 1px solid #e4e5e6;padding: 0 0 5px 0;}
+.body1{margin: 10px 5px;}
+.body_main {width: auto;height: 100%;margin: 0 6px;}
+.body_main .search-box{margin: 0 -6px 6px -6px;padding: 10px 10px 0 10px;background: #f3f3f3;}
+.body_main .search-box .form-group {margin-bottom: 10px;float: left;}
+.body_main .search-box .last-group{float: right;}
+.search-box label {display: inline-block;margin-bottom: 0;padding: 0 5px 0 5px;height: 25px;line-height: 25px;text-align: right;font-weight: normal;font-family:"Microsoft YaHei", 微软雅黑;}
+.search-box .mini-textbox-border {border: solid 1px #e8e8e8;width: 136px;height: 23px;}
+.search-box .mini-buttonedit-border{border: solid 1px #e8e8e8;height: 23px;}
+.search-box .mini-buttonedit .mini-buttonedit-button,
+.mini-grid-pager .mini-buttonedit .mini-buttonedit-button{height: 19px;}
+.search-box .mini-buttonedit .mini-buttonedit-icon,
+.mini-grid-pager .mini-buttonedit .mini-buttonedit-icon{height: 19px;background: url(../img/common/icon2.gif) no-repeat 3px 3px;}
+.mini-textbox-input, .mini-buttonedit-input{height: 23px;line-height: 23px;padding-left: 3px;background: #fff;}
+.search-box a:hover.mini-button {margin-top: 1px;padding: 0 15px;border: none;background: #1d8cd8;color: #fff;}
+.search-box .mini-textbox,
+.search-box .mini-combobox,
+.search-box .mini-datepicker {width: 140px;height: 25px;margin-right: 20px;}
+.search-box .mini-checkbox{margin-right: 20px;}
+.mini-btn,
+.search-box .mini-button,
+.mini-messagebox-buttons .mini-button {margin-top: 1px;margin-left: 4px;display: inline-block;padding: 0 15px;height: 25px;border: 1px solid #30B4F0;background: #30B4F0;line-height: 25px;border-radius: 2px;font-family:"Microsoft YaHei", 微软雅黑;cursor: pointer;color: #fff;opacity: 1;}
+.mini-btn:hover,.search-box a:hover.mini-button,.mini-messagebox-buttons a:hover.mini-button{background:#00A0E9;opacity: 1;color:#fff;border: 1px solid #00A0E9;}
+.mini-btn:focus{background:#1d8cd8;color:#fff;}
+.search-box .mini-button-text{line-height: 18px;}
+.mini-messagebox .mini-button-text{line-height: 21px;}
+.tool-box .mini-btn {margin: 0;}
+
+body a:VISITED.mini-button {color:#fff;}
+/*列表样式调整*/
+/*grid*/
+.mini-datagrid .mini-grid-headerCell {height:31px;background: #e6f1fa;border: #dcdcdc 1px solid;border-bottom: none;border-top: none;}
+.mini-datagrid .mini-panel-viewport{margin-left: -2px;}
+.mini-datagrid .mini-grid-headerCell-inner {	font-size: 12px;font-family:"微软雅黑","Microsoft Yahei";color: #454545;}
+.mini-datagrid .mini-grid-cell{border: #dcdcdc 1px solid;}
+.mini-datagrid .mini-grid-cell-inner  {height:28px;line-height:28px;font-family:"微软雅黑","Microsoft Yahei";}
+.mini-datagrid .mini-grid-row-hover{background:#edf5fc;}
+.mini-datagrid .mini-grid-cell-inner a{cursor: pointer;}
+.mini-panel-border {border: 1px solid #dcdcdc;}
+.mini-messagebox-buttons .mini-button{padding: 0 9px;}
+.mini-messagebox-buttons a:hover.mini-button{padding: 0 9px;}
+.mini-grid-row-alt {background: #f6f6f6;}
+/*.mini-checkcolumn input[type="checkbox"] {opacity: 0;}*/
+/*.mini-checkcolumn .mini-grid-headerCell-nowrap{width: 12px;height: 12px;margin: auto;background: url(../img/common/checkbox.png) no-repeat center;}*/
+/*.mini-checkcolumn .mini-grid-headerCell-nowrap.select{background: url(../img/common/checkbox1.png) no-repeat center;}*/
+.mini-grid-rows-content input[type="radio"],
+.mini-grid-rows-content input[type="checkbox"] {margin: 8px 0 0;}
+/*.mini-grid-radio-mask{opacity: 1;background: url(../img/common/checkbox.png) no-repeat center;}*/
+/*.mini-grid-row-selected .mini-grid-radio-mask{background: url(../img/common/checkbox1.png) no-repeat center;}*/
+/*pager*/
+.mini-datagrid .mini-grid-pager{border-top: 1px solid #e5e6e7;}
+.mini-datagrid .mini-pager{padding: 0;margin:0;height:32px;}
+.mini-datagrid .mini-pager .mini-pager-left .mini-buttonedit-border{margin-top:0;padding-top:0;margin-bottom:0;font-size:12px;line-height: 16px;height:20px;width:auto;}
+.mini-datagrid .mini-pager .mini-pager-left .mini-pager-index{	margin-top:2px;font-size:12px;line-height: 18px;	height:30px;width:auto;}
+.mini-datagrid .mini-pager-left .mini-pager-index .mini-pager-num{	height:18px;}
+.mini-pager-left .mini-buttonedit-border{padding-left: 5px;}
+
+/*系统介绍页面样式调整*/
+.sys-intro-main{margin: 10px;}
+.sys-intro{height: 36px;border: 1px solid #e5e6e7;background: url(../img/intro-bar.png) repeat-x;}
+.sys-intro span{display: inline-block;height: 36px;line-height: 36px;margin-left: 10px;padding-left: 30px;font-size: 14px;background: url(../img/introduce.png) no-repeat 5px center;}
+.intro-main{padding: 10px 10px 0 10px ;border: 1px solid #e5e6e7;border-top: none;}
+.intro-main .intro-title{height: 40px;line-height: 40px;font-size: 14px;color: #454545;text-align: center;background: #f9f9f9;border: 1px solid #e5e6e7;}
+.intro-main .intro-info{padding: 10px 20px;line-height: 25px;overflow: auto;background: #f9f9f9;border: 1px solid #e5e6e7;border-top: none;}

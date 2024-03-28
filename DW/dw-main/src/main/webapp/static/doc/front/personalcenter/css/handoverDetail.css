@@ -1,0 +1,127 @@
+@charset "utf-8";
+.top{
+    font-size: 14px;
+    line-height: 14px;
+}
+.top .layui-col-md4 {
+    width: calc(100% / 3);
+    float: left;
+    color: #222222;
+}
+.top .layui-row .layui-col-md4:nth-child(2){
+    width: calc(100% / 12 * 5);
+}
+.top .layui-row .layui-col-md4:nth-child(3){
+    width: calc(100% / 12 * 3);
+}
+.top .layui-row{
+    margin-bottom: 20px;
+}
+.top .layui-row:last-child{
+    margin-bottom: 35px;
+}
+.top .layui-container{
+    padding: 0;
+}
+.detail-label span{
+    color: #777;
+}
+.bottom p{
+    font-size: 14px;
+    color:#222;
+    font-weight: bold;
+    margin-bottom: 21px;
+}
+.background{
+    background: #fff !important;
+    padding: 30px 40px;
+    height: 100%;
+}
+.bottom .layui-container{
+    padding: 0;
+}
+.bottom .layui-form.layui-border-box.layui-table-view {
+    border: 0;
+}
+.bottom .layui-table-box {
+    border: 1px solid #F0F0F0;
+    min-height: 247px;
+}
+.bottom .layui-table-view .layui-table td,.bottom  .layui-table-view .layui-table th{
+    border: 0;
+}
+.bottom .layui-table-view .layui-table{
+    width: 100%;
+}
+.bottom .layui-table-body{
+    width: 100%;
+}
+.bottom .layui-table-header {
+    border: 0;
+}
+.bottom .layui-table tr {
+    border-bottom: 1px solid #F1F2F4;
+}
+.bottom .layui-table tr:last-child{
+    border: 0;
+}
+.bottom .layui-table thead tr {
+    background: #FAFAFA;
+}
+.bottom th .layui-table-cell{
+    color: #777;
+    font-size: 12px;
+}
+.bottom .layui-table-cell {
+    height: 40px;
+    line-height: 40px;
+    color: #222220;
+    font-size: 12px;
+}
+.bottom .layui-form-checkbox {
+    position: absolute;
+    top: 50% !important;
+    transform: translate(-50%, -50%);
+    left: 50%;
+}
+.bottom i.layui-icon.layui-icon-ok {
+    margin: 0;
+    width: 14px !important;
+    height: 14px !important;
+}
+span.layui-laypage-skip,span.layui-laypage-count,span.layui-laypage-limits {
+    display: none;
+}
+.layui-table-page>div{
+    text-align: right;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+    background: none !important;
+    border: 1px solid #2980ff;
+    width: 22px;
+    height: 22px;
+}
+.layui-laypage .layui-laypage-curr em{
+    color: #2980ff;
+}
+.layui-table-page .layui-laypage a, .layui-table-page .layui-laypage span.layui-laypage-curr{
+    padding: 0 10px;
+}
+i.layui-icon {
+    margin: 0;
+}
+.layui-table-page {
+    border: 0;
+}
+.layui-table-page .layui-laypage span {
+    padding: 0 !important;
+    width: 24px;
+    height: 24px;
+    position: relative;
+}
+.layui-laypage .layui-laypage-curr em:last-child {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

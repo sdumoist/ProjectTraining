@@ -1,0 +1,84 @@
+<div class="btn-rit">
+
+    <a href="${ctxPath}/personalcenter?toUpload=true" target="_blank">
+        上传文件
+    </a>
+
+</div>
+<ul class="btn-rit-bottom"><!---->
+    @if('1' == clientShow){
+    <li>
+        <div class="phone rit-item">
+        </div>
+        <label class="phone-label">电话：18560195621</label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank">
+<!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+            <!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    @}
+    @if('1' == contactShow){
+    <li>
+        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端" class="pcDownload rit-item">
+<!--            <span>客户端<br/>下载</span>-->
+        </a>
+        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank">点击下载客户端</a></label>
+    </li>
+    @}
+    <li>
+        <a href="javascript:show_feedback()" class="feedback rit-item">
+<!--            <span>意见<br/>反馈</span>-->
+        </a>
+        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+    </li>
+    <li style="display: none" id="goToTop">
+        <div class="goToTop rit-item" title="回到顶部">
+<!--            <span>返回<br/>顶部</span>-->
+        </div>
+    </li>
+</ul>
+<a href="${ctxPath}/personalcenter?toUpload=true" target="_blank">
+    <div class="upload-fix">
+        <div class="upload"></div>
+    </div>
+</a>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 0) {
+                $("#goToTop").show();
+                $(".mainCon-inner").addClass("fix");
+                $(".upload-fix").show(300)
+            } else {
+                $("#goToTop").hide();
+                $(".mainCon-inner").removeClass("fix")
+                $(".upload-fix").hide()
+            }
+        });
+    });
+
+    $("#goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn() {
+
+            var oTop = $(document).scrollTop();
+            if (oTop > 0) {
+                scrollTo(0, oTop - 50);
+                timer = requestAnimationFrame(fn);
+            } else {
+                $("#goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+</script>

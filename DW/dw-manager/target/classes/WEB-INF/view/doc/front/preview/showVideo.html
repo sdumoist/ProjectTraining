@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-视频预览</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <style>
+        html{overflow-y: scroll;height: 100%}
+        /*body#top.top{position: relative;min-height: 100%;height: auto;padding-bottom: 44px;overflow: hidden}*/
+        div.container.wrapper{
+            /*height: auto!important;*/
+            padding: 0;
+            height: 100%;
+        }
+        .header-bar.header-with-search {
+            position: fixed;
+            z-index: 3;
+            top: 0;
+        }
+        body#top .viewContent{
+            background: none;
+        }
+        #video {
+            background: #000;
+            height: 90% !important;
+            width: auto !important;
+        }
+        .footer{position: absolute;bottom: 0;left: 50%;transform: translateX(-50%)}
+        .breadCrumbs.container{margin: auto;margin-top: 5px}
+        .breadCrumbs .pathes a{line-height: 41px}
+        div.container.wrapper{background-color: #fff;position: relative}
+        .content-bottom {
+            height: calc(100% - 180px);
+        }
+        .header-with-search.header-with-search-2 {
+            position: fixed;
+        }
+    </style>
+</head>
+<body id="top" class="top">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-header_new2.html"){}
+@include("/common/front-rit.html"){}
+<input  type="hidden" class="hide"  id="docId" value="${id}"/>
+<input  type="hidden" class="hide"  id="docType" value="${fileType}"/>
+<input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType}"/>
+<input  type="hidden" class="hide"  id="category" value="${category}"/>
+<input type="hidden" class="hide" id="showType" value="${showType}"/>
+<input type="text" style="opacity: 0" id="username" value="${userName}"/>
+<div id="outerContainer" style="position: relative;overflow:scroll;height: calc(100% - 49px);">
+    <div class="container">
+        <div class="breadCrumbs">
+            <div style="overflow: hidden"><div class="pathes" style="margin-left: 0!important;"></div></div>
+            <i class="layui-icon control-btn-r">&#xe602;</i>
+        </div >
+        <div id="title" class="viewTitle"></div>
+        <div class="docView">
+            <span class="textOver" id="owner"></span>
+            <span class="textOver" id="uploadTime"></span>
+            <span class="textOver" id="fileSize"></span>
+            <span class="textOver" id="downloadNum"></span>
+            <span class="textOver" id="previewNum"></span>
+        </div>
+        <div class="doc-desc">
+            <span id="docAbstract"></span>
+        </div>
+    </div>
+    @include("/common/front-operation.html"){}
+    <div class="content-bottom">
+        <div class="wrapper container">
+            <div class="viewContent">
+                <div class="pdf-content video-content">
+                    <video id="video"   controls="true" controlslist="nodownload" class="hide" >
+                        <source id="v1" src=" " type="video/mp4">
+                        您的浏览器不支持 video 标签。
+                    </video>
+                    <div class="pdf-loading hide" id="loadingBox">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <div class="onloading">
+                            正在转化视频...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="filTree" style="display: none;overflow: auto" class="leftArea">
+        <div id="fileTree2" class="jsTree"></div>
+    </div>
+    <div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+    @include("/common/front-footer.html"){}
+</div>
+</body>
+<script type="text/javascript">
+    projectTitle = "${session.projectTitle}";
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/preview/js/showVideo.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>复用登记修改</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-textarea:hover{border-color: #3D92FD !important;}
+        .fr{
+            line-height: 26px!important;
+        }
+
+       .bottom-btns {
+            margin-top: 4px!important;
+            height: 40px;
+        }
+        .box .main{
+            margin: 0 20px;
+        }
+        .box{width: 150px;	height: 30px;margin: 0 auto;border: 1px solid red;}
+        .left,.center,.right{
+            float: left;
+            width: 28px;
+            border-radius: 3px;
+            height: 29px;
+            line-height: 28px;
+            text-align: center;
+            background: #eee;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;	}
+        .center{width: 37px;				background: #fff;				cursor: auto;			}
+        .right{				float: right;				cursor: pointer;			}
+        .center input{
+            height: 27px;
+            width: 50px;
+            display: block;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid #eaeef6;
+            border-top: 1px solid #eaeef6;}
+        html, body,.weadmin-body{height: 100%}
+        .collections{height: calc(100% - 70px)}
+        .layui-table th,.layui-table td{text-align: center}
+        .layui-btn{background: #3D92FD}
+        .layui-form-label{width: 90px}
+        .table-box{min-height: 200px;overflow: auto}
+        .bottom-btns{margin-top: 10px !important;}
+        .new-top{  font-size: 16px;  line-height: 30px;  margin: 15px 0;  font-weight: bold;padding: 0 35px}
+        button#cancel{padding: 0 20px!important; color:#222 !important;border: 1px solid #DBDBDB !important; background: #fff !important; height: 32px!important;margin-right: 8px;width: 90px !important;border-radius: 0}
+        button#saveBtn,button#changeDoc,button#selectComponent{background: #3D92FD;   color: #fff;padding: 0 20px!important;  height: 32px!important;width: 90px;
+            line-height: 31px;  border: 1px solid #2980FF !important;border-radius: 0}
+        .layui-layer-molv .layui-layer-content{min-height: 40px;font-size: 14px}
+        .layui-input:hover, .layui-textarea:hover ,.layui-input:focus, .layui-textarea:focus {border-color:#2980ff !important;}
+    </style>
+</head>
+<body class="newBody weadmin-body">
+<div class="new-top clearfix">
+    <span>复用登记修改</span>
+</div>
+<div  id="collectList" class="collections">
+    <div class="layui-form" >
+        <div class="layui-form-item">
+            <input type="text" id="multiplexId" name="multiplexId" hidden value="${multiplexId}" class="layui-input" style="display: none">
+            <input type="text" id="userName" name="userName" hidden value="${userName}" class="layui-input" style="display: none">
+
+            <input type="text" id="projectId" name="projectId" hidden value="${projectId}" class="layui-input" style="display: none">
+            <input type="text" id="adminFlag" name="adminFlag" hidden value="${adminFlag}" class="layui-input" style="display: none">
+            @for(doc in componentList ){
+            <input type="text" name="list" hidden value="${doc.componentId}" class="layui-input listId" style="display: none">
+            <input type="text" name="list" hidden value="${doc.componentType}" class="layui-input listType" style="display: none">
+            <input type="text" name="list" hidden value="${doc.userName}" class="layui-input listName" style="display: none">
+            <input type="text" name="list" hidden value="${doc.componentName}" class="layui-input componentName" style="display: none">
+
+
+            @}
+            <div class=" layui-inline">
+                <label for="projectName" class="layui-form-label">
+                    项目名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="projectName" name="projectName" autocomplete="off" class="layui-input" style="height:33px;background-color: #ECF0F7" readonly value="${mp.projectName}" readonly="readonly">
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">复用描述</label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="multiplexDesc" name="multiplexDesc" class="layui-textarea" >${mp.multiplexDesc}</textarea>
+            </div>
+        </div>
+        @if(adminFlag == 7){
+       <!-- <div class="layui-form-item" >
+            <label class="layui-form-label">节省工作量</label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="economize" name="economize" class="layui-textarea"></textarea>
+            </div>
+        </div>-->
+        @}else{
+
+
+        @}
+        <hr class="under-line" />
+        <div class="layui-form-item ">
+            <button class="layui-btn fr" id="selectComponent">选择成果</button>
+        </div>
+
+        <div class="table-box">
+            <table class="layui-table">
+            <colgroup>
+                <col width="60" >
+                <col width="150">
+                <col >
+                <col width="150" >
+                <col width="150">
+            </colgroup>
+            <thead>
+            <tr>
+                <th >序号</th>
+                <th >成果分类</th>
+                <th >成果名称</th>
+                <th >上传人</th>
+                <th >操作</th>
+                @if(adminFlag==7){
+                <th>节省工作量(人/天)</th>
+                @}
+            </tr>
+
+            </thead>
+            <tbody id="componentList">
+            @for(doc in multiplexProject){
+            <tr>
+
+                <td id="index">${docLP.index}</td>
+                <td> @if(doc.componentType=='0'){
+                    技术组件
+                    @}  else if(doc.componentType=='1'){
+                    解决方案
+                    @} else {
+                    其他
+                    @}
+                </td>
+                <td style="text-align: left!important;padding-left: 10px">${doc.componentName}</td>
+                <td>${doc.userName}</td>
+                <td  style='cursor: pointer;' onclick='deleteThis(this,"${docLP.index}")'><button type='button'style='background-color: #fff0f0;cursor: pointer;width: 40px;height: 24px;line-height:24px;border:1px solid #fac4c4;border-radius:2px;color: #f56b6b !important;font-size: 12px;'>
+                     删除</button></td>
+                @if(adminFlag==7){
+                <td class="box">
+                    <div class="main">
+                    <div class="left" onclick="leftNum(this)">-</div>
+                    <div class="center"><input  type="text" class="economize" value="${doc.economize}" maxlength="3"></div>
+                    <div class="right" onclick="rightNum(this)">+</div>
+                    </div>
+                </td>
+                @}
+
+            </tr>
+            @}
+            </tbody>
+        </table>
+        </div>
+        <div class="bottom-btns">
+            <button id="saveBtn" type="button" class="self-btn fr"style="cursor: pointer;margin-right:0px !important" lay-filter="add" lay-submit="">保存</button>
+            <button id="cancel" class="self-btn white-btn fr" lay-filter="cancel"  type="button" >返回</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/multiplexmanager/js/multiplexUpdate.js?v=${h_version}"></script>
+
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h = $("#collectList").height() + 100 ;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    }, 300)
+
+</script>
+</body>
+</html>

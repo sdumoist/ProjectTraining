@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.Synchronous.dao.IUsersMapper">
+
+    <!--查询用户列表-->
+    <select id="selectOracleUserList" resultType="com.jxdinfo.hussar.bsp.permit.model.SysUsers">
+        SELECT
+        USER_ID AS userId,
+        USER_ACCOUNT AS userAccount,
+        USER_NAME AS userName,
+        PASSWORD  AS password,
+        ACCOUNT_STATUS AS accountStatus,
+        TYPE_PROPERTY AS typeProperty,
+        SECURITY_LEVEL AS securityLevel,
+        MAX_SESSIONS AS maxSessions,
+        IS_SYS AS isSys,
+        IS_CPUBLIC AS isCpublic,
+        CREATE_TIME AS createTime,
+        LOCK_TIME AS lockTime,
+        START_TIME AS startTime,
+        EXPIRED_TIME AS expiredTime,
+        PSWD_UPT_TIME AS pswdUptTime,
+        PSWD_TIME AS pswdTime,
+        LAST_LOGIN_TIME AS lastLoginTime,
+        CORPORATION_ID AS corporationId,
+        DEPARTMENT_ID AS departmentId,
+        EMPLOYEE_ID AS employeeId,
+        E_MAIL AS eMail,
+        MOBILE AS mobile,
+        WECHAT AS weChat,
+        TELEPHONE AS telephone,
+        CHAR_1 AS char1,
+        CHAR_2 AS char2,
+        NUM_1 AS num1,
+        NUM_2 AS num2,
+        PERMISSION_STRU_ID AS permissionStruId,
+        USER_ORDER AS userOrder,
+        PROVINCE_CODE AS provinceCode,
+        LOGIN_TIME_LIMIT AS loginTimeLimit,
+        ACCESS_LOGIN_START_TIME AS accessLoginStartTime,
+        ACCESS_LOGIN_END_TIME AS accessLoginEndTime,
+        LOGIN_IP_LIMIT AS loginIpLimit,
+        TOTP_KEY AS totpKey
+        FROM
+        SYS_USERS
+    </select>
+
+    <!--查询staff表数据-->
+    <select id="selectOracleStaffList" resultType="com.jxdinfo.hussar.bsp.organ.model.SysStaff">
+        select
+        sf.STAFF_ID staffId,
+        sf.STRU_ID struId,
+        sf.NAME name,
+        sf.SEX sex,
+        sf.BIRTHDAY birthday,
+        sf.IDCARD idcard,
+        sf.ADDRESS address,
+        sf.WORK_ID workId,
+        sf.WORK_DATE workDate,
+        sf.GRADUATE_SCHOOL graduateSchool,
+        sf.GRADUATE_DATE graduateDate
+        from SYS_STAFF sf
+    </select>
+
+    <!--查询staff表数据-->
+    <select id="selectStaffList" resultType="com.jxdinfo.hussar.bsp.organ.model.SysStaff">
+        select
+        sf.STAFF_ID staffId,
+        sf.STRU_ID struId,
+        sf.NAME name,
+        sf.SEX sex,
+        sf.BIRTHDAY birthday,
+        sf.IDCARD idcard,
+        sf.ADDRESS address,
+        sf.WORK_ID workId,
+        sf.WORK_DATE workDate,
+        sf.GRADUATE_SCHOOL graduateSchool,
+        sf.GRADUATE_DATE graduateDate
+        from SYS_STAFF sf
+        where STAFF_ID IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+
+    <!--递归向上查询组织机构的所有父级-->
+    <select id="selectUserStruData" resultType="com.jxdinfo.hussar.bsp.organ.model.SysStru">
+       SELECT
+        stru.STRU_ID struId,
+        stru.STRU_TYPE struType,
+        stru.ORGAN_ID organId,
+        stru.ORGAN_ALIAS organAlias,
+        stru.PARENT_ID parentId,
+        stru.PRINCIPAL_ID principalId,
+        stru.CORPORATION_ID corporationId,
+        stru.STRU_LEVEL struLevel,
+        stru.STRU_ORDER struOrder,
+        stru.GLOBAL_ORDER globalOrder,
+        stru.IS_LEAF isLeaf,
+        stru.DEPARTMENT_ID departmentId,
+        stru.PERMISSION_STRU_ID permissionStruId,
+        stru.PROVINCE_CODE provinceCode,
+        stru.CREATOR creator,
+        stru.CREATE_TIME createTime,
+        stru.LAST_EDITOR lastEditor,
+        stru.last_time lastTime,
+        stru.IS_EMPLOYEE isEmployee,
+        stru.STRU_PATH struPath,
+        stru.STAFF_POSITION staffPosition
+       FROM SYS_STRU stru
+       START WITH STRU_ID = #{struId}
+       CONNECT BY PRIOR PARENT_ID = STRU_ID
+    </select>
+
+    <!---->
+    <select id="selectUserOrganData" resultType="com.jxdinfo.hussar.bsp.organ.model.SysOrgan">
+      select
+        org.ORGAN_ID organId,
+        org.ORGAN_CODE organCode,
+        org.ORGAN_NAME organName,
+        org.SHORT_NAME shortName,
+        org.ORGAN_TYPE organType,
+        org.WORKPLACE_ID workplaceId,
+        org.BEGIN_DATE beginDate,
+        org.END_DATE endDate,
+        org.SCN scn,
+        org.CREATOR creator,
+        org.CREATE_TIME createTime,
+        org.LAST_EDITOR lastEditor,
+        org.LAST_TIME lastTime,
+        org.PARENT_TYPE_CODE parentTypeCode
+        from SYS_ORGAN org
+        where ORGAN_ID IN
+        <foreach item="idItem" collection="organIds" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+    
+    <select id="selectUserStaffData" resultType="com.jxdinfo.hussar.bsp.organ.model.SysStaff">
+       select
+        sf.STAFF_ID staffId,
+        sf.STRU_ID struId,
+        sf.NAME name,
+        sf.SEX sex,
+        sf.BIRTHDAY birthday,
+        sf.IDCARD idcard,
+        sf.ADDRESS address,
+        sf.WORK_ID workId,
+        sf.WORK_DATE workDate,
+        sf.GRADUATE_SCHOOL graduateSchool,
+        sf.GRADUATE_DATE graduateDate
+        from SYS_STAFF sf
+        where sf.STRU_ID IN
+        <foreach item="idItem" collection="struIds" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </select>
+
+    <!--查询用户信息-->
+    <select id="selectUser" resultType="com.jxdinfo.hussar.bsp.permit.model.SysUsers">
+        SELECT
+        USER_ID AS userId,
+        USER_ACCOUNT AS userAccount,
+        USER_NAME AS userName,
+        PASSWORD  AS password,
+        ACCOUNT_STATUS AS accountStatus,
+        TYPE_PROPERTY AS typeProperty,
+        SECURITY_LEVEL AS securityLevel,
+        MAX_SESSIONS AS maxSessions,
+        IS_SYS AS isSys,
+        IS_CPUBLIC AS isCpublic,
+        CREATE_TIME AS createTime,
+        LOCK_TIME AS lockTime,
+        START_TIME AS startTime,
+        EXPIRED_TIME AS expiredTime,
+        PSWD_UPT_TIME AS pswdUptTime,
+        PSWD_TIME AS pswdTime,
+        LAST_LOGIN_TIME AS lastLoginTime,
+        CORPORATION_ID AS corporationId,
+        DEPARTMENT_ID AS departmentId,
+        EMPLOYEE_ID AS employeeId,
+        E_MAIL AS eMail,
+        MOBILE AS mobile,
+        WECHAT AS weChat,
+        TELEPHONE AS telephone,
+        CHAR_1 AS char1,
+        CHAR_2 AS char2,
+        NUM_1 AS num1,
+        NUM_2 AS num2,
+        PERMISSION_STRU_ID AS permissionStruId,
+        USER_ORDER AS userOrder,
+        PROVINCE_CODE AS provinceCode,
+        LOGIN_TIME_LIMIT AS loginTimeLimit,
+        ACCESS_LOGIN_START_TIME AS accessLoginStartTime,
+        ACCESS_LOGIN_END_TIME AS accessLoginEndTime,
+        LOGIN_IP_LIMIT AS loginIpLimit,
+        TOTP_KEY AS totpKey
+        FROM
+        SYS_USERS
+        WHERE
+        (
+        USER_ACCOUNT = #{userAccount}
+        <if test="status != null and status == 1 ">
+            AND ACCOUNT_STATUS = #{accountStatus}
+        </if>
+        <if test="status != null and status == 2 ">
+            AND ACCOUNT_STATUS != #{accountStatus}
+        </if>
+        )
+    </select>
+
+    <!--根据用户id查询用户信息-->
+    <select id="selectByUserId" resultType="com.jxdinfo.hussar.bsp.permit.model.SysUsers">
+        SELECT
+        USER_ID AS userId,
+        USER_ACCOUNT AS userAccount,
+        USER_NAME AS userName,
+        PASSWORD  AS password,
+        ACCOUNT_STATUS AS accountStatus,
+        TYPE_PROPERTY AS typeProperty,
+        SECURITY_LEVEL AS securityLevel,
+        MAX_SESSIONS AS maxSessions,
+        IS_SYS AS isSys,
+        IS_CPUBLIC AS isCpublic,
+        CREATE_TIME AS createTime,
+        LOCK_TIME AS lockTime,
+        START_TIME AS startTime,
+        EXPIRED_TIME AS expiredTime,
+        PSWD_UPT_TIME AS pswdUptTime,
+        PSWD_TIME AS pswdTime,
+        LAST_LOGIN_TIME AS lastLoginTime,
+        CORPORATION_ID AS corporationId,
+        DEPARTMENT_ID AS departmentId,
+        EMPLOYEE_ID AS employeeId,
+        E_MAIL AS eMail,
+        MOBILE AS mobile,
+        WECHAT AS weChat,
+        TELEPHONE AS telephone,
+        CHAR_1 AS char1,
+        CHAR_2 AS char2,
+        NUM_1 AS num1,
+        NUM_2 AS num2,
+        PERMISSION_STRU_ID AS permissionStruId,
+        USER_ORDER AS userOrder,
+        PROVINCE_CODE AS provinceCode,
+        LOGIN_TIME_LIMIT AS loginTimeLimit,
+        ACCESS_LOGIN_START_TIME AS accessLoginStartTime,
+        ACCESS_LOGIN_END_TIME AS accessLoginEndTime,
+        LOGIN_IP_LIMIT AS loginIpLimit,
+        TOTP_KEY AS totpKey
+        FROM
+        SYS_USERS
+        WHERE
+        USER_ID = #{userId}
+    </select>
+
+    <!--查询oracle数据库所有组织机构数据-->
+    <select id="selectOracleOrganList" resultType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        select stru.STRU_ID struId,
+        stru.STRU_TYPE struType,
+        stru.ORGAN_ID organId,
+        stru.ORGAN_ALIAS organAlias,
+        stru.PARENT_ID parentId,
+        stru.PRINCIPAL_ID principalId,
+        stru.CORPORATION_ID corporationId,
+        stru.STRU_LEVEL struLevel,
+        stru.STRU_ORDER struOrder,
+        stru.GLOBAL_ORDER globalOrder,
+        stru.IS_LEAF isLeaf,
+        stru.DEPARTMENT_ID departmentId,
+        stru.PERMISSION_STRU_ID permissionStruId,
+        stru.PROVINCE_CODE provinceCode,
+        stru.CREATOR creator,
+        stru.CREATE_TIME createTime,
+        stru.LAST_EDITOR lastEditor,
+        stru.last_time lastTime,
+        stru.IS_EMPLOYEE isEmployee,
+        stru.STRU_PATH struPath,
+        stru.STAFF_POSITION staffPosition,
+        org.ORGAN_CODE organCode,
+        org.ORGAN_NAME organName,
+        org.SHORT_NAME shortName,
+        org.ORGAN_TYPE organType,
+        org.WORKPLACE_ID workplaceId,
+        org.BEGIN_DATE beginDate,
+        org.END_DATE endDate,
+        org.SCN scn,
+        org.CREATOR organCreator,
+        org.CREATE_TIME organCreateTime,
+        org.LAST_EDITOR organLastEditor,
+        org.LAST_TIME organLastTime,
+        org.PARENT_TYPE_CODE parentTypeCode
+        from SYS_STRU stru
+        left join SYS_ORGAN org on stru.ORGAN_ID = org.ORGAN_ID
+        where
+        <if test="isEmployee != null and isEmployee == 1 ">
+            stru.stru_type != '9'
+        </if>
+        <if test="isEmployee != null and isEmployee == 2 ">
+            stru.stru_type = '9'
+        </if>
+    </select>
+
+    <!--查询本地数据库所有用户数据-->
+    <select id="selectUserList" resultType="com.jxdinfo.hussar.bsp.permit.model.SysUsers">
+        SELECT
+        USER_ID AS userId,
+        USER_ACCOUNT AS userAccount,
+        USER_NAME AS userName,
+        PASSWORD  AS password,
+        ACCOUNT_STATUS AS accountStatus,
+        TYPE_PROPERTY AS typeProperty,
+        SECURITY_LEVEL AS securityLevel,
+        MAX_SESSIONS AS maxSessions,
+        IS_SYS AS isSys,
+        IS_CPUBLIC AS isCpublic,
+        CREATE_TIME AS createTime,
+        LOCK_TIME AS lockTime,
+        START_TIME AS startTime,
+        EXPIRED_TIME AS expiredTime,
+        PSWD_UPT_TIME AS pswdUptTime,
+        PSWD_TIME AS pswdTime,
+        LAST_LOGIN_TIME AS lastLoginTime,
+        CORPORATION_ID AS corporationId,
+        DEPARTMENT_ID AS departmentId,
+        EMPLOYEE_ID AS employeeId,
+        E_MAIL AS eMail,
+        MOBILE AS mobile,
+        WECHAT AS weChat,
+        TELEPHONE AS telephone,
+        CHAR_1 AS char1,
+        CHAR_2 AS char2,
+        NUM_1 AS num1,
+        NUM_2 AS num2,
+        PERMISSION_STRU_ID AS permissionStruId,
+        USER_ORDER AS userOrder,
+        PROVINCE_CODE AS provinceCode,
+        LOGIN_TIME_LIMIT AS loginTimeLimit,
+        ACCESS_LOGIN_START_TIME AS accessLoginStartTime,
+        ACCESS_LOGIN_END_TIME AS accessLoginEndTime,
+        LOGIN_IP_LIMIT AS loginIpLimit,
+        TOTP_KEY AS totpKey
+        from SYS_USERS uses
+        where 1=1 and USER_ID != 'wkadmin'
+        <if test="list != null and list.size() >0">
+            and uses.user_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </select>
+
+    <!--查询本地数据库所有组织机构数据-->
+    <select id="selectOrganList" resultType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        select stru.STRU_ID struId,
+        stru.STRU_TYPE struType,
+        stru.ORGAN_ID organId,
+        stru.ORGAN_ALIAS organAlias,
+        stru.PARENT_ID parentId,
+        stru.PRINCIPAL_ID principalId,
+        stru.CORPORATION_ID corporationId,
+        stru.STRU_LEVEL struLevel,
+        stru.STRU_ORDER struOrder,
+        stru.GLOBAL_ORDER globalOrder,
+        stru.IS_LEAF isLeaf,
+        stru.DEPARTMENT_ID departmentId,
+        stru.PERMISSION_STRU_ID permissionStruId,
+        stru.PROVINCE_CODE provinceCode,
+        stru.CREATOR creator,
+        stru.CREATE_TIME createTime,
+        stru.LAST_EDITOR lastEditor,
+        stru.last_time lastTime,
+        stru.IS_EMPLOYEE isEmployee,
+        stru.STRU_PATH struPath,
+        stru.STAFF_POSITION staffPosition,
+        org.ORGAN_CODE organCode,
+        org.ORGAN_NAME organName,
+        org.SHORT_NAME shortName,
+        org.ORGAN_TYPE organType,
+        org.WORKPLACE_ID workplaceId,
+        org.BEGIN_DATE beginDate,
+        org.END_DATE endDate,
+        org.SCN scn,
+        org.CREATOR organCreator,
+        org.CREATE_TIME organCreateTime,
+        org.LAST_EDITOR organLastEditor,
+        org.LAST_TIME organLastTime,
+        org.PARENT_TYPE_CODE parentTypeCode
+        from SYS_STRU stru
+        left join SYS_ORGAN org on stru.ORGAN_ID = org.ORGAN_ID
+        where 1=1
+        <if test="isEmployee != null and isEmployee == 1 ">
+            and stru.stru_type != '9'
+        </if>
+        <if test="isEmployee != null and isEmployee == 2 ">
+            and stru.stru_type = '9'
+        </if>
+        <if test="list != null and list.size() >0">
+            and stru.STRU_ID in
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </select>
+    
+    <insert id="insertStru" parameterType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        insert into sys_stru
+        (
+        stru_id,
+        STRU_TYPE,
+        ORGAN_ID,
+        ORGAN_ALIAS,
+        PARENT_ID,
+        PRINCIPAL_ID,
+        CORPORATION_ID,
+        STRU_LEVEL,
+        STRU_PATH,
+        STRU_ORDER,
+        GLOBAL_ORDER,
+        IS_LEAF,
+        DEPARTMENT_ID,
+        PERMISSION_STRU_ID,
+        PROVINCE_CODE,
+        CREATOR,
+        CREATE_TIME,
+        LAST_EDITOR,
+        LAST_TIME,
+        IS_EMPLOYEE,
+        STAFF_POSITION
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.struId},
+            #{item.struType},
+            #{item.organId},
+            #{item.organAlias},
+            #{item.parentId},
+            #{item.principalId},
+            #{item.corporationId},
+            #{item.struLevel},
+            #{item.struPath},
+            #{item.struOrder},
+            #{item.globalOrder},
+            #{item.isLeaf},
+            #{item.departmentId},
+            #{item.permissionStruId},
+            #{item.provinceCode},
+            #{item.creator},
+            #{item.createTime},
+            #{item.lastEditor},
+            #{item.lastTime},
+            #{item.isEmployee},
+            #{item.staffPosition}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertOrgan" parameterType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        insert into sys_organ
+        (
+        ORGAN_ID,
+        ORGAN_CODE,
+        ORGAN_NAME,
+        SHORT_NAME,
+        ORGAN_TYPE,
+        WORKPLACE_ID,
+        BEGIN_DATE,
+        END_DATE,
+        SCN,
+        CREATOR,
+        CREATE_TIME,
+        LAST_EDITOR,
+        LAST_TIME,
+        PARENT_TYPE_CODE
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.organId},
+            #{item.organCode},
+            #{item.organName},
+            #{item.shortName},
+            #{item.organType},
+            #{item.workplaceId},
+            #{item.beginDate},
+            #{item.endDate},
+            #{item.scn},
+            #{item.organCreator},
+            #{item.organCreateTime},
+            #{item.organLastEditor},
+            #{item.organLastTime},
+            #{item.parentTypeCode}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertUser" parameterType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        insert into sys_users
+        (
+        USER_ID,
+        USER_NAME,
+        PASSWORD,
+        ACCOUNT_STATUS,
+        SECURITY_LEVEL,
+        MAX_SESSIONS,
+        IS_SYS,
+        IS_CPUBLIC,
+        CREATE_TIME,
+        LOCK_TIME,
+        EXPIRED_TIME,
+        PSWD_UPT_TIME,
+        PSWD_TIME,
+        CORPORATION_ID,
+        DEPARTMENT_ID,
+        EMPLOYEE_ID,
+        E_MAIL,
+        WECHAT,
+        TELEPHONE,
+        MOBILE,
+        CHAR_1,
+        CHAR_2,
+        NUM_1,
+        NUM_2,
+        PERMISSION_STRU_ID,
+        USER_ORDER,
+        PROVINCE_CODE,
+        USER_ACCOUNT,
+        TYPE_PROPERTY,
+        START_TIME,
+        LAST_LOGIN_TIME,
+        ACCESS_LOGIN_START_TIME,
+        ACCESS_LOGIN_END_TIME,
+        TOTP_KEY,
+        LOGIN_TIME_LIMIT,
+        LOGIN_IP_LIMIT
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId},
+            #{item.userName},
+            #{item.password},
+            #{item.accountStatus},
+            #{item.securityLevel},
+            #{item.maxSessions},
+            #{item.isSys},
+            #{item.isCpublic},
+            #{item.userCreateTime},
+            #{item.lockTime},
+            #{item.expiredTime},
+            #{item.pswdUptTime},
+            #{item.pswdTime},
+            #{item.userCorporationId},
+            #{item.userDepartmentId},
+            #{item.employeeId},
+            #{item.eMail},
+            #{item.weChat},
+            #{item.telephone},
+            #{item.mobile},
+            #{item.char1},
+            #{item.char2},
+            #{item.num1},
+            #{item.num2},
+            #{item.userPermissionStruId},
+            #{item.userOrder},
+            #{item.userProvinceCode},
+            #{item.userAccount},
+            #{item.typeProperty},
+            #{item.startTime},
+            #{item.lastLoginTime},
+            #{item.accessLoginStartTime},
+            #{item.accessLoginEndTime},
+            #{item.totpKey},
+            #{item.loginTimeLimit},
+            #{item.loginIpLimit}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertStaff" parameterType="com.jxdinfo.doc.Synchronous.model.SynchronousOrgan">
+        insert into sys_staff
+        (
+        STAFF_ID,
+        STRU_ID,
+        NAME,
+        SEX,
+        BIRTHDAY,
+        IDCARD,
+        ADDRESS,
+        WORK_ID,
+        WORK_DATE,
+        GRADUATE_SCHOOL,
+        GRADUATE_DATE
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.staffId},
+            #{item.staffStruId},
+            #{item.name},
+            #{item.sex},
+            #{item.birthday},
+            #{item.idcard},
+            #{item.address},
+            #{item.workId},
+            #{item.workDate},
+            #{item.graduateSchool},
+            #{item.graduateDate}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateStru" parameterType="object">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update sys_stru
+            <set>
+                STRU_ID = #{item.struId},
+                STRU_TYPE = #{item.struType},
+                ORGAN_ID = #{item.organId},
+                ORGAN_ALIAS = #{item.organAlias},
+                PARENT_ID = #{item.parentId},
+                PRINCIPAL_ID = #{item.principalId},
+                CORPORATION_ID = #{item.corporationId},
+                STRU_LEVEL = #{item.struLevel},
+                STRU_PATH = #{item.struPath},
+                STRU_ORDER = #{item.struOrder},
+                GLOBAL_ORDER = #{item.globalOrder},
+                IS_LEAF = #{item.isLeaf},
+                DEPARTMENT_ID = #{item.departmentId},
+                PERMISSION_STRU_ID = #{item.permissionStruId},
+                PROVINCE_CODE = #{item.provinceCode},
+                CREATOR = #{item.creator},
+                CREATE_TIME = #{item.createTime},
+                LAST_EDITOR = #{item.lastEditor},
+                LAST_TIME = #{item.lastTime},
+                IS_EMPLOYEE = #{item.isEmployee},
+                STAFF_POSITION = #{item.staffPosition}
+            </set>
+            where  stru_id = #{item.struId}
+        </foreach>
+    </update>
+
+    <update id="updateOrgan" parameterType="object">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update sys_organ
+            <set>
+                ORGAN_CODE = #{item.organCode},
+                ORGAN_NAME = #{item.organName},
+                SHORT_NAME = #{item.shortName},
+                ORGAN_TYPE = #{item.organType},
+                WORKPLACE_ID = #{item.workplaceId},
+                BEGIN_DATE = #{item.beginDate},
+                END_DATE = #{item.endDate},
+                SCN = #{item.scn},
+                CREATOR = #{item.organCreator},
+                CREATE_TIME = #{item.organCreateTime},
+                LAST_EDITOR = #{item.organLastEditor},
+                LAST_TIME = #{item.organLastTime},
+                PARENT_TYPE_CODE = #{item.parentTypeCode}
+            </set>
+            where  organ_id = #{item.organId}
+        </foreach>
+    </update>
+    <update id="updateStaff" parameterType="object">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update sys_staff
+            <set>
+                STAFF_ID = #{item.staffId},
+                STRU_ID = #{item.staffStruId},
+                NAME = #{item.name},
+                SEX = #{item.sex},
+                BIRTHDAY= #{item.birthday},
+                IDCARD = #{item.idcard},
+                ADDRESS = #{item.address},
+                WORK_ID = #{item.workId},
+                WORK_DATE= #{item.workDate},
+                GRADUATE_SCHOOL= #{item.graduateSchool},
+                GRADUATE_DATE= #{item.graduateDate}
+            </set>
+            where  staff_id = #{item.staffId}
+        </foreach>
+    </update>
+
+    <update id="updateUser" parameterType="object">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update sys_users
+            <set>
+                USER_ID = #{item.userId},
+                USER_NAME = #{item.userName},
+                PASSWORD = #{item.password},
+                ACCOUNT_STATUS = #{item.accountStatus},
+                SECURITY_LEVEL = #{item.securityLevel},
+                MAX_SESSIONS = #{item.maxSessions},
+                IS_SYS = #{item.isSys},
+                IS_CPUBLIC = #{item.isCpublic},
+                CREATE_TIME = #{item.userCreateTime},
+                LOCK_TIME = #{item.lockTime},
+                EXPIRED_TIME = #{item.expiredTime},
+                PSWD_UPT_TIME = #{item.pswdUptTime},
+                PSWD_TIME = #{item.pswdTime},
+                CORPORATION_ID = #{item.userCorporationId},
+                DEPARTMENT_ID = #{item.userDepartmentId},
+                EMPLOYEE_ID = #{item.employeeId},
+                E_MAIL = #{item.eMail},
+                WECHAT = #{item.weChat},
+                TELEPHONE = #{item.telephone},
+                MOBILE = #{item.mobile},
+                CHAR_1 = #{item.char1},
+                CHAR_2 = #{item.char2},
+                NUM_1 = #{item.num1},
+                NUM_2 = #{item.num2},
+                PERMISSION_STRU_ID = #{item.userPermissionStruId},
+                USER_ORDER = #{item.userOrder},
+                PROVINCE_CODE = #{item.userProvinceCode},
+                USER_ACCOUNT = #{item.userAccount},
+                TYPE_PROPERTY = #{item.typeProperty},
+                START_TIME = #{item.startTime},
+                LAST_LOGIN_TIME = #{item.lastLoginTime},
+                ACCESS_LOGIN_START_TIME = #{item.accessLoginStartTime},
+                ACCESS_LOGIN_END_TIME = #{item.accessLoginEndTime},
+                TOTP_KEY = #{item.totpKey},
+                LOGIN_TIME_LIMIT = #{item.loginTimeLimit},
+                LOGIN_IP_LIMIT = #{item.loginIpLimit}
+            </set>
+            where  user_id = #{item.userId}
+        </foreach>
+    </update>
+
+    <delete id="deleteStaff" parameterType="object">
+        delete from sys_staff
+        where 1=1
+        <if test="list != null and list.size() >0">
+            and stru_id not in
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteUserRole" parameterType="object">
+        delete from sys_user_role
+        where 1=1 and user_id != 'wkadmin'
+        <if test="list != null and list.size() >0">
+            and user_id not in
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteUser" parameterType="object">
+        delete from sys_users
+        where 1=1 and user_id != 'wkadmin'
+        <if test="list != null and list.size() >0">
+            and user_id not in
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+    </delete>
+
+    <!--更新用户密码-->
+    <update id="updatePwdByUserId" parameterType="object">
+        update SYS_USERS
+        <set>
+            PASSWORD = #{sysUsers.password},
+            PSWD_UPT_TIME = #{sysUsers.pswdUptTime},
+            PSWD_TIME = #{sysUsers.pswdTime}
+        </set>
+        where USER_ID = #{sysUsers.userId}
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

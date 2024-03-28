@@ -1,0 +1,107 @@
+
+body{background: #e8eff7 !important;height: auto;}
+.headerBar{z-index: 999;height: 60px;line-height: 60px;font-size: 12px;background: #3893fd;color: #fff;position: fixed;  top: 0;  left: 0;  right: 0;}
+.menuBar{width: 1200px;margin: auto;}
+.menuBar>a{padding-left: 0px; padding-right: 20px; padding-top: 3px;transition: all ease .3s;}
+/*.menuBar .btn-icon:hover{color: #0b7be0;background: #fff;border-radius: 10px;}*/
+.loginCanBar{float: right;height:60px;line-height: 60px;}
+.loginCanBar a{color: #f6ff0a}
+
+.wrapper{margin-top:60px;width: 1200px;background: #ffffff;}
+.search-box{width: 1116px;margin:auto; padding-bottom: 20px;  padding-top: 20px;}
+.btn-self{border: 0;background: #0b7be0;color: #fff;}
+.logo{float: left;width: 147px;height: 62px;    margin-right: 20px;}
+.search{float: left;position:  relative;width: 650px; margin-top: 10px;}
+.searchInputStyle{width: 100%;height: 40px;border: 1px solid #ffffff;padding-left: 8px;background: transparent;padding-right: 108px; -webkit-text-fill-color: #ffffff !important;}
+.searchButtonStyle{line-height: 40px;width: 100px;  height: 40px;margin-left: -4px;font-size: 16px;position:  absolute;right: 10px;z-index: 1;background:url(../img/homepage/search-icon.png)no-repeat right center;border: 0;filter:alpha(opacity=50);-moz-opacity:0.5; -khtml-opacity: 0.5;  opacity: 0.5; }
+.chooseType{line-height: 30px;color: #727272;}
+.chooseType input[type=checkbox], input[type=radio]{margin: 0 1px 0 10px;border: 1px solid #727272;}
+.advanceSearch{border-bottom: 1px solid #ffffff;font-size: 16px; margin-left: 18px;   position: relative;}
+.advSearch{width:100px;}
+
+/*----------- 内容 ----------*/
+.mainCon{padding-top:40px;height:  260px;min-height: 75%;}
+.searchDiv{margin:auto;height:auto;width:1116px;position: relative;}
+.mainCon .logo{margin-bottom: 30px;width:100%;height: 85px;background: url(../img/homepage/logo.png) no-repeat center;}
+.wrapper .selectDiv{margin: auto}
+.wrapper .searchType li{float: left;margin-right: 20px;color: #727272;}
+.wrapper .searchType li label{margin:0;color: #727272;}
+.wrapper .searchType li input{margin: 0 18px 0 0;width: 0;height: 15px;}
+.wrapper .searchType li input:before{display: inline-block;content:"";width: 13px;height: 13px;background: url(../img/homepage/radio.png)no-repeat center;}
+.wrapper .searchType li input:checked:before{background: url(../img/homepage/radio1.png)no-repeat center;}
+.wrapper .searchType {margin: auto;}
+.wrapper .orderType li{float: left;margin-right: 20px;color: #727272;}
+.wrapper .orderType li label{margin:0;color: #727272;}
+.wrapper .orderType li input{margin: 0 18px 0 0;width: 0;height: 15px;display: none}
+.wrapper .orderType li input:before{display: inline-block;content:"";width: 13px;height: 13px;background: url(../img/homepage/radio.png)no-repeat center;}
+.wrapper .orderType li input:checked:before{background: url(../img/homepage/radio1.png)no-repeat center;}
+
+.chCategory{min-width:100px;float: left;text-align: left; height: auto;  line-height: 30px;    padding-right: 16px;}
+.choseCategory{white-space: nowrap;  display: inline-block;position: relative;margin-right: 20px;padding: 0px 30px 4px 25px;-moz-border-radius: 5px;/* Gecko browsers */-webkit-border-radius: 5px;/* Webkit browsers */border-radius: 15px;/* W3C syntax */background: #3893fc;height: 30px;border: 0px;text-align:center;line-height:30px;color: #fff;}
+.cancleLogo{display:none;background: url(../img/homepage/X.png)no-repeat center;right: 6px;top: 4px;position: absolute;z-index: 1;height:10px;border-radius: 50%;border: 1px solid #ffffff;}
+.choseCategory:hover .cancleLogo{display: inline-block;}
+.btn-sm{padding-left:18px;margin-left:10px;height:27px;outline: none;border:none;}
+.mainCon .searchType {margin: auto;}
+.categoryList{/* padding: 0px 0 0px 0px; */text-overflow: ellipsis;  white-space: nowrap; overflow:hidden;width:150px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;background: url(../img/homepage/contrarDelta.png)no-repeat right 10px center;height: 35px;border: 0px;text-align:center;line-height:30px;margin-left: 4px;transition: all .3s ease;}
+.categoryList:hover{background: url(../img/homepage/delta.png)no-repeat right 15px center #eff6fb;}
+.categoryDetails {float:right;background: #eff6fb;height: auto!important;border: 1px solid #ff8914;list-style: none outside none;}
+.categoryDetails .categoryUL .categoryList:active{color: #ff8914;border-bottom: 1px solid #ff8914;}
+.categoryUL li{float: left;color: #727272;height: 30px; line-height: 30px;}
+.categoryUL li label{margin:0;color: #727272;text-align: center;}
+.categoryUL li input{margin: 0 18px 0 0;width: 0;height: 15px;}
+.categoryUL li input:before{display: inline-block;content:"";width: 13px;height: 13px;}
+.categoryUL li input:checked:before{background: url(../img/homepage/radio1.png)no-repeat center;}
+.categoryLI{width: 212px;height: auto;}
+.rlzyStyle{width:212px;float: left;text-align: right; height: auto;  line-height: 50px;    padding-right: 16px;}
+.rlzyStyle label{padding-right: 16px;background: url(../img/homepage/rightDelta.png)no-repeat right center;text-overflow: ellipsis;  white-space: nowrap; overflow:hidden;}
+.rlzyStyle img{padding-left: 10px;}
+.allStyle{width: 100%;height: auto;  overflow: auto;background: #eff6fb;  display: -webkit-flex; border-bottom: 1px solid #f0f4fb; align-items: center;border-bottom: 1px solid #e0e0e0;}
+.categoryDetail{float: left;width:calc(100% - 212px);color:#3893fc;padding-left: 30px;}
+.categoryDetail label{line-height: 50px; width:180px;display: inline-block;overflow: hidden;text-overflow: ellipsis;  white-space: nowrap; }
+.selectCateDiv{width: 100%;height: auto;  overflow: auto;  display: -webkit-flex;  align-items: center;}
+.selectCate{min-width:100px;float: left;text-align: left; height: auto;  line-height: 30px;    padding-right: 16px;}
+.selectCateDetail{line-height: 30px;  display: inline-block;width:calc(100% - 100px);}
+.docCategory{line-height: 30px;  display: inline-block;width:calc(100% - 100px);}
+.cateDiv{width: 100%;height: auto;overflow: auto;background: #eff6fb;margin-top: -5px;}
+.docCategoryDiv{    margin-top: 24px;}
+.docCategory label{margin-bottom: 0px;}
+.advancedBtnDiv{ align: center; margin:auto;  height: 40px;  width:130px;}
+.advancedBtn{    color: #ffffff;line-height: 40px;  font-size: 18px;  height: 40px;  width: 130px;  border: 0px;  background: #3c91fd;}
+
+#middleDiv{width: 1114px;  margin: auto;}
+.docList{width:100%;border-bottom: 1px solid #efefef;padding: 20px 0px 10px 0px;}
+.docItem{height: 30px;}
+.docList .docName{display: block;float: left;padding-left:25px;font-size: 18px;font-weight: bold; color: #333333;text-decoration: underline;white-space: nowrap;word-wrap: normal;overflow: hidden;text-overflow: ellipsis;}
+.docBrief{margin: 5px 0;height: 40px;line-height: 20px;color: #868686;font-size: 12px;}
+.docDetail span{display:inline-block;padding-right:20px;padding-left:20px;line-height: 12px;font-size: 14px;color: #9a9a9a;border-right: 1px solid #c6c6c6;}
+.docDetail span:first-child{padding-left:0;}
+.docDetail span.last{border-right: none;}
+.docDetail span:hover{color: #3893fd;}
+.downloadBtn{background: url(../img/homepage/down-white-icon.png) no-repeat left center  #3893fd;float: right;padding: 0px 12px 13px 25px;margin: -3px 4px 0;height: 26px;line-height: 26px;color: #ffffff;border: none;outline: none;border-radius: 8px;}
+.tips{padding: 20px;min-height: 200px;color: #666;}
+.docFileContent{margin: 0px 0 10px;line-height: 30px;height: 60px;color: #666666;font-size: 14px;word-wrap:normal;overflow:hidden;text-overflow:ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;}
+.pagination>li>a{margin: 0 10px;border: 1px solid #eee;border-radius: 5px;color: #333;}
+.pagination>.active>a{color:#fff;background: #077de2;border: 1px solid #077de2;}
+.btn-sm {padding: 0px 0px 0px 25px;font-size: 12px;line-height: 1.5;border-radius: 3px;}
+.btn-downLoad{background: url(../img/homepage/downLoad-icon.png) no-repeat 10px;color: #666666;border: 1px solid #efefef;float: right;height: 30px;width: 106px;vertical-align: middle;}
+.btn-downLoad:hover{background: url(../img/homepage/downLoad-white-icon.png) no-repeat 10px #3894fc; color: #ffffff;vertical-align: middle;}
+.collectBtn{background: url(../img/homepage/collect-icon.png) no-repeat left center  #ff8d1d;float: right; padding: 0px 12px 13px 20px;margin: -3px 4px 0;height: 26px;line-height: 26px;color: #ffffff;border: none;outline: none;border-radius: 8px;}
+.changDeltaImg{background: url(../img/homepage/delta.png)no-repeat right 15px center #eff6fb;}
+.changImg456{background: url(../img/homepage/contrarDelta.png)no-repeat right center #ffffff;}
+.changColor{color:#fd8714;text-decoration:underline;}
+em { font-style: normal;color: red !important}
+.removeBackground{background: none !important;}
+.searchMenuBar li{float: left;list-style:none;}
+.showHid{width: 100px;}
+.userClass{padding-left: 10px; padding-right: 20px;background: url(../img/homepage/contrarDelta.png)no-repeat right center;}
+.showHid:hover .userClass{background:  url(../img/homepage/delta.png)no-repeat right center;}
+.showHid:hover dl{display:block}
+dd{margin: 10px;}
+.hidClass  dd a {color: #3893fc !important; }
+.ul-header li a{color:#f6ff0a;}
+.ul-header{ position: relative;  color: #fff;  border-radius: 2px;  box-sizing: border-box;  float: right;  }
+.hidClass{text-align: left;display: none;left: 0;top: 65px;min-width: 100%;line-height: 36px;padding: 5px 0;box-shadow: 0 2px 4px rgba(0,0,0,.12);border: 1px solid #d2d2d2;background-color: #fff;z-index: 100;border-radius: 2px;white-space: nowrap;}
+.sortType-checked{font-weight: bold; padding-bottom: 5px;  border-bottom: 2px solid #3894fe;}
+.docNum{width: auto;margin: auto;box-sizing:  border-box;color:#989898;float: right;padding-right: 25px;}
+.docNum span{margin: 0 4px;color:#9bc3fe;}
+.orderSearch{width: 1116px; margin: auto;   background: #f8f8f8;  padding-top: 15px;  padding-bottom: 10px;}

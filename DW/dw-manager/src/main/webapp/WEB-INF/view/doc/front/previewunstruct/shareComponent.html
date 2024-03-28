@@ -1,0 +1,87 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-成果预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <style>
+        html{height: 100%;overflow-y: scroll}
+        body#top{position: relative;height: auto;overflow:hidden;min-height: 100%;padding-bottom: 44px}
+        body#top .pdf-content{height: 100%!important;}
+        body#top .container-new{margin-top: 46px}
+        body > .container.footer{position: absolute;bottom: 0;width: 100%;height: 22px;margin-top:auto}
+        body#top .pdf-content, .viewContent,.pdf-view,.layui-col-sm9_5,.layui-col-space15 {height: auto !important;}
+
+        .btn-rit{display: none}
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+        //设置iframe高度,让iframe不出现滚动
+        function setIframeHeight() {
+            var ifm = $("#pdfContainer")[0];
+            var object = document.frames ? document.frames["pdfContainer"].document : ifm.contentDocument;
+
+            if(object.getElementsByClassName("weadmin-body")[0]){
+                object.getElementsByClassName("weadmin-body")[0].style.height = 'auto';
+
+                ifm.style.height = 'auto';//关键这一句，先取消掉之前iframe设置的高度
+                ifm.style.height = object.getElementsByClassName("weadmin-body")[0].scrollHeight + 'px';
+
+            }
+        }
+        $(function () {
+            var ifm = $("#pdfContainer")[0];
+
+            if (ifm.attachEvent) {
+                ifm.attachEvent("onload", function() {
+                    setIframeHeight();
+                });
+            } else {
+                ifm.onload = function() {
+                    setIframeHeight();
+                };
+            }
+        })
+    </script>
+</head>
+<body id="top">
+@include("/common/share-header.html"){}
+@include("/common/front-rit.html"){}
+<a name="goTop" id="goTop"></a>
+<input type="hidden" class="hide" id="id" value="${id}"/>
+
+<div class="container container-new container-pdf" id="container-pdf">
+    <div class="breadCrumbs">
+
+    </div>
+    <div class="layui-row layui-col-space15 row divtop"   style="top: -7.5px;height: 100%">
+        <div class="layui-col-sm12">
+            <div class="pdf-view">
+                <div class="viewContent">
+                    <div class="pdf-content">
+
+                        <iframe frameborder="0" id="pdfContainer" name="pdfContainer" class="hide"></iframe>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@include("/common/front-footer.html"){}
+</body>
+
+<script src="${ctxPath}/static/doc/front/docmanager/js/jquery.mousewheel.min.js?v=${h_version}"></script>
+
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/shareComponent.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+</html>

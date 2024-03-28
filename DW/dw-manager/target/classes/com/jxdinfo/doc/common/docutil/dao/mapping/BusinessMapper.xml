@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.common.docutil.dao.BusinessMapper">
+
+    <select id="getDicListByType" resultType="java.util.Map">
+        SELECT
+        LABEL, VALUE
+        FROM SYS_DICT_SINGLE
+        WHERE TYPE_ID = #{typeId}
+        ORDER BY SORT
+    </select>
+
+    <!-- 上移下移交换showorder -->
+    <update id="changeShowOrder">
+        UPDATE ${table} AS tab1 JOIN ${table} AS tab2 ON (tab1.${idColumn}= #{idOne} AND tab2.${idColumn}= #{idTwo})
+        OR (tab1.${idColumn}=  #{idTwo}  AND tab2.${idColumn} = #{idOne} )
+        SET tab1.show_order = tab2.show_order,tab2.show_order=tab1.show_order
+    </update>
+    
+    <!-- 查询拥有权限的目录层级码 -->
+    <select id="getLevelCodeByUser" resultType="String">
+   		select getUserLevelCode(#{groupIds},#{userId},#{type},#{orgId},#{roleIds})
+    </select>
+
+    <!-- 查询拥有权限的目录层级码 -->
+    <select id="getLevelCodeByUserUpload" resultType="String">
+        select getUserLevelCodeUpload(#{groupIds},#{userId},#{type},#{orgId},#{roleIds})
+    </select>
+
+
+    <!-- 查询拥有权限的目录层级码 -->
+    <select id="getLevelCodeByUserByUpload" resultType="String">
+        select getUserLevelCodeByUpload(#{groupIds},#{userId},#{type},#{orgId},#{roleIds})
+    </select>
+
+
+
+    <!-- 查询拥有权限的目录层级码 -->
+    <select id="getUpLevelCodeByUser" resultType="String">
+        select getUserUpLevelCode(#{groupIds},#{userId},#{type},#{orgId},#{roleIds})
+    </select>
+    <!-- 查询拥有权限的目录层级码 -->
+    <select id="getUpLevelCodeByUserByUpload" resultType="String">
+        select getUserUpLevelCodeByUpload(#{groupIds},#{userId},#{type},#{orgId},#{roleIds})
+    </select>
+
+    <!-- 查询拥有权限的文件所在目录层级码 -->
+    <select id="getFileLevelCodeByUser" resultType="String">
+        select getUserFileLevelCode(#{groupIds},#{userId},#{levelCodeString},#{orgId},#{roleIds})
+    </select>
+
+    <!-- 获取父节点集合 -->
+    <select id="getParentList" resultType="String">
+        select getParentList(#{orgId})
+    </select>
+    
+    <select id="getFileUpLeveCode" resultType="String">
+        select getFileUpLevelCode(#{groupIds},#{userId},#{levelCode},#{orgId},#{type},#{roleIds})
+    </select>
+
+    <!-- 测试mysql转移问题-->
+    <select id="testMysql" resultType="String">
+        select AUTHOR_ID from doc_fold_authority where AUTHOR_ID in ${param1}
+    </select>
+</mapper>

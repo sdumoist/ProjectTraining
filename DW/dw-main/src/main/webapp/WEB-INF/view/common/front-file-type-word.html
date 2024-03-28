@@ -1,0 +1,14 @@
+<form class="layui-form layui-row  ">
+    <div class="search-type layui-form-item layui-row" id="selectType">
+        <span>文件类型筛选：</span>
+        <input type="radio"  name="fileType" lay-filter="fileType"  value="7" title="全部" checked="checked" class="layui-col-md2">
+        <input type="radio" name="fileType" lay-filter="fileType"  value="1" title="DOC" class="layui-col-md2">
+        <input type="radio" name="fileType" lay-filter="fileType"  value="2" title="PPT" class="layui-col-md2">
+        <input type="radio" name="fileType" lay-filter="fileType"  value="3" title="TXT" class="layui-col-md2">
+        <input type="radio" name="fileType" lay-filter="fileType"  value="4" title="PDF" class="layui-col-md2">
+        <input type="radio" name="fileType" lay-filter="fileType"  value="5" title="XLS" class="layui-col-md2">
+        <!--<input type="radio" name="fileType" lay-filter="fileType"  value="6" title="CEB" >-->
+    </div>
+</form>
+
+<input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType!}">

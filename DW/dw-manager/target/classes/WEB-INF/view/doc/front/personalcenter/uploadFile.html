@@ -1,0 +1,154 @@
+<head>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/docmanager/css/resource-manager.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/doc/manager/docmanager/css/fileinput.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/uplod.css?v=${h_version}" type="text/css" rel="stylesheet">
+
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-file.css?v=${h_version}"/>
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<style>
+    .layui-form-checked{
+        border: 1px solid #2980ff;
+    }
+    .layui-form-checkbox i{
+        border: none;
+        border-radius: 0;
+    }
+    .newFolder{
+        margin-right:25px;margin-top: 0px;float: right; background-color: #3C91FD;color: white;
+    }
+    .disabled-button{
+        background-color: rgb(244, 244, 245) !important;
+        color: #909399 !important;
+        cursor: not-allowed !important;
+    }
+</style>
+<body >
+<div class="background clearfix " style="height: auto">
+    <div class="content clearfix" id="uploadFile">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" >
+                <div class="table-top clearfix">
+                    <div class="message"> 上传文件</div>
+
+                    <div class="toolBar"  style="min-height: 50px">
+
+                        <!--<button id="delHistoryBtn" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea0f;</i>取消收藏</button>-->
+                    </div>
+
+                </div>
+                <div class="upload-to" onblur="hideFolderList()" tabindex="1"><span  class="select-span">上传到</span>
+                    <div class="select" id="selectFolder"><textarea onclick="showFolderList()" class="folderinner" rows="1" readonly unselectable="on">请选择目录</textarea><span style="float: right;margin-top: 2px;cursor: pointer"><i onclick="showFolderList()" class="iconfont downfont">&#xea18;</i>
+                        <i onclick="hideFolderList()" class="iconfont upfont" style="display: none">&#xea19;</i></span></div>
+                    <div id="folderList" style="display: none"></div>
+                </div>
+                <input type="hidden" value="${openFileId}" id="openFileId">
+                <input type="hidden" value="${adminFlag}" id="adminFlag">
+                <input type="hidden" value="${path}" id="path">
+                <input type="hidden" value="${sameNameNewVersion}" id="sameNameNewVersion">
+                <div class="fast-button"  style="pointer-events: none">
+
+                    <div id="uploader" class="wu-example">
+                        <div class="shadow">
+                            <div class="upload-tip-over" style="pointer-events: none">将文件或文件夹拖拽到此处</div>
+<!--                            <div class="cloud">-->
+<!--                                <div class="upload-img iconfont">&#xe04a;</div>-->
+<!--                            </div>-->
+<!--                            <button class="layui-btn">上传至当前文件夹</button>-->
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+                <div class="" style="float: right">
+
+                    <div class="layui-card-header" style="border: none">
+                        <span id="setFileShareable" class="setFileShareable">
+                            <input type="checkbox" class="checkbox"  name="shareable" style="display: none" checked >
+                            <div class="layui-unselect layui-form-checkbox layui-form-checked"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                            <i class="iconfont" style="width: 12px;height:12px;font-size: 12px;" >&#xe605;</i>
+                            </div>
+                            可分享
+                        </span>
+                        <span id="setFileOpen" class="setFileShareable" style="margin-left: 15px">
+                            <input type="checkbox" class="checkbox"  name="fileOpen" style="display: none" >
+                            <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                            <i class="iconfont" style="width: 12px;height:12px;font-size: 12px;" >&#xe605;</i>
+                            </div>
+                            全员查看
+                        </span>
+<!--                        <span style="color:#555">（默认全员查看）</span>-->
+                        <span id="setFileAuthority" class="setFileAuthority hide"><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/front-set2.png">权限设置</span>
+                        <!--<span> （默认上传文件为全体成员查看权限）</span>-->
+                        <span id="setFileTip" class="setFileTip hide" ><img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/front-tip.png">标签设置</span>
+                    </div>
+                </div>
+                <div id="dndArea" >
+                    <div class="layui-card popWinNew " style="display: none" >
+                            <div class="btns">
+                                <div class="uploader-list upload-head">
+                                    <div class="item title" style="background: #F4F4F4 !important;text-indent: 20px;line-height: 40px;color:#222;">全部文件</div>
+                                    <!--<div class="item">-->
+                                        <!--<h4 class="info" style="width: 50%">文件名</h4>-->
+                                        <!--<h4 class="info" style="width: 24%">文件路径 </h4>-->
+                                        <!--<h4 class="state" style="width: 14%">文件状态 </h4>-->
+                                        <!--<h4  class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center;width: 12%">操作</h4>-->
+                                    <!--</div>-->
+                                    <div class="item">
+                                        <h4 class="info" style="width: 40%">文件名</h4>
+                                        <h4 class="info" style="width: 24%">文件路径 </h4>
+                                        <h4 class="state" style="width: 20%">文件状态 </h4>
+                                        <h4  class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center;width: 16%">操作</h4>
+                                    </div>
+                                </div>
+                                <!-- 文件列表：选择文件后在该div显示 -->
+                                <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                <label class="text-right"></label>
+
+                        </div>
+                    </div>
+                    <div class="upload-tip" style="pointer-events: none">将文件或文件夹拖拽到此处</div>
+                    <div class="dragArea" id="dragArea" style="display: block;text-align: center;">
+                        <div id="view" style="margin-left: 23px;">
+                            <div id="picker" class="webuploader-container" style="display:none;pointer-events: auto;z-index: 1">
+                                <div class="webuploader-pick layui-btn">选择文件</div>
+                                <div id="rt_rt_1bchdejhrarjdvd11h41eoh1nt1">
+                                    <input id="file_bp" name="file"
+                                           class="webuploader-element-invisible" type="file"  /> <label ></label>
+                                </div>
+                            </div>
+                            <div  class="uploadFolder" style="cursor: pointer;" onclick="uploadFolder()">选择文件夹</div>
+                            <div  class="webuploader-pick layui-btn uploadFile "  onclick="uploadFile();">选择文件</div>
+                        </div>
+                    </div>
+                </div>
+                <button id="newFolder" class="newFolder layui-btn  " onclick="returnList()">完成</button>
+                <button  id="continueUpload" class="newFolderNew layui-btn  "
+                         style="display:none;margin-left: 25px; float: right" onclick="continueUpload2()">继续上传</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="integral"  ><span class="num" id="num" style="width: 40px"></span><span class="point">积分</span></div>
+
+<script src="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.nolog.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/upload-file.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+
+<script language="javascript">
+    $(document).ready(function() {
+        var h=$("#uploadFile").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    });
+</script>
+
+</body>

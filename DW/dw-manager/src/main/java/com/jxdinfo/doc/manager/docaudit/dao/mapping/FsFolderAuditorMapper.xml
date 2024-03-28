@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docaudit.dao.FsFolderAuditorMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docaudit.model.FsFolderAuditor">
+        <id column="audit_id" property="auditId" />
+        <result column="folder_id" property="folderId" />
+        <result column="audit_user_id" property="auditUserId" />
+        <result column="audit_user_name" property="auditUserName" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        audit_id AS auditId, folder_id AS folderId, audit_user_id AS auditUserId, audit_user_name AS auditUserName, creator AS creator, create_time AS createTime
+    </sql>
+
+    <!-- userTree -->
+    <resultMap id="treeMap" type="com.jxdinfo.hussar.common.treemodel.JSTreeModel">
+        <id column="ID" property="id" />
+        <result column="TEXT" property="text" />
+        <result column="CODE" property="code" />
+        <result column="PARENT" property="parent" />
+        <result column="ORGANID" property="organId" />
+        <result column="STRUTYPE" property="struType" />
+        <result column="STRULEVEL" property="struLevel" />
+        <result column="STRUORDER" property="struOrder" />
+        <result column="FIRST_ORDER" property="firstOrder" />
+        <result column="TYPE" property="type" />
+        <result column="ISEMPLOYEE" property="isEmployee" />
+        <result column="PARENTTYPECODE" property="parentTypeCode" />
+        <result column="ISLEAF" property="isLeaf" />
+        <result column="SEQ" property="seq" />
+        <result column="ACCOUNTSTATUS" property="accountStatus" />
+    </resultMap>
+
+    <select id="getFoldAuditInfo" resultType="Map">
+        SELECT
+        FF.folder_id folderId,FF.parent_folder_id parentFolderId,FF.audit_flag auditFlag,group_concat(FA.audit_user_id) auditUserIds,group_concat(FA.audit_user_name) auditUserNames
+        FROM fs_folder FF
+        LEFT JOIN fs_folder_auditor FA ON FF.folder_id = FA.folder_id
+        WHERE FF.folder_id = #{folderId}
+    </select>
+
+    <select id="getAuditor" resultType="Map">
+        SELECT
+        group_concat(UR.USER_ID) auditUserIds,group_concat(SU.USER_NAME) auditUserNames
+        FROM sys_user_role UR
+        LEFT JOIN sys_users SU ON UR.USER_ID = SU.USER_ID
+        WHERE UR.GRANTED_ROLE = #{auditRole} AND UR.ADMIN_OPTION = '1' AND SU.ACCOUNT_STATUS != '2'
+        <if test="deptId != null and deptId != '' ">
+            AND SU.DEPARTMENT_ID = #{deptId}
+        </if>
+    </select>
+
+    <select id="getGroupUser" resultType="java.util.Map" parameterType="java.util.List" >
+        SELECT
+        user_id userId
+        FROM
+        doc_group_user
+        WHERE
+        group_id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getOrganIds" resultType="String">
+        select getChildStru(#{orgId})
+    </select>
+
+    <select id="getOrganUsers" resultType="java.util.Map" parameterType="java.util.List" >
+        SELECT
+        STR.STRU_ID struId,
+        SU.USER_ID userId
+        FROM
+        SYS_STRU STR
+        LEFT JOIN SYS_ORGAN ORG ON STR.ORGAN_ID = ORG.ORGAN_ID
+        LEFT JOIN SYS_USERS SU ON STR.STRU_ID = SU.EMPLOYEE_ID
+        WHERE
+        STR.IN_USE = '1'
+        AND STR.STRU_TYPE = '9'
+        AND SU.DEPARTMENT_ID IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getUserTree" resultMap="treeMap" parameterType="java.util.List" >
+        SELECT
+        T.*
+        FROM
+        (
+        SELECT
+        ORG.ORGAN_NAME AS TEXT,
+        ORG.ORGAN_CODE AS CODE,
+        STR.STRU_ID AS ID,
+        STR.PARENT_ID AS PARENT,
+        STR.PERMISSION_STRU_ID AS PERMITID,
+        STR.ORGAN_ID AS ORGANID,
+        STR.STRU_TYPE AS STRUTYPE,
+        STR.STRU_LEVEL AS STRULEVEL,
+        STR.STRU_ORDER,
+        '1' AS FIRST_ORDER,
+        STR.STRU_TYPE AS TYPE,
+        '' AS ACCOUNTSTATUS
+        FROM
+        SYS_STRU STR
+        LEFT JOIN SYS_ORGAN ORG ON STR.ORGAN_ID = ORG.ORGAN_ID
+        WHERE STR.IN_USE='1' AND STR.IS_EMPLOYEE IS NULL
+        UNION ALL
+        SELECT
+        U.USER_NAME AS TEXT,
+        'USER' AS CODE,
+        U.USER_ID AS ID,
+        U.CORPORATION_ID AS PARENT,
+        U.PERMISSION_STRU_ID AS PERMITID,
+        '1' AS ORGANID,
+        '1' AS STRUTYPE,
+        1 AS STRULEVEL,
+        U.USER_ORDER AS STRU_ORDER,
+        '2' AS FIRST_ORDER,
+        'USER' AS TYPE,
+        U.ACCOUNT_STATUS AS ACCOUNTSTATUS
+        FROM
+        SYS_USERS U
+        WHERE U.ACCOUNT_STATUS != '2' AND U.USER_ID IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.userId}
+        </foreach>
+        ) T
+        ORDER BY
+        T.FIRST_ORDER,
+        T.STRULEVEL,
+        T.STRU_ORDER,
+        T.TEXT
+    </select>
+
+</mapper>

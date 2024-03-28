@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no"/>
+    <title>${session.projectTitle}</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/assets/lib/swiper/css/swiper.min.css"/>
+    <link href="${ctxPath}/static/resources/css/front/index.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/css/L-index.css">
+</head>
+<body style="height: 100%">
+<div class="pageCon">
+    <input class="hide" type="hidden" value="${fileCount}" id="fileCount">
+    <header >
+        <ul class="ul-header">
+            <div class="soundView"> <img src="${ctxPath}/static/resources/img/front/index/laba.png" style="height: 15px"></div>
+            <div class="plane-content">
+                <div class="plane-swiper" id="plane-swiper">
+                    <div class="swiper-wrapper swiper-no-swiping plane" style="transition-timing-function: linear;
+"id="plane">
+
+
+                    </div>
+
+                </div></div>
+            <li class="user-wrapper2" style="margin-right: 20px">
+                <!--<img src="${ctxPath}/static/resources/img/front/user-default-icon1.png">-->
+                <a target="_blank"  href="${ctxPath}/personalcenter/" class="user-wrapper-new">
+
+                    <img src="${ctxPath}/static/resources/img/front/index/photo.png " width="34" style="width: 24px">
+                    <span target="_blank" class="user-photo" id="loginName" href="#">
+                ${userName}
+                    </span>
+                </a>
+                @if(adminFlag!=1){
+                <a href="${ctxPath}/personalcenter?menu=6" onclick="void(0)" target="_blank">
+                    <div class="index-integral">
+                        <img src="${ctxPath}/static/resources/img/front/index/index-integral.png " style="width: 10px;margin-left: 4px;margin-top: 0px;">
+                        <span id="totalIntegral"></span>
+                    </div>
+                </a>
+                @}
+                <div class="user-dropdown" >
+                    <a href="${ctxPath}/personalcenter/" target="_blank" >个人中心</a>
+                    @if(shiro.hasPermission("sys:manager")){
+                    <a target="_blank"  href="${ctxPath}/jqwkmanager/">后台管理</a>
+                    @}
+                    <!--<a href="${ctxPath}/personalcenter?menu=1" target="_blank" style="    border-top: 1px solid rgba(223,231,241,1);" >文档管理</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=2" target="_blank" >我的收藏</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=3" target="_blank" >我的下载</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=4" target="_blank" >我的浏览</a>-->
+                    <!--<a href="${ctxPath}/personalcenter?menu=5" target="_blank" >我的上传</a>-->
+                    <a  id="loginout">退出登录</a>
+                    <s><i></i></s>
+                </div>
+
+            </li>
+            <li class="user-wrapper2" style="margin-top:2px ">
+            <a href="/frontTopic/messageList?page=1&size=10" target="_blank">
+            <div class="message">
+            <div class="top" style="margin-top: 0px">   <img src="${ctxPath}/static/resources/img/front/index/message.png " style="height: 18px;margin-top: 0px
+            ;vertical-align: top;"></div>
+            <div class="bottom" style="margin-top: 0px">资讯印象</div>
+            </div>
+            </a>
+            </li>
+
+        </ul>
+
+        <div class="container mainCon">
+            <div class="row layui-row">
+                <div class="col-xs-12">
+                    <div class="logo" style="position: relative">
+                        <img src="${ctxPath}/static/resources/img/front/index/sharehappey.png" style="position: absolute;right: 310px;top: 0px;">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="searchInput" autofocus placeholder="请输入文档名称、关键词等，多个关键词用空格隔开"/>
+                        <button id="search" class=" btn-sm searchBtn">
+                            <!--<i class="layui-icon">&#xe615;</i> -->
+                            查一下
+                        </button>
+                    </div>
+                    @include("/common/front-file-type-new.html"){}
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class=" content-out">
+        <!--<div style="position: relative;margin-bottom: 20px" >-->
+        <!--<div class="plane-swiper" style="overflow: hidden" id="plane-swiper">-->
+        <!--<div class="swiper-wrapper" style="transition-timing-function: linear;-->
+        <!--"id="plane">-->
+        <!---->
+
+        <!--</div>-->
+
+        <!--</div>-->
+        <!--<a href="/frontFile?fileId=2bb61cdb2b3c11e8aacf429ff4208431&nextId=96b1503ada9049639004c4eab40b3794&easyId=5ea5397508774af59109460d07202b42" target="_blank"> <div class="swiper-cloud" style="position: absolute;right: 91px;top: 2px;z-index: 999;cursor: pointer"></div></a>-->
+        <!--</div>-->
+        <div class="container content" >
+            <!--最新消息-->
+            <!--<div class="newList swiper-container">-->
+            <!--<span>最新动态：</span>-->
+            <!--<div class="swiper-wrapper" id="newMessage">-->
+
+            <!--</div>-->
+            <!--</div>-->
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-md3 left-list" >
+                    <div class="top-item" id="folders">
+
+                    </div>
+                </div>
+                <div class="layui-col-md6" style="width: 594px;">
+                    <div class="top-item center-swiper swiper-container" >
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide" ><a href="${ctxPath}/personalcenter?menu=11&folderId=0808&folderName=%E8%BD%BB%E9%AA%91%E5%85%B5V8" target="_blank">
+                                <img src="${ctxPath}/static/resources/img/front/index/slider-item1.png"/></a></div>
+                            <div class="swiper-slide" ><a href="${ctxPath}/personalcenter?menu=12" target="_blank">
+                                <img class="img-big" src="${ctxPath}/static/resources/img/front/index/slider-item4.png"/></a></div>
+                            <div class="swiper-slide" ><a href="/searchPic?keyWords=&fileType=8&UIFolder=f80566559a5b4384abf805f3fd246fbd" target="_blank">
+                                <img class="img-big" src="${ctxPath}/static/resources/img/front/index/slider-item3.png"/></a></div>
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+                <div class="layui-col-md3 right-doc">
+                    <div class="top-item"  >
+                        <div class="dataStatistics-title">-------<span>当前文档量</span>-------</div>
+                        <div class="dataStatistics-body">
+                            <div class="dataStatistics">
+                                <div class="digit_set"></div>
+                                <div class="digit_set"></div>
+                                <div class="digit_set"></div>
+                                <div class="digit_set"></div>
+                                <div class="digit_set set_last"></div>
+                            </div>
+                        </div>
+                        <div class="dataStatistics-foot">
+
+
+                            <input hidden id="manager" value="1" >
+
+                            <a href="${ctxPath}/personalcenter?toUpload=true" onclick="void(0)" target="_blank">
+                                <button class="layui-btn uploader-btn">上传文件</button>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--专题推荐-->
+            <!--<div class="commen-title">-->
+            <!--<div class="layui-col-lg9"><span>专题推荐</span></div>-->
+            <!--<div class="layui-col-lg3 layer-more more-topic"><a target="_blank" href="/frontTopic/topicList?page=1&amp;size=10"><span>查看更多专题&gt;&gt;</span></a></div>-->
+            <!--</div>-->
+            <!--<div class="subject">-->
+            <!--<ul class="layui-row layui-col-space30" id="topicRecommend">-->
+
+            <!--</ul>-->
+            <!--</div>-->
+
+
+            <div class="layui-row layui-col-space30" style="margin-top: 30px">
+                <div class="layui-col-md9 layui-col-sm12 margin-30">
+                    <div class="commen-title "><span>专题推荐</span>
+                        <div class="layui-col-lg3 layer-more more-topic">
+                            <a target="_blank" href="${ctxPath}/frontTopic/topicList?page=1&amp;size=10">
+                                <span style="color:rgba(135,150,171,1);">更多专题&gt;&gt;</span>
+                            </a>
+                        </div>
+                    </div><!--分类推荐-->
+
+
+                    <div id="topicRecommend" class="layui-col-sm12 clearfix"></div>
+
+                </div>
+                <div class="layui-col-md3 margin-30">
+
+                    <div class="upload-info">
+                        <div class="commen-title"><span>最新动态</span></div><!--热门下载-->
+                        <div class=" swiper-container newList" id="swiper_container">
+                            <div class="borderLeft"></div>
+                            <div class="swiper-wrapper" id="newList">
+
+                            </div></div></div>
+                    <div class="upload-info">
+                        <div class="commen-title" style="position: relative"><span >热门文档</span>
+                            <span class="tryandtry" onclick="change()"  style="position: absolute;right: 2px;top: 8px;cursor: pointer;    border-radius:13px;
+    width:81px;
+    height:26px;
+    text-align: center;line-height: 26px">换一换
+                            <img src="${ctxPath}/static/resources/img/front/index/refresh.png" style="height: 16px"></span></div><!--热门预览-->
+                        <table class="layui-table comment-list" lay-skin="line" id="previewRank">
+                        </table>
+                    </div>
+                    <div class="upload-info">
+                        <div class="commen-title"><span>贡献榜</span></div><!--上传排行-->
+                        <table class="layui-table ranking-list" lay-skin="line" id="uploadRank">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @include("/common/front-footer.html"){}
+</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<ul class="btn-rit-bottom">
+    <li>
+        <div class="phone rit-item"></div>
+        <label>电话：18560195621</label>
+    </li>
+    <li onclick="">
+        <a class="qq rit-item" href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank"></a>
+        <label class="phone-label"><a href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+            <!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端" class="pcDownload rit-item">
+        </a>
+        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank">点击下载客户端</a></label>
+    </li>
+    <li>
+        <a href="javascript:show_feedback()" class="feedback rit-item"></a>
+        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+    </li>
+    <li>
+        <div class="goToTop rit-item"  style="display: none"></div>
+    </li>
+</ul>
+<li>
+    <div class="goToTop rit-item"  style="display: none"></div>
+</li>
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function(){
+            if ($(window).scrollTop()>0){
+                $(".goToTop").show()
+            }
+            else
+            {
+                $(".goToTop").hide()
+            }
+        });
+
+    })
+    $(".goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn(){
+            var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+            if(oTop > 0){
+                scrollTo(0,oTop-50);
+                timer = requestAnimationFrame(fn);
+            }else{
+                $(".goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+
+</script>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/assets/lib/swiper/js/swiper.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/jquery.dataStatistics.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/index2.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+</body>
+</html>

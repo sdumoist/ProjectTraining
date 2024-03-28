@@ -1,0 +1,60 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <!-- 分享显示的标题-->
+    <meta itemprop="name" content="查看分享" />
+    <!-- 分享显示的缩略图-->
+    <meta itemprop="image" content="" />
+    <!-- 分享显示的简介-->
+    <meta name="description" itemprop="description" content="更多精彩尽在金企文库" />
+    <title>6</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery_mobile.css?v=${h_version}"/>
+    <style>
+    </style>
+</head>
+<body id="top">
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="fileId" value="${fileId}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<input type="hidden" class="hide" id="watermark_company_flag" value="${watermark_company_flag}"/>
+<input type="hidden" class="hide" id="companyValue" value="${companyValue}"/>
+<input type="text" class="hide" style="opacity: 0" id="username" value="${userName}"/>
+<input type="hidden" class="hide" id="watermark_user_flag" value="${watermark_user_flag}"/>
+<div class="container container-new container-pdf container-mobile" id="container-pdf">
+    <div class="layui-row layui-col-space15 row divtop">
+        <div class="layui-col-sm12">
+            <div class="pdf-view pdf-view-mobile">
+                <div class="viewContent">
+                    <div class="viewContent">
+                        <div style="display: none;" class="docView">
+                            <span class="textOver" id="owner"></span>
+                            <span class="textOver" id="uploadTime"></span>
+                            <span class="textOver" id="fileSize"></span>
+                            <span class="textOver" id="downloadNum"></span>
+                            <span class="textOver" id="previewNum"></span>
+                        </div>
+                        <div class="doc-desc">
+                            <span id="docAbstract"></span>
+                        </div>
+                        <div class="pdf-content">
+                            <audio id="audio" controls>
+                                <source id="s1" src="" type="audio/mpeg">
+                                您的浏览器不支持 audio 元素。
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/showVoice_app.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+</html>

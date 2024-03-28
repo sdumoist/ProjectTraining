@@ -1,0 +1,31 @@
+<!-- 自定义layui模块 -->
+<script type="text/javascript">
+    hussar_path="${ctxPath}";
+    theme = "${session.theme}";
+    tips = "${tips}";
+    spr = "${spr}";
+    puy =  "${puy}";
+    signOpen = "${signOpen}";
+    pk =  "${publicKey}";
+    securityType =  "${securityType}";
+    hmUrl = "${hmUrl}";
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/extendPagination.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/common/SMEncrypt.min.js?v=${h_version}"></script>
+@if(tool.contains(hmUrl,"dd4d64830a")){
+<script src="${ctxPath}/static/js/common/hm.js?v=${h_version}"></script>
+@}
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render()
+    });
+</script>
+<!--[if lt IE 9]>
+<script src="${ctxPath}/static/resources/lib/cdn/html5.min.js"></script>
+<script src="${ctxPath}/static/resources/lib/cdn/respond.min.js"></script>
+<![endif]-->

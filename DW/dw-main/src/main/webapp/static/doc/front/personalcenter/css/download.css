@@ -1,0 +1,37 @@
+@charset "utf-8";
+.delRecord{
+    background-color: #3C91FD;
+    border-radius: 10px;
+    width: 80px;
+    float: left;
+    margin-left:20px;
+    margin-right: 20px;
+    margin-top:5px;
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe{
+    width: calc(100% - 60px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    position: absolute;
+    top: 12px;
+    left: 32px;
+}
+/*加载中样式*/
+div#transLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+/*.table_list tbody>tr>td:first-child>span.nameTitpe:hover{*/
+    /*color: #3C91FD;*/
+    /*cursor: pointer!important;*/
+/*}*/
+/*.table_list tbody>tr>td:first-child>.hoverSpan>span>i{*/
+    /*position: absolute;*/
+    /*z-index: 1;*/
+    /*right: 8px;*/
+    /*top: 11px;*/
+    /*padding-top: 0px;*/
+/*}*/

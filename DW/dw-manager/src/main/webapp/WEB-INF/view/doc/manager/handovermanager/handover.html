@@ -1,0 +1,517 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/collection.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/front/personalcenter/css/handover.css?v=${h_version}">
+    <style>
+        #path span{margin-left: 2px}
+        .jstree-children .jstree-themeicon{
+            background-size: auto!important;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content clearfix" id="collectList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top table-top1 clearfix">
+                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                        @if(session.adminFlag==4||session.adminFlag==1){
+                        <ul class="layui-tab-title changeTab" style="width: 200px">
+                            <li class="layui-this tab1">交接</li>
+                            <li class="tab2">审核</li>
+                        </ul>
+
+                        @}
+
+                    </div>
+                    <div class="search-wrapper">
+                        <input class="search-input" id="searchName" placeholder="按名称查找" value="">
+                        <div class="search-btn" id="searchBtn">&nbsp;</div>
+
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                </div>
+                <div class="table-top table-top2 clearfix">
+                    <div class="fileButtonGroup">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item" pane="" id="fileType">
+                                <label class="layui-form-label">文件分类：</label>
+                                <div class="layui-input-block">
+                                    <input name="type" title="全部" type="checkbox"  value="0" lay-skin="primary" lay-filter="type" checked>
+                                    <input name="type" title="文件" type="checkbox" value="1" lay-skin="primary" lay-filter="type">
+                                    <input name="type" title="科研成果"  type="checkbox" value="2" lay-skin="primary" lay-filter="type">
+                                    <input name="type" title="文件夹"  type="checkbox" value="4" lay-skin="primary" lay-filter="type">
+                                </div>
+                            </div>
+                        </form>
+
+                        <!--<button id="mulDownLoad" class="newFolderNew layui-btn  clickBtn hideBtn" >下载</button>-->
+                        <!--<button id="manyMulDownLoad" class="newFolderNew layui-btn hideBtn clickBtn" >打包下载</button>-->
+                        <!--<button id="delCategoryBtn" class="newFolderNew layui-btn  clickBtn hideBtn" >删除</button>-->
+                    </div>
+            <!--        <span class="handover-info">交接说明<span>文件交接完成不会在列表显示</span></span>-->
+                    <div class="fileButtonGroup fileButtonGroup1">
+                        <button id="pass" class="newFolder   layui-btn hideBtn" style="display: none">通过</button>
+                        <button id="back" class="newFolder   layui-btn hideBtn" style="display: none">驳回</button>
+
+                        <!--<button id="mulDownLoad" class="newFolderNew layui-layui-formbtn  clickBtn hideBtn" >下载</button>-->
+                        <!--<button id="manyMulDownLoad" class="newFolderNew layui-btn hideBtn clickBtn" >打包下载</button>-->
+                        <!--<button id="delCategoryBtn" class="newFolderNew layui-btn  clickBtn hideBtn" >删除</button>-->
+                    </div>
+                </div>
+                <div class="message">
+                    <span>已全部加载<span id="amount"></span><span class="total"></span>个</span>
+                    <button id="handover" class="newFolder  clickBtn layui-btn hideBtn" style="display: none">一键交接</button>
+                </div>
+
+                <div class="toolBar"  style="min-height: 50px">
+
+                    <!--<button id="cancelCollect" class="layui-btn cancelCollect" >取消收藏</button>-->
+                </div>
+                <div class="fast-button">
+                    <!--<button id="delHistoryBtn" class="layui-btn cancelCollect" >取消收藏</button>-->
+
+                    <div id="uploader" class="wu-example">
+                        <div class="shadow">
+
+                        </div>
+                        <div id="dndArea">
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                        <div class="layui-card popWin success" style="display: none" >
+                            <div class="layui-card-header">
+                                <span>收藏记录</span>
+                                <div class="fr">
+                                    <i class="iconfont controls-down">&#xe61a;</i>
+                                    <i class="iconfont controls-close">&#x1006;</i>
+                                </div>
+                                <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="success-msg"></div>
+                                <div class="btns">
+                                    <div class="uploader-list upload-head">
+                                        <div  class="item">
+                                            <h4 class="info">文件名</h4>
+                                            <h4 class="state">文件状态</h4>
+                                            <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                        </div>
+                                    </div>
+                                    <!-- 文件列表：选择文件后在该div显示 -->
+                                    <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                    <label class="text-right"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="addDiv" style="display: none;text-align:right" class="addFont ">
+
+    <div class="popup layui-popup">
+        <form class="layui-form" >
+            <div class="layui-form-item">
+                <div class="layui-form-label confirm">
+                  您确定要将所选的文件共（<span id="fileNum" ></span>）个进行交接吗？
+                </div>
+                <div class="handover-type">
+                    <label class="layui-form-label">交接类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="type2" value="0" title="离职" checked>
+                        <input type="radio" name="type2" value="1" title="部门调整" >
+                    </div>
+                </div>
+               <div class="handover-person">
+                   <label class="layui-form-label">
+                       <span class="we-red">*</span>接收人
+                   </label>
+                   <div class="layui-input-block" style="margin-left:80px">
+                       <input type="text" id="authorName" name="authorName"  readonly="readonly"  unselectable="on" class="layui-input" placeholder="请选择接收人">
+                       <input type="hidden" id="authorId" name="authorId" >
+                   </div>
+               </div>
+            </div>
+
+
+        </form>
+    </div>
+
+</div>
+<div class="noDataTip">未找到相关内容~</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<div id="filTree" style="display: none;overflow: auto" class="leftArea">
+    <div id="fileTree2" class="jsTree"></div>
+</div>
+<div id="folderTreeAuthority" style="display: none;overflow: auto" class="leftArea">
+    <div id="folderTreeAuthority2" class="jsTree"  ></div>
+</div>
+
+<div id="employeeTreeDiv" style="display: none;"  class="formmargin">
+    <div class="layui-input-inline personSearch">
+        <input id="personSearch" placeholder="请输入你想查询的作者" class="layui-input" style="width: 283px;">
+    </div>
+    <div class="search-results"></div>
+    <div id="showEmployeeTree" class="jsTree"></div>
+</div>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col >
+                <col width="20%">
+                <col width="17%">
+                <col width="10%">
+                <col width="17%">
+                <col width="10%">
+
+            </colgroup>
+            <thead>
+            <tr style="color: #8796AB;">
+                <th lay-data="{field:'filename'}" style="text-indent:0px;text-align:left;cursor: pointer">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px!important;height: 14px!important;padding-right:12px;margin-top:8px">
+                        <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                    </div>
+                    <div onclick="orderByName()" style="text-indent: 30px">名称
+                    <i class="layui-icon" id="orderName"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderName1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div></th>
+                <th onclick="orderByType()" lay-data="{field:'dept'}" style="text-align: left ;cursor:pointer">
+                    文档类型
+                    <i class="layui-icon" id="orderType"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderType1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByTime()" lay-data="{field:'optime'}" style="text-align:left;cursor:pointer;">
+                    上传时间
+                    <i class="layui-icon" id="orderTime"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByUser()" lay-data="{field:'author'}" style="text-align: left;cursor:pointer">
+                    上传人
+                    <i class="layui-icon" id="orderUser"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderUser1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByDept()" lay-data="{field:'dept'}" style="text-align: left;cursor:pointer">
+                    所在部门
+                    <i class="layui-icon" id="orderDept"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderDept1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+
+                </th>
+                <th onclick="orderByState()" lay-data="{field:'state'}" style="text-align: left;cursor:pointer">
+                    状态
+                    <i class="layui-icon" id="orderState"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderState1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="member-center-list">
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col >
+            <col width="20%">
+            <col width="17%">
+            <col width="10%">
+            <col width="17%">
+            <col width="10%">
+        </colgroup>
+<!--        <thead>-->
+<!--        <tr style="color: #8796AB;">-->
+<!--            <th lay-data="{field:'filename'}" style="text-align: left;">-->
+<!--                &lt;!&ndash;<input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">&ndash;&gt;-->
+<!--                &lt;!&ndash;<div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">&ndash;&gt;-->
+<!--                &lt;!&ndash;<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>&ndash;&gt;-->
+<!--                &lt;!&ndash;</div>&ndash;&gt;-->
+<!--                名称-->
+<!--                <i class="layui-icon" onclick="getNameOrder()" id="" style="display: none;cursor: pointer ;font-size: 13px"> <img   style="width:10px;height: auto"class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1.png"></i>-->
+<!--                <i class="layui-icon" onclick="getNameOrder1()" id=""  style="cursor: pointer ;font-size: 13px"><img   style="width:10px;height: auto" class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2.png"></i>-->
+<!--            </th>-->
+<!--            <th lay-data="{field:'optime'}" style="text-align: left">-->
+<!--                收藏时间-->
+<!--                <i class="layui-icon" onclick="getTimeOrder()" id=""style="cursor: pointer ;font-size: 13px"><img   style="margin-top: 4px;width:10px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1.png"></i>-->
+<!--                <i class="layui-icon" onclick="getTimeOrder1()" id=""  style="cursor: pointer ;font-size: 13px"><img   style="margin-top: 4px;width:10px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2.png"></i>-->
+<!--            </th>-->
+<!--            <th lay-data="{field:'author'}" style="text-align: left">上传人</th>-->
+
+<!--        </tr>-->
+<!--        </thead>-->
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        {{#
+        var titlesub = function(){
+        var result='';
+        if(item.fileType!="folder"&&item.fileType!="component"){
+        result=item.fileName+item.fileType;
+        }else{
+        result=item.fileName
+        }
+        return result;
+        };
+
+        }}
+
+        {{#
+        var timesub = function(){
+        var result=item.createTime;
+
+        result=  result.substring(0,result.lastIndexOf(':'));
+
+        return result;
+        };
+
+        }}
+        {{# if(null != item.fileName && item.createTime!=null){}}
+        <tr class='hoverEvent'   onclick="clickCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}','{{item.state}}')">
+
+<td>
+                <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}','{{item.state}}')" style="position: absolute;opacity: 0" >
+                <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}','{{item.state}}')">
+                    <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                </div>
+
+
+                <input  class="checkFileId" hidden value="{{item.fileId}}">
+
+                <input  class="checkFileType" hidden value="{{item.fileType}}">
+                <input  class="checkFileName" hidden value="{{item.fileName}}">
+                <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+    <input  class="chooseFileState" hidden value="{{item.state}}">
+
+                {{#
+                var sub = function(){
+                var result = item.fileName;
+                if(item.fileType!='folder'&&item.fileType!='component'){
+                result=result+item.fileType;
+                }
+                return result;
+                };
+
+                }}
+
+                <span id="name{{index}}"  class ="nameTitpe nofolder" title="{{sub()}}" style="cursor: default" >{{ sub() }}</span>
+
+            </td>
+            <td>
+                {{# if(item.fileType=='component'){   }}
+                科研成果
+                {{#  }else if (item.fileType=='folder'){  }}
+                文件夹
+                {{#  }else {  }}
+                文件
+                {{#  } }}</td>
+            <td>
+                {{item.createTime.substring(0,item.createTime.lastIndexOf(':'))}}
+            </td>
+
+            <td>
+
+                {{item.createUserName}}
+
+            </td>
+
+            <td>{{item.deptName}}</td>
+            <td class="handover-operation">
+
+                {{# if(item.state==''){   }}
+                <span  class="spans no-handover"> 未交接</span>
+                {{#  }else if (item.state=='1'){  }}
+                <span   class="spans pass-handover"> 已交接</span>
+                {{#  }else if (item.state=='2'){  }}
+                <span   class="spans reject-handover"> 已驳回</span>
+                {{#  }else {  }}
+                <span class="spans wait-examine"> 待审核</span>
+                {{#  } }}
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }}}
+        {{#  }); }}
+        </tbody>
+    </table>
+    </div>
+</script>
+<script id="demo2" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col >
+                <col width="20%">
+                <col width="17%">
+                <col width="10%">
+                <col width="17%">
+                <col width="10%">
+                <col width="5%">
+
+            </colgroup>
+            <thead>
+            <tr style="color: #8796AB;">
+                <th lay-data="{field:'userId'}" style="text-indent:0px;text-align:left;cursor: pointer">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px!important;height: 14px!important;padding-right:12px;margin-top:8px">
+                        <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                    </div>
+                    <div onclick="orderByName()" style="position: absolute;top: 50%;transform: translate(0, -50%);left: 40px;">交接人
+                        <i class="layui-icon" id="orderName"style="cursor: pointer ;font-size: 13px;display: none">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                        <i class="layui-icon" id="orderName1"  style="cursor: pointer ;font-size: 13px;display: none">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div></th>
+                <th onclick="orderByTime()" lay-data="{field:'optime'}" style="text-align:left;cursor:pointer;">
+                    交接所属部门
+                    <i class="layui-icon" id="orderTime"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByUser()" lay-data="{field:'author'}" style="text-align: left;cursor:pointer">
+                    交接时间
+                    <i class="layui-icon" id="orderUser"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderUser1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByDept()" lay-data="{field:'dept'}" style="text-align: left;cursor:pointer">
+                    接收人
+                    <i class="layui-icon" id="orderDept"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderDept1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByType()" lay-data="{field:'state'}" style="text-align: left;cursor:pointer">
+                    接收所属部门
+                    <i class="layui-icon" id="orderType"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderType1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByState()" lay-data="{field:'state'}" style="text-align: left;cursor:pointer">
+                    交接类型
+                    <i class="layui-icon" id="orderState"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderState1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+
+                </th>
+                <th onclick="orderByNum()" lay-data="{field:'state'}" style="text-align: left;cursor:pointer">
+                    交接个数
+                    <i class="layui-icon" id="orderNum"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderNum1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="member-center-list">
+        <table class="layui-table table_list" >
+            <colgroup>
+                <col >
+                <col width="20%">
+                <col width="17%">
+                <col width="10%">
+                <col width="17%">
+                <col width="10%">
+                <col width="5%">
+            </colgroup>
+
+            <tbody>
+            {{#  layui.each(d.list, function(index, item){ }}
+
+
+            <tr class='hoverEvent'  onclick="clickCheck2(this,'{{item.handOverId}},{{item.handOverUserId}}')">
+                <td>
+
+                    <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop2(this,'{{item.handOverId}}')" style="position: absolute;opacity: 0" >
+                    <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px"
+                         onclick="clickIconCheck2(this,'{{item.handOverId}}')">
+                        <i class="iconfont" style="width: 13px!important;height: 13px!important;font-size: 12px!important;text-indent:0px!important;" >&#xe605;</i>
+                    </div>
+                    <input  class="checkFileId" hidden value="{{item.handOverId}}">
+
+                    <span id="name{{index}}"  class ="nameTitpe nofolder examine" title="{{item.handOverUserName}}" style="cursor: default" >
+                        <a class="fileName" onclick="cancelBubble()">{{item.handOverUserName}}</a></span>
+
+                </td>
+                <td>
+                    {{item.handOverDeptName}}
+                </td>
+
+                <td>
+
+                    {{item.handOverDate}}
+
+                </td>
+
+                <td>{{item.acceptName}}</td>
+                <td>
+                    {{item.acceptDeptName}}
+                </td>
+                <td>
+
+                    {{# if(item.handOverType=='0'){   }}
+                    <span style=""  class="spans"> 离职</span>
+                    {{#  }else {  }}
+                    <span class="spans wait-examine"> 部门调整</span>
+                    {{#  } }}
+                </td>
+                <td onclick="openView('{{item.handOverId}}')" style="color: #3D92FD;cursor: pointer">
+                    {{item.num}}
+                </td>
+
+                <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+                <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            </tr>
+            {{#  }); }}
+            </tbody>
+        </table>
+    </div>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/handovermanager/js/handover.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#collectList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+
+</script>
+</body>

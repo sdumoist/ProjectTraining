@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题-内容维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>.layui-table-body{
+        height: 320px!important;
+    }
+    .layui-layer-btn .layui-layer-btn0 {
+        border-color: #3C91FD!important;
+        background-color: #3C91FD!important;
+        color: #fff;
+        padding:0;
+        border-radius: 1px;
+        height: 28px;
+        margin-bottom: 10px;
+    }
+    .layui-layer-btn .layui-layer-btn1 {
+        padding:0;
+        border-radius: 1px;
+        float: right;
+        height: 28px !important;
+        margin-bottom: 10px;
+    }
+    .jstree-default .jstree-clicked, .jstree-default .jstree-hovered {
+        color: #3C91FD!important;
+        border: 0;
+        box-shadow: none;
+        background: transparent;
+    }
+    .jstree-default .jstree-search {
+        color: #ff3139!important;
+        font-weight: 700;
+        font-style: normal;
+    }
+    .layui-btn{
+        background-color:#3C91FD
+    }.bot-btns button{
+         border: 1px solid #3C91FD;
+
+     }
+    .layui-form-onswitch {
+        border-color: rgba(60,145,253,1);
+        background-color: rgba(60,145,253,1);
+    }
+    .layui-form-checkbox[lay-skin=primary]:hover i {
+        border-color: rgba(60,145,253,1);
+        color: #fff;
+    }
+    .layui-form-checked[lay-skin=primary] i {
+        border-color: rgba(60,145,253,1);
+        background-color: rgba(60,145,253,1);
+        color: #fff;
+    }
+    .layui-table-view .layui-form-checked[lay-skin=primary] i, .layui-table-view .layui-form-checkbox[lay-skin=primary]:hover i {
+        border: 1px solid rgba(60,145,253,1)!important;
+        background-color: rgba(60,145,253,1)!important;
+        color: #fff;
+    }
+    .layui-table[lay-even] tr:nth-child(even) {
+        background: #fff!important;
+    }
+    .layui-form-select dl dd.layui-this {
+        background-color: rgba(60,145,253,1)!important;
+        color: #fff;
+    }
+    .layui-table tbody tr:hover {
+        background: #f6faff;
+    }
+    .layui-input:focus, .layui-textarea:focus {
+        border-color: #d1deed !important;
+    }
+    .layui-input:hover, .layui-textarea:hover {
+        border-color: #d1deed !important;
+    }
+    </style>
+
+</head>
+
+<body style="height: 100%">
+<div class="weadmin-body">
+    <div class="layui-form content">
+        <div class="layui-form-item labels">
+            <div class="layui-col-md6">
+                <label for="topicId" class="layui-form-label">
+                    <span class="we-red">*</span>专题名称
+                </label>
+                <div class="layui-input-inline">
+                    <select id="topicId" name="category" lay-filter="category"  lay-search></select>
+                    <input type="hidden" id="fsFiles" value="${fsFiles}">
+                    <input type="hidden" id="chooseFileType" value="${chooseFileType}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="height:;">
+            <div class="layui-col-md8">
+                <table class="layui-table" id="docList" lay-filter="docList"></table>
+            </div>
+        </div>
+
+    </div>
+    <div class="layui-form-item  bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="addDoc" lay-submit="">确定</button>
+        <button id="cancel" class="layui-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/html" id="delDoc">
+    <span class=" delete-span {{d.option == '1' ? 'layui-hide' : ''}}" lay-event="delete"></span>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/topicmanager/js/topic_doc.js?v=${h_version}"></script>
+</body>
+</html>

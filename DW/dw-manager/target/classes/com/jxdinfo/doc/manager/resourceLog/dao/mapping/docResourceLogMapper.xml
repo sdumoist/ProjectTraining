@@ -1,0 +1,70 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.resourceLog.dao.docResourceLogMapper">
+
+    <select id="ResourceLogList" resultType="com.jxdinfo.doc.manager.resourceLog.model.ResourceLog">
+        SELECT drl.ID id
+        ,ifnull(ifnull(ff.file_name,ffr.folder_name),dst.topic_name) fileName
+        ,su.USER_NAME userName
+        ,drl.OPERATE_TYPE operateType
+        ,drl.OPERATE_TIME operateTime
+        ,drl.address_ip addressIp
+        FROM doc_resource_log drl
+        LEFT JOIN fs_file ff on drl.RESOURCE_ID = ff.file_id
+        LEFT JOIN sys_users su on drl.USER_ID = su.USER_ID
+        left JOIN fs_folder ffr on  drl.RESOURCE_ID = ffr.folder_id
+        left join doc_special_topic dst on drl.RESOURCE_ID = dst.topic_id
+        where 1=1
+
+        <if test="resourceName != ''and resourceName != null">
+            AND ff.file_name LIKE CONCAT('%',#{resourceName},'%')
+        </if> order by operateTime DESC
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="ResourceLogListCount" resultType="int">
+        SELECT COUNT(*)
+        FROM doc_resource_log drl
+        LEFT JOIN fs_file ff on drl.RESOURCE_ID = ff.file_id
+        LEFT JOIN sys_users su on drl.USER_ID = su.USER_ID
+        where 1=1
+
+        <if test="resourceName != ''and resourceName != null">
+            AND ff.file_name LIKE CONCAT('%',#{resourceName},'%')
+        </if>
+    </select>
+
+    <select id="ClientResourceLogList" resultType="com.jxdinfo.doc.manager.resourceLog.model.ResourceLog">
+        SELECT drl.ID id
+        ,ff.file_name fileName
+        ,su.USER_NAME userName
+        ,drl.OPERATE_TYPE operateType
+        ,max(drl.OPERATE_TIME) operateTime
+        FROM doc_resource_log drl
+        LEFT JOIN fs_file ff on drl.RESOURCE_ID = ff.file_id
+        LEFT JOIN sys_users su on drl.USER_ID = su.USER_ID
+        where 1=1
+        and resource_type = '0'
+        <if test="resourceId != '' and resourceId != null">
+            AND drl.RESOURCE_ID IN ${resourceId}
+        </if>
+        <if test="time != '' and time != null">
+            AND drl.OPERATE_TIME &gt; #{time}
+        </if>
+        GROUP BY drl.RESOURCE_ID
+    </select>
+
+    <select id="getThisMonthCount" resultType="Map">
+        SELECT
+            OPERATE_TYPE AS type,
+            COUNT(1) AS num
+        FROM
+            doc_resource_log drl
+        WHERE
+            DATE_FORMAT(drl.OPERATE_TIME, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+            AND drl.OPERATE_TYPE in ('0','3','4')
+        GROUP BY
+            drl.OPERATE_TYPE
+        ORDER BY OPERATE_TYPE
+    </select>
+</mapper>

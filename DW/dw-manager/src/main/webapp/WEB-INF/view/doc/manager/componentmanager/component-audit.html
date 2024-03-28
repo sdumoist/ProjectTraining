@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css"
+          rel="stylesheet">
+    <script type="text/javascript" charset="utf-8"
+            src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <style>
+
+        .layui-form-label {
+            width: 65px !important;
+            padding: 5px 20px 0px 10px !important;
+            text-align: right !important;
+            font-size: 14px;
+        }
+        td {
+            text-align: center;
+            height: 10px;
+        }
+
+        td:nth-child(3) {
+            text-align: left;
+        }
+
+        .bot-btns {
+            padding: 10px 15px 8px;
+            height: 52px;
+            border-top: 1px solid #E3ECEC;
+        }
+       .bot-btns .white-btn{height: 30px;line-height: 30px;color: #27b7b0;background: #fff;cursor: pointer}
+        #div1{
+           background-color: white;
+            width: 800px;
+            height: 50px;
+            position: fixed;bottom:0;
+        }
+
+        .layui-disabled, .layui-disabled:hover {
+            color: #333!important;
+            cursor: not-allowed!important;
+        }
+        .editor-img img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="weadmin-body" style="padding: 10px;">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <input type="text" id="componentId" name="componentId" hidden value="${componentId}" class="layui-input"
+                   style="display: none">
+
+            <div class=" layui-form-item">
+                <label for="componentName" class="layui-form-label">
+                    成果名称
+                </label>
+                <div class="layui-input-inline" style="width:83.7%">
+                    <input type="text" id="componentName" name="componentName" disabled
+                           value="${componentApply.componentName}" autocomplete="off" class="layui-input"
+                           style="height: 35px">
+                </div>
+            </div>
+            <div class=" layui-form-item">
+                <label class="layui-form-label">
+                    提报人
+                </label>
+                <div class="layui-input-inline" style="width:35%">
+                    <input type="text" id="userName" name="userName" autocomplete="off" class="layui-input"
+                           value="${componentApply.userName}" disabled style="height: 35px">
+                </div>
+                <label class="layui-form-label" style="text-align: right ">
+                    应用场景
+                </label>
+                <div class="layui-input-inline" style="width: 35%">
+                    <input type="text" id="componentRange" name="componentRange" autocomplete="off" class="layui-input"
+                           value="${componentApply.componentRange}"     style="height: 35px" disabled>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                成果分类
+            </label>
+            <div class="layui-input-inline" style="width: 35%">
+                @if(componentApply.componentType == 0){
+                <input type="radio" name="componentType" value="0" title="技术组件" checked="" disabled>
+                <input type="radio" name="componentType" value="1" title="解决方案" disabled>
+                @}else{
+                <input type="radio" name="componentType" value="0" title="技术组件" disabled>
+                <input type="radio" name="componentType" value="1" title="解决方案" checked="" disabled>
+                @}
+            </div>
+
+            <label class="layui-form-label">
+               成果来源
+            </label>
+            <div class="layui-input-inline" style="width: 35%">
+                @if(componentApply.componentOrigin == 0){
+                <input type="radio" name="componentOrigin" value="0" title="项目开发" checked="" disabled>
+                <input type="radio" name="componentOrigin" value="1" title=" 技术预研" disabled>
+                @}else{
+                <input type="radio" name="componentOrigin" value="0" title="项目开发" disabled>
+                <input type="radio" name="componentOrigin" value="1" title=" 技术预研" checked="" disabled>
+                @}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                成果描述
+            </label>
+            <div class="layui-input-inline textarea-div editor-img" style="margin-top: 5px">
+                <span style="">${componentApply.componentDesc}</span>
+            </div>
+        </div>
+
+        <hr>
+        <br>
+
+        <table class="layui-table">
+            <colgroup>
+                <col width="70">
+                <col width="100">
+                <col>
+                <col width="100">
+            </colgroup>
+            <thead>
+            <tr>
+                <th style="text-align: center">序号</th>
+                <th style="text-align: center">文件类型</th>
+                <th style="text-align: center">文件名称</th>
+                <th style="text-align: center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(doc in componentList){
+            <tr>
+                <td>${docLP.index}</td>
+                <td> @if(doc.attachmentType=='0'){
+                    代码
+                    @} else if(doc.attachmentType=='1'){
+                    配置说明
+                    @} else if(doc.attachmentType=='2'){
+                    使用说明
+                    @} else if(doc.attachmentType=='3'){
+                    demo
+                    @} else {
+                    其他
+                    @}
+                </td>
+                <td onclick="showPdf('${doc.attachmentId}','${doc.attachmentName}')">${doc.attachmentName}</td>
+                <td style="cursor: pointer;color: #3C91FD" onclick="download('${doc.attachmentId}')">
+                    下载
+                </td>
+            </tr>
+            @}
+            </tbody>
+        </table>
+        <br> <br> <br>
+
+        <!-- 人员树 -->
+    </div>
+    <!--<div class="bot-btns">-->
+
+    <!--<button id="cancel" class="white-btn" lay-filter="cancel" type="button">返回</button>-->
+    <!-- </div>-->
+</div>
+<div id="div1">
+    <div  class="bot-btns">
+        <button id="pass" class="layui-btn" lay-filter="pass" type="button">通过</button>
+        <button id="back" class="white-btn" lay-filter="back" type="button">驳回</button>
+    </div>
+</div>
+<div id="addDiv" style="display: none;text-align:right" class="addFont ">
+
+    <div class="popup layui-popup">
+        <form class="layui-form" style="margin-top: 20px">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    驳回意见
+                </label>
+                <div class="layui-input-inline textarea-div" style="margin-top: 9px">
+                    <textarea id="reason" name="topicDesc" style="height: 150px"  class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <!--<div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                 前台权限
+                </label>
+                <div class="layui-input-block radio-div" style="display: none;">
+                    <input type="radio" name="visible" lay-filter="visible"  value="0" title="完全公开" >
+                    <input type="radio" name="visible" lay-filter="visible"  value="1" title="部分可见" checked="">
+                </div>
+                <button id="setAuthority" type="button" class="layui-btn">可见范围</button>
+
+            </div>
+            <div class="name-list clearfix"></div>
+            <div class="layui-form-item more-div">
+                <label class="layui-form-label">
+                    后台权限
+                </label>
+
+                <button id="setAuthority1" type="button" class="layui-btn">可见范围</button>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="isEdit" id="isEdit" lay-skin="primary" title="可编辑文件" >
+                    <input type="checkbox" name="isChild" id="isChild" lay-skin="primary" title="可编辑子目录"  >
+                </div>
+            </div>
+            <div class="name-list-power clearfix"></div>-->
+        </form>
+    </div>
+
+</div>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/manager/componentmanager/js/componentAudit.js?v=${h_version}"></script>
+</body>
+</html>

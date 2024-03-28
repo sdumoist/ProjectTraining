@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docsharemanager.dao.ShareResourceMapper">
+
+    <delete id="deletePreviewShareData">
+        DELETE
+        FROM
+        DOC_SHARE_RESOURCE
+        WHERE
+        PASSWORD = '00000000000'
+        AND TIMESTAMPDIFF(SECOND, CREATE_TIME, now()) > 2 * 60 * 60
+    </delete>
+
+    <!-- 新增分享资源 -->
+    <insert id="newShareResource">
+        INSERT INTO DOC_SHARE_RESOURCE (
+            SHARE_ID,
+            CREATE_USER_ID,
+            TRUE_URL,
+            MAPPING_URL,
+            DOC_ID,
+            CREATE_TIME,
+            PWD_FLAG,
+            PASSWORD,
+            VALID_TIME,
+            authority,
+            select_user_flag,
+            select_users_id
+        )VALUES(
+            #{shareId},
+            #{creatorId},
+            #{href},
+            #{hash},
+            #{docId},
+            sysdate(),
+            #{pwdFlag},
+            #{pwd},
+            DATE_ADD(now(),interval #{validTime} day),
+            #{authority},
+            #{shareUserRadio},
+            #{selectShareUsersId}
+        )
+    </insert>
+
+    <!--获取分享资源的信息-->
+    <select id="getShareResource" resultType="Map">
+        SELECT
+         S.TRUE_URL href,
+         A.USER_NAME shareUser,
+         S.LOGIN_FLAG loginFlag,
+         S.PWD_FLAG pwdFlag,
+         S.VALID valid,
+         S.VALID_TIME validTime,
+         S.PASSWORD pwd,
+         S.authority authority,
+         S.select_user_flag selectUserFlag,
+         S.select_users_id selectUsersId,
+         S.CREATE_USER_ID createUserId,
+         D.VALID_FLAG docValid,
+         D.SHARE_FLAG shareFlag,
+         D.TITLE title,
+           DATE_FORMAT(S.create_time,'%Y-%m-%d %H:%i') createTime,
+         S.DOC_ID docId
+        FROM DOC_SHARE_RESOURCE S
+        LEFT JOIN  SYS_USERS A ON A.USER_ID = S.CREATE_USER_ID
+        LEFT JOIN (SELECT DOC_ID,VALID_FLAG,SHARE_FLAG,TITLE FROM DOC_INFO) D ON S.DOC_ID = D.DOC_ID
+        WHERE S.MAPPING_URL = #{hash}
+    </select>
+
+    <!--获取提取码，验证用-->
+    <select id="getPwdByHash" resultType="String">
+        SELECT
+          S.PASSWORD pwd
+        FROM
+          DOC_SHARE_RESOURCE S
+        WHERE
+          S.MAPPING_URL = #{hash}
+    </select>
+
+    <select id="getShareFlagByDocId" resultType="Map">
+        SELECT
+          SHARE_FLAG shareFlag,
+          VALID_FLAG validFlag
+        FROM
+          DOC_INFO
+        WHERE
+          DOC_ID = #{docId}
+    </select>
+
+    <select id="getServerAddress" resultType="Map">
+        SELECT
+          config_value address,
+          config_valid_flag addressValid
+        FROM
+          DOC_CONFIGURE
+        WHERE
+          CONFIG_KEY='server_address'
+    </select>
+
+    <select id="getPdfPath" resultType="java.util.Map">
+        SELECT
+          file_pdf_path pdfPath,
+          file_path filePath,
+          file_type docType
+        FROM
+          fs_file ff
+        LEFT JOIN doc_share_resource dsr ON dsr.doc_id = ff.file_id
+          WHERE dsr.mapping_url = #{hash}
+    </select>
+
+    <select id="getDocIdByHash" resultType="java.lang.String">
+        SELECT DOC_ID FROM doc_share_resource WHERE mapping_url = #{hash}
+    </select>
+</mapper>

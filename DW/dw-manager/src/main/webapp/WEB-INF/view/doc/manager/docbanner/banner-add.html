@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+
+    <style>
+        .layui-input-inline{
+
+        }
+    </style>
+</head>
+
+<body>
+<div class="weadmin-body">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="we-red">*</span>banner图片
+            </label>
+            <div class="layui-upload-list" >
+                <div class="img-div">
+                    <img class="layui-upload-img"  id="pic" >
+                    <div class="none-img">
+                        <div class="add-img" id="choosePic">上传banner</div>
+
+                    </div>
+                    <div class="have-img">
+                        <button type="button" id="choosePic2">替换图片</button>
+                    </div>
+                    <p>建议尺寸593*337像素</p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label for="bannerName" class="layui-form-label">
+                    <span class="we-red">*</span>banner名称
+                </label>
+                <div class="layui-input-inline"  style="width: 280px">
+                    <input type="text" id="bannerName" name="bannerName"    autocomplete="off" class="layui-input " >
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>广告分类
+                </label>
+                <div class="layui-input-inline"  style="width: 280px">
+                    <select id="advertClassfiy" lay-filter="adFilter">
+                        <option value="0">文档</option>
+                        <option value="1">专题</option>
+                        <option value="2">自定义链接</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class=" layui-inline" >
+                <label for="bannerHref" class="layui-form-label">
+                    <span class="we-red">*</span>banner地址
+                </label>
+                <div class="layui-input-inline" style="width: 400px;position: relative" id="transformDiv">
+                    <input type="text" id="bannerHref" name="bannerHref"   autocomplete="off" class="layui-input" style="width: 70%" disabled>
+                    <button  class="layui-btn" id="changeDoc" style="display: inline-block;position: absolute;right: 50px;top: 0px;" > 请选择</button>
+                </div>
+            </div>
+
+        </div>
+        <!-- 人员树 -->
+    </div>
+    <div class="bot-btns" style="margin-top: 50px">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/docbanner/js/banner_add.js?v=${h_version}"></script>
+</body>
+</html>

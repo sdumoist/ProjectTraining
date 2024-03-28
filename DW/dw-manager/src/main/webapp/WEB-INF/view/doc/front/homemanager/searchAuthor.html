@@ -1,0 +1,283 @@
+<!DOCTYPE html >
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-检索</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/assets/lib/swiper/css/swiper.min.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/search_new.css?v=${h_version}"/>
+    <style>
+        .wrapper-left-top .global-search-input{margin-bottom: 22px}
+        .doc-content{height: 0}
+    </style>
+</head>
+<body style="position: relative;">
+@include("/common/front-header_new.html"){}
+<input type="hidden" class="hide" id="count">
+<input type="hidden" class="hide" id="adminFlag" value="${adminFlag}">
+<input type="hidden" class="hide"  id="headerSearchInputValue" value="${key!}">
+<!--搜索框-->
+<div class="search-boxs ">
+    <div class="search-box container clearfix">
+        <div class="wrapper-left-top">
+            <div class="global-search-input">
+                <div class="layui-form search-wrapper-select">
+                    <select id="select">
+                        <option value="0" >全部</option>
+                        <option value="7">文档</option>
+                        <option value="8">图片</option>
+                        <option value="9">视频</option>
+                        <option value="10">音频</option>
+                        <option value="14">词条</option>
+                        <option value="15">作者</option>
+                        @if(session.projectFlag!=true){
+                        <option value="12">成果</option>
+                        @}
+                    </select>
+                </div>
+                <input class="search-input" id="headerSearchInput" placeholder="搜索文档名称、关键词等，多个关键词用空格隔开"
+                       onblur="placeholder='搜索文档名称、关键词等，多个关键词用空格隔开'" onfocus="placeholder=''"
+                       value="${key!}">
+                <div id="headerSearchBtn">查一下</div>
+
+            </div>
+            <div class="hot-search ">
+                热门搜索：
+            </div>
+        </div>
+        <div class="layui-col-sm12">
+            <div class="search-box-type ">
+                <div id="all">
+                    @include("/common/front-file-type.html"){}
+                </div>
+                <div id="word" style="display: none">
+                    @include("/common/front-file-type-word.html"){}
+                </div>
+            </div>
+        </div>
+        <!--<form class="layui-col-sm12 layui-form">
+            <div class="wrapper-left-top layui-row  layui-col-space15">
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">时间不限</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+            </div>
+            <div class="wrapper-right-top"><button type="reset" class="no-border-btn">清空筛选条件</button></div>
+        </form>-->
+    </div>
+</div>
+<div class="main-box">
+    <div class="container ">
+        <div class="left-container">
+
+            <div class="layui-row row">
+                <div class="col-sm-6 doc-num-title"><span> ${key!} </span>相关文档</div>
+                <div class="col-sm-3 doc-num" id="orderByTime" style="cursor: pointer">按时间排序
+                    <i class="layui-icon" id="orderTime" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"  src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                    </i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                    </i>
+                </div>
+                <div class="col-sm-3 doc-num ">
+                    <span class="before">为您找到</span><span id="totalCount"></span><span class="after">个文档</span>
+                </div>
+            </div>
+            <!--排序完结-->
+            <div class="row searchList">
+                <div class="col-md-12" id="middleDiv">
+                    <script id="articleItem" type="text/html">
+                        {{#  layui.each(d.items, function(index, item){ }}
+
+                        <div class='doc-item'>
+                            <div class='doc-title' >
+                                <span class="doc-type type-{{item.fileSuffixName}}"></span>
+                                <a class='doc-name ellipse' title="{{item.fileName}}" onclick='showDoc("{{item.docType}}","{{item.docId}}")'>
+                                    {{item.fileName}}
+                                </a>
+                                <div class="right-btn-box">
+                                    {{# if(item.docType!='component'){ }}
+                                    {{# if(item.collection==0){ }}
+
+                                    <span  class="collection-btn no_{{item.docId}}" onclick="iconCollect('{{item.docId}}','0')" >收藏</span>
+                                    <span class="cancel-collect-btn active" onclick="iconCollect('{{item.docId}}','1')"  style="display: none">已收藏</span>
+                                    {{#  }else { item.collection==1 }}
+                                    <span class="collection-btn no_{{item.docId}}" onclick="iconCollect('{{item.docId}}','0')"  style="display: none">收藏</span>
+                                    <span class="cancel-collect-btn active" onclick="iconCollect('{{item.docId}}','1')" >已收藏</span>
+                                    {{# } }}
+
+                                    {{# if(item.authority=='1'||d.adminFlag==1||item.authority=='2'){ }}
+                                    <span class="download-btn" onclick="iconDownLoad('{{item.docId}}','{{item.fileName}}')">下载</span>
+                                    {{# } }}
+
+                                    {{# if(item.shareFlag=='1'){ }}
+                                    <span class="share-btn" onclick="iconShare('{{item.docId}}','{{item.docType}}','{{item.fileName}}')">分享</span>
+                                    {{# } }}
+                                    {{# } }}
+                                </div>
+                            </div>
+                            {{# if(item.contacts != ''||item.contacts != null){ }}
+                            <div class="doc-content">{{item.contacts}}</div>
+                            {{# } }}
+                            <div class="doc-detail">
+                                <img src="{{item.url}}" />
+                                <span>
+                               {{item.deptName}}
+                            </span>
+                                <span>
+                             {{# if(item.user !=''||item.user!=null){  }}
+                              {{item.user}}
+                                 {{#  } }}
+                            </span>
+                                {{# var a = item.createTime;}}
+                                <span>{{a.substring(0,10)}}</span>
+                                {{# if(item.docType!='component'){ }}
+                                <span>{{item.downloadNum}}&nbsp;次下载</span>
+                                {{# } }}
+                                {{# if(item.docType!='component'){ }}
+                                <span>{{item.readNum}}&nbsp;次预览</span>
+                                {{# }else { }}
+                                <span>{{item.readNumComponent}}&nbsp;次预览</span>
+
+                                {{# } }}
+                            </div>
+                        </div>
+                        {{#  }); }}
+                    </script>
+                </div>
+            </div>
+            <div class="text-center pageBox">
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+
+        <div class="right-container">
+            <div class="rit-container">
+                <div class="btn-rit">
+                    <a href="${ctxPath}/personalcenter?toUpload=true" target="_blank">
+                        上传文件
+                    </a>
+                </div>
+            </div>
+            <div class="history">
+                <div class="title">搜索历史</div>
+                <div class='history-total'>
+                </div>
+            </div>
+            <div class="hot hide">
+                <div class="title">热搜文章</div>
+                <div class="hot-total">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@include("/common/front-footer.html"){}
+
+<div class="integral"><span class="num" id="num"></span><span class="point">积分</span></div>
+<ul class="btn-rit-bottom"><!---->
+    @if(session.contactShow == '1'){
+    <li>
+        <div class="phone rit-item"></div>
+        <label>电话：18560195621</label>
+    </li>
+    <li onclick="">
+        <a class="qq rit-item" href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank"></a>
+        <label class="phone-label"><a href="tencent://message/?uin=772581151&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+            <!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    @}
+    @if(session.clientShow == '1'){
+    <li>
+        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端" class="pcDownload rit-item">
+        </a>
+        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank">点击下载客户端</a></label>
+    </li>
+    @}
+    <li>
+        <a href="javascript:show_feedback()" class="feedback rit-item"></a>
+        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+    </li>
+    <li  style="margin-top: 8px;display: none" id="goToTop">
+        <div class="goToTop rit-item"></div>
+    </li>
+</ul>
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 0) {
+                $("#goToTop").show()
+            } else {
+                $("#goToTop").hide()
+            }
+        });
+
+    });
+    $(".goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn() {
+            var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+            if (oTop > 0) {
+                scrollTo(0, oTop - 50);
+                timer = requestAnimationFrame(fn);
+            } else {
+                $("#goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+</script>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/assets/lib/swiper/js/swiper.min.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/searchAuthor.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+<script>
+    $("#fileTypeValue").val("15");
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render()
+    });
+
+</script>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>文档权限管理管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/authority_new.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-table-cell {
+            overflow: visible;
+        }
+        .layui-form-switch{
+            width: 52px;
+            margin-top:3px;
+        }
+    </style>
+</head>
+<body>
+<div class="weadmin-body">
+    <div class="layui-row authority-top">
+        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 pims-tree">
+            <div class="personSearch con-full-l">
+                <div class="layui-input-inline">
+                    <input id="groupSearch" placeholder="请输入"  class="layui-input">
+                    <input id="personSearch" placeholder="请输入" style="display:none;" class="layui-input">
+                </div>
+              </div>
+            <div class="layui-tab layui-tab-brief" lay-filter="navigate">
+                <ul class="layui-tab-title" >
+                    <li class="layui-this" id="roleMsg">群组设置</li>
+                    <li>人员设置</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show one" lay-id="one">
+                        <div class="qzTree" id="qzTree"></div>
+                    </div>
+                    <div class="layui-tab-item two" lay-id="two">
+                        <div class="renThree" id="renTree"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
+            <div class="rit-top">
+                <form class="layui-form" lay-filter="formFilter">
+                    <span>已选择群组、人</span>
+                    <div class="layui-inline">
+                        @if(session.projectFlag==true){
+                        <label class="layui-form-label" style="width: auto">获取上级目录权限：</label>
+                        @}else{
+                        <label class="layui-form-label" style="width: auto">继承上级目录权限：</label>
+                        @}
+                        <div class="layui-input-inline">
+                            <input type="checkbox" id="parentAuthority" name="parentAuthority" lay-filter="parentAuthority" lay-skin="switch">
+                        </div>
+                    </div>
+                    <button class="layui-btn" id="delBtn">批量移除</button>
+                </form>
+            </div>
+            <div class="rit-bot">
+                <table id="rit_table" lay-filter="demo"></table>
+            </div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <form class="layui-form" lay-filter="formFilter">
+            <div class="layui-form-item more-div" style="float: left" >
+                <input type="checkbox" id="allUser" name="allUser" lay-skin="primary" title="全体人员" lay-filter="allUser">
+                <!--<label class="layui-form-label" style="float: right">-->
+                <!--全体人员-->
+                <!--</label>-->
+            </div>
+        </form>
+        <button id="saveBtn" class="layui-btn"> 确定</button>
+        <button id="cancelBtn" class="layui-btn">取消</button>
+    </div>
+</div>
+
+<script src="${ctxPath}/static/doc/manager/foldermanager/js/authority_power.js?v=${h_version}"></script>
+<!--html代码-->
+<script type="text/html" id="barDemo">
+    <span class="delete" lay-event="del"></span>
+    <!--{{# if (d.status !="1"){}}
+    <a href="" lay-event="check">发布申请</a>
+    {{#}}}-->
+</script>
+<script type="text/html" id="name">
+    {{#  if(d.type == 0){ }}
+    <span class="people">{{ d.name }}</span>
+    {{#  } else { }}
+     <span class="qz">{{ d.name }}</span>
+    {{#  } }}
+</script>
+</body>
+</body>
+</html>

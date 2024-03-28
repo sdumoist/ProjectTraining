@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登陆统计</title>
+    <!--外部css和js开始-->
+    @include("/common/plugins.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/statistics/css/statistics.css?v=${h_version}"/>
+
+</head>
+<body>
+
+<div class="background">
+    <div class="content">
+        <div class="switch clearfix">
+            <div class="today active" value="today">今天</div>
+            <div class="threeDay" value="threeday">三天</div>
+            <div class="week" value="week">一周</div>
+            <div class="month" value="month">一月</div>
+        </div>
+        <div id="chart" class="main"></div>
+    </div>
+</div>
+
+<!--
+<div class="weadmin-body" style="height: 100%;width: 100%">
+    &lt;!&ndash; 查询区域 开始&ndash;&gt;
+    <form class="layui-form ">
+        <div class="layui-form-item clearfix">
+            <label class="layui-form-label">统计周期：</label>
+            <div class="layui-input-inline">
+                <select id="date_range" name="date_range"  lay-filter="date_range"></select>
+            </div>
+        </div>
+    </form>
+    &lt;!&ndash; 查询区域 结束&ndash;&gt;
+
+    &lt;!&ndash; 图表区域 开始&ndash;&gt;
+    <div id="chart" style="height: 80%;width: 100%"></div>
+    &lt;!&ndash; 图表区域 结束&ndash;&gt;
+</div>
+-->
+
+
+<script src="${ctxPath}/static/resources/js/common/echarts.common.min.js"></script>
+<script src="${ctxPath}/static/doc/manager/statistics/js/loginstatistics.js?v=${h_version}"></script>
+</body>
+
+<link rel="stylesheet" href="${ctxPath}/static/resources/css/project_ext.css?v=${h_version}">
+</html>

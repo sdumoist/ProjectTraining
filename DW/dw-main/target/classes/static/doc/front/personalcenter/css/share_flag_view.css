@@ -1,0 +1,76 @@
+.layui-form-switch{    width: 80px!important;
+    margin-top: 0px!important;
+    margin-left: -40px;}
+.layui-form-switch em{width: 65px!important;}
+.layui-form-onswitch{border-color: #3C91FD!important;background-color: #3C91FD!important;}
+.layui-form-onswitch i{left: 65px!important;margin-left: 0}
+.layui-layer-iframe{top: 100px;}
+
+.bot-btns button{border: 1px solid #3C91FD!important;}
+.layui-btn{background-color: #3C91FD!important;outline: none}
+.layui-btn::-moz-focus-inner{ border: 0; }
+.layui-btn:focus{outline: none}
+/*.white-btn, button#cancel, button#cancelBtn{color: #3C91FD!important;}*/
+.layui-input-inline{width: auto!important;}
+.layui-input-inline input{width: auto!important;border: 0 !important;font-size: 20px}
+#fileName{width:300px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;max-width: 270px!important;line-height: 26px;height: 25px;font-size: 18px;}
+.bot-btns {
+    margin-left: -9px!important;
+    margin-top: 13px!important;
+    border: 0;
+}
+.shareState{
+    margin-left: 0px;
+    margin-top: 1px;
+}
+.bot-btns {
+    text-align: right;
+}
+button#saveBtn{
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    text-align: center;
+    float: right;
+    padding: 0 10px;
+    font-size: 14px;
+}
+button#cancel{
+    width: 90px !important;
+    height: 32px !important;
+    line-height: 31px !important;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222 !important;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+}
+@media only screen and (max-width:300px) {
+    button#saveBtn,#copyBtn,.pass-btn,.reject-btn{
+        width:64px;
+        height:26px;
+        line-height: 25px;
+        font-size: 12px;
+    }
+    button#cancelBtn,button#cancel{
+        width:64px !important;
+        height:26px !important;
+        line-height: 25px !important;
+        font-size: 12px;
+    }
+    .layui-form{
+        height: 23px;
+    }
+    .weadmin-body {
+        padding-top: 0;
+    }
+    .shareState{
+        font-size: 12px;
+    }
+}

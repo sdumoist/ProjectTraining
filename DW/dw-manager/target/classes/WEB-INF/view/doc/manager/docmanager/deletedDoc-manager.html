@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>释放空间</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/docmanager/css/deletedDoc-manager.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/uplod.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-form-checkbox i{
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    // 此段代码处于 顶层（top） 页面中
+    var layerFrameConfig = {};
+</script>
+<div class="background" style="height: 100%">
+    <div class="content">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="search-wrapper">
+                        <input class="layui-input" id="searchName" placeholder="按文件名查找记录" value="">
+                        <button class="layui-btn" id="searchBtn"><i class="layui-icon">&#xe615;</i>查询</button>
+                    </div>
+                    <div class="toolBar"  style="min-height: 50px">
+                        <div id="uploader" class="wu-example">
+                            <div class="shadow">
+
+                            </div>
+                            <div id="dndArea">
+                                <div class="file-container-flatten" id="">
+                                    <div id="view"></div>
+                                </div>
+                            </div>
+                            <div id="picker" class="webuploader-container" >
+
+                                <div id="rt_rt_1bchdejhrarjdvd11h41eoh1nt1">
+                                    <input id="file_bp" name="file"
+                                           class="webuploader-element-invisible" type="file" /> <label ></label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button id="delBtn" class="layui-btn" ><i class="layui-icon">&#xe640;</i>删除</button>
+                    </div>
+
+                </div>
+
+                <div id="laypageAre"></div>
+            </div>
+            <div class="noDataTip" style="display: none">未找到相关内容~</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col width="20">
+                <col width="60">
+                <col width="450">
+                <col width="100">
+                <col>
+                <col width="120">
+            </colgroup>
+            <thead>
+            <tr>
+                <th style="text-align: center">
+                    <input name="check_all" type="checkbox" class="layui-form-checkbox" onclick="checkAll(this)" style="display: none">
+                    <div name="check_all_div" class="layui-unselect layui-form-checkbox" onclick="checkAll(this.previousSibling)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                        <i class="iconfont" style="width: 14px;font-size: 12px;" >&#xe605;</i>
+                    </div>
+                </th>
+                <th style="text-align: center">序号</th>
+                <th lay-data="{field:'title'}" style="text-align: center">文件名</th>
+                <th lay-data="{field:'uploader'}" style="text-align: center">上传人</th>
+                <th lay-data="{field:'uploadTime'}" style="text-align: center">上传时间</th>
+                <th lay-data="{field:'fileSize'}" style="text-align: center">大小</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col width="20">
+            <col width="60">
+            <col width="450">
+            <col width="100">
+            <col>
+            <col width="120">
+        </colgroup>
+        <thead>
+        <tr>
+            <th style="text-align: center">
+                <input name="check_all" type="checkbox" class="layui-form-checkbox" onclick="checkAll(this)" style="display: none">
+                <div name="check_all_div" class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                    <i class="iconfont" style="width: 14px;font-size: 12px;" >&#xe605;</i>
+                </div>
+            </th>
+            <th style="text-align: center">序号</th>
+            <th lay-data="{field:'title'}" style="text-align: center">文件名</th>
+            <th lay-data="{field:'uploader'}" style="text-align: center">上传人</th>
+            <th lay-data="{field:'uploadTime'}" style="text-align: center">上传时间</th>
+            <th lay-data="{field:'fileSize'}" style="text-align: center">大小</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <tr onclick="clickCheck(this)">
+            <td style="text-align: center">
+                <input data-feedbackId="{{item.docId}}" name="check_sub" type="checkbox" class="layui-form-checkbox" onclick="clickCheck(this)" style="display: none">
+                <div class="layui-unselect layui-form-checkbox" onclick="clickCheck(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                    <i class="iconfont" style="width: 14px;font-size: 12px;" >&#xe605;</i>
+                </div>
+            </td>
+            <td>{{index + 1 + (d.pageIndex - 1) * d.pageSize}}</td>
+            <td><span class="describe" style="text-align: left;color: #666666">{{ item.title }}</span></td>
+            <td>{{item.uploader}}</td>
+            <td>{{item.uploadTime}}</td>
+            <td>{{item.fileSize}}</td>
+        </tr>
+        {{#  }); }}
+        </tbody>
+    </table>
+
+</script>
+
+
+<script src="${ctxPath}/static/doc/manager/docmanager/js/deletedDoc-manager.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+</body>
+</html>

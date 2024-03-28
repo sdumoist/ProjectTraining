@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/doc/front/personalcenter/css/integral_rule.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    @include("/common/plugins.html"){}
+    <style>
+        .layui-layer .layui-layer-title{
+            text-align: center;
+            background: white!important;
+        }
+    </style>
+</head>
+
+<body>
+<div class="weadmin-body" style="margin: 0 30px !important;">
+
+    <div class="integral-title">积分是金企文库的虚拟货币，获得及消费积分的规则如下</div>
+    <div class="integral-desc">注：每日积分获得上限<span id="limit"></span></div>
+</div>
+<div class="integral-content" >
+
+    <div class="integral-upload">
+        <div id="uploadName" class="upload"></div>
+        <div id="uploadGrade" class="upload"></div>
+        <a href="${ctxPath}/personalcenter?toUpload=true" target="_blank"><div  class="upload-btn upload" style="cursor: pointer"  id="button">去上传</div></a>
+    </div>
+    <div class="integral-list" >
+        <!--  <div class="integral-theme" style="margin-right: 12px"><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" ><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" style="margin-right: 12px"><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" ><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" style="margin-right: 12px"><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" ><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" style="margin-right: 12px"><div class="name">上传文件</div><div class="integral-grade">+20</div></div>
+          <div class="integral-theme" ><div class="name">上传文件</div><div class="integral-grade">+20</div></div>-->
+    </div>
+</div>
+
+<script  src="${ctxPath}/static/doc/front/personalcenter/js/integral_rule.js?v=${h_version}"></script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>${session.projectTitle}-后台管理</title>
+    <link rel="shortcut icon" href="${ctxPath}/static/resources/img/front/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="${ctxPath}/static/css/hussar.css">
+    @include("/common/plugins.html"){}
+    <!--外部css和js开始-->
+    <script src="${ctxPath}/static/resources/js/common/index.js?v=${h_version}"></script>
+    <!--外部css和js开始-->
+
+</head>
+<body>
+<!-- 顶部开始 -->
+<div class="container">
+    <div class="logo">
+        <a href="${ctxPath}/" target="_blank"></a>
+    </div>
+    <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item layadmin-flexible left_open" lay-unselect="">
+            <a href="javascript:void(0);" layadmin-event="flexible">
+                <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+            </a>
+        </li>
+    </ul>
+    <ul class="layui-nav right" lay-filter="">
+        <li class="noPointer">
+            <a href="javascript:void (0);">
+                @if(session.url==null||session.url==""){
+                <img src="${ctxPath}/static/img/user-img.png">
+                @}else {
+                <img src="${session.url}" style="width: 24px;border-radius: 50%; margin-top: 0;">
+                @}
+                您好，${userName}</a>
+            <input id="userId"   type="hidden" class="hide"  value="${userId}" >
+        </li>
+        <li><a id="changePwd"><img src="${ctxPath}/static/img/updatepwd.png" title="修改密码"></a></li>
+        <li><a id="loginout"><img src="${ctxPath}/static/img/logout.png" title="注销登录"></a></li>
+    </ul>
+
+</div>
+<!-- 顶部结束 -->
+
+<!-- 左侧菜单开始 -->
+<div class="left-nav">
+
+    <div id="side-nav"  >
+        <ul id="nav">
+            @for(menu in menus){
+            @if(tool.isEmpty(menu.childMenus)){
+            <li>
+                <a _href="${ctxPath}${menu.url}" title="${menu.title}">
+                    <i class="iconfont">${menu.icons}</i>
+                    <cite>${menu.text}</cite>
+                </a>
+            </li>
+            @}else{
+            <li>
+                <a href="javascript:void(0);" title="${menu.title}">
+                    <i class="iconfont">${menu.icons}</i>
+                    <cite>${menu.text}</cite>
+                    <i class="iconfont nav_right">&#xe623;</i>
+                </a>
+                <ul class="sub-menu">
+                    @for(subMenu in menu.childMenus){
+                    @if(tool.isEmpty(subMenu.childMenus)){
+                    <li>
+                        <a _href="${ctxPath}${subMenu.url}" title="${subMenu.title}">
+                            <i class="iconfont icon-submenu"></i>
+                            <cite>${subMenu.text}</cite>
+                        </a>
+                    </li>
+                    @}else{
+                    <li>
+                        <a href="javascript:void(0);" title="${subMenu.title}">
+                            <i class="iconfont icon-submenu"></i>
+                            <cite>${subMenu.text}</cite>
+                            <i class="iconfont nav_right">&#xe623;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            @for(thirdMenu in subMenu.childMenus){
+                            <li>
+                                <a _href="${ctxPath}${thirdMenu.url}" title="${thirdMenu.title}">
+                                    <i class="iconfont sub-submenu"></i>
+                                    <cite>${thirdMenu.text}</cite>
+                                </a>
+                            </li>
+                            @}
+                        </ul>
+                    </li>
+                    @}
+                    @}
+                </ul>
+            </li>
+            @}
+            @}
+        </ul>
+    </div>
+</div>
+<div class="size">
+    <div class="size-top" style="font-weight: bold">已用:<span id="used"></span>/总计:<span id="total"></span></div>
+    <div class="size-bottom">
+        <div class="size-lack"></div>
+    </div>
+</div>
+<div class="x-slide_left"></div>
+<!-- 左侧菜单结束 -->
+<!-- 右侧主体开始 -->
+<div class="page-content">
+    <!--<div class="left_open"></div>-->
+    <div class="layui-tab tab" lay-filter="wenav_tab" id="WeTabTip" lay-allowclose="true">
+        <ul class="layui-tab-title">
+            <li class="layui-this" style="display: none;">欢迎页</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <iframe src='${ctxPath}/desktop' frameborder="0" scrolling="yes" class="weIframe"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-content-bg"></div>
+<!-- 右侧主体结束 -->
+<!-- 中部结束 -->
+</body>
+<!--Tab菜单右键弹出菜单-->
+<ul class="rightMenu" id="rightMenu">
+    <li data-type="fresh">刷新</li>
+    <li data-type="current">关闭当前</li>
+    <li data-type="other">关闭其它</li>
+    <li data-type="all">关闭所有</li>
+</ul>
+<link rel="stylesheet" href="${ctxPath}/static/resources/css/project_ext.css">
+</html>

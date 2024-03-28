@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.sharemanager.dao.PersonalShareMapper">
+    <select id="getMyShareHistory" resultType="com.jxdinfo.doc.manager.sharemanager.model.DocShare">
+        SELECT
+        ds .share_id as shareId,
+        ds.doc_id AS docId
+        ,ifnull(ff.file_name,ffd.folder_name) AS fileName
+        ,ff.file_size AS fileSize
+        ,ff.size as size
+        ,ifnull(su.USER_NAME,su2.USER_NAME) AS userName
+        ,ds.create_time AS createTime
+        ,ifnull(ff.FILE_TYPE,"folder") AS docType
+        , CASE
+        WHEN d.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  ffd.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END as authority
+        ,ds.valid_time AS validTime
+        ,ds.mapping_url AS mappingUrl
+        ,ds.password
+        ,ds.pwd_flag AS pwdFlag
+        ,IF(DATEDIFF(ds.valid_time,ds.create_time)>7,'永久',DATEDIFF(ds.valid_time,ds.create_time)) AS effectiveDays
+        FROM doc_share_resource ds
+        LEFT JOIN fs_file ff ON ds.doc_id=ff.file_id
+        LEFT JOIN doc_info d ON ds.doc_id=d.doc_id
+        LEFT JOIN sys_users su ON d.user_id = su.USER_ID
+        left join  fs_folder ffd on ffd.folder_id = ds.doc_id
+        LEFT JOIN sys_users su2 ON ffd.create_user_id = su2.USER_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = d.doc_id
+        WHERE 1=1
+        and ds.valid_time >NOW()
+        <if test="name != null and name != ''">
+            AND ifnull(ff.file_name,ffd.folder_name) like CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ds.create_user_id = #{userId}
+        </if>
+        and ifnull(ff.file_name,ffd.folder_name)!=""
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),ds.create_time)&gt;= 0
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 2">
+                    order by ds.create_time asc
+                </if>
+                <if test="order == 3">
+                    order by ds.create_time desc
+                </if>
+                <if test="order == 8">
+                    order by ds.valid_time desc
+                </if>
+                <if test="order == 9">
+                    order by ds.valid_time asc
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY ds.create_time DESC
+            </otherwise>
+        </choose>
+        LIMIT #{beginIndex}, #{pageSize}
+    </select>
+
+    <select id="getMyShareHistoryMobile" resultType="com.jxdinfo.doc.manager.sharemanager.model.DocShare">
+        SELECT
+        ds .share_id as shareId,
+        ds.doc_id AS docId
+        ,ifnull(ff.file_name,ffd.folder_name) AS fileName
+        ,ff.file_size AS fileSize
+        ,ff.size as size
+        ,ifnull(su.USER_NAME,su2.USER_NAME) AS userName
+        ,ds.create_time AS createTime
+        ,ifnull(ff.FILE_TYPE,"folder") AS docType
+        , CASE
+        WHEN d.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  ffd.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T2.authority
+        END as authority
+        ,ds.valid_time AS validTime
+        ,ds.mapping_url AS mappingUrl
+        ,ds.password
+        ,ds.pwd_flag AS pwdFlag
+        ,IF(DATEDIFF(ds.valid_time,ds.create_time)>7,'永久',DATEDIFF(ds.valid_time,ds.create_time)) AS effectiveDays
+        FROM doc_share_resource ds
+        LEFT JOIN fs_file ff ON ds.doc_id=ff.file_id
+        LEFT JOIN doc_info d ON ds.doc_id=d.doc_id
+        LEFT JOIN sys_users su ON d.user_id = su.USER_ID
+        left join  fs_folder ffd on ffd.folder_id = ds.doc_id
+        LEFT JOIN sys_users su2 ON ffd.create_user_id = su2.USER_ID
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        OR (DFA.AUTHOR_ID = #{userId})
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        GROUP BY
+        file_id
+        ) T2 ON T2.file_id = d.doc_id
+        WHERE 1=1
+        and ds.valid_time >NOW()
+        <if test="name != null and name != ''">
+            AND ifnull(ff.file_name,ffd.folder_name) like CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND (ffd.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+            OR D.fold_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>)
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ds.create_user_id = #{userId}
+        </if>
+        and ifnull(ff.file_name,ffd.folder_name)!=""
+        <choose>
+            <when test="timeType != null and timeType != ''">
+                <if test="timeType == 0">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 7
+                </if>
+                <if test="timeType == 1">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 30
+                </if>
+                <if test="timeType == 2">
+                    AND DATEDIFF(NOW(),ds.create_time)&lt;= 90
+                </if>
+            </when>
+            <otherwise>
+                AND DATEDIFF(NOW(),ds.create_time)&gt;= 0
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="order != null and order != ''">
+                <if test="order == 2">
+                    order by ds.create_time asc
+                </if>
+                <if test="order == 3">
+                    order by ds.create_time desc
+                </if>
+                <if test="order == 8">
+                    order by ds.valid_time desc
+                </if>
+                <if test="order == 9">
+                    order by ds.valid_time asc
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY ds.create_time DESC
+            </otherwise>
+        </choose>
+        LIMIT #{beginIndex}, #{pageSize}
+    </select>
+
+
+    <select id="getMyShareHistoryCount"  resultType="int">
+        select count(*) from (SELECT ds.doc_id AS docId
+        ,ff.file_name AS fileName
+        ,ff.file_size AS fileSize
+        ,su.USER_NAME AS userName
+        ,ds.create_time AS createTime
+        ,ff.FILE_TYPE AS docType
+
+        FROM doc_share_resource ds
+        left join  fs_folder ffd on ffd.folder_id = ds.doc_id
+        LEFT JOIN fs_file ff ON ds.doc_id=ff.file_id
+        LEFT JOIN doc_info d ON ds.doc_id=d.doc_id
+        LEFT JOIN sys_users su ON d.user_id = su.USER_ID
+        WHERE 1=1
+        and ifnull(ff.file_name,ffd.folder_name)!=""
+        and ds.valid_time >NOW()
+        <if test="name != null and name != ''">
+            AND FF.FILE_NAME like CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ds.create_user_id = #{userId}
+        </if>
+        )t
+
+    </select>
+
+    <select id="getMyShareHistoryCountMobile"  resultType="int">
+        select count(*) from (SELECT ds.doc_id AS docId
+        ,ff.file_name AS fileName
+        ,ff.file_size AS fileSize
+        ,su.USER_NAME AS userName
+        ,ds.create_time AS createTime
+        ,ff.FILE_TYPE AS docType
+
+        FROM doc_share_resource ds
+        left join  fs_folder ffd on ffd.folder_id = ds.doc_id
+        LEFT JOIN fs_file ff ON ds.doc_id=ff.file_id
+        LEFT JOIN doc_info d ON ds.doc_id=d.doc_id
+        LEFT JOIN sys_users su ON d.user_id = su.USER_ID
+        WHERE 1=1
+        and ifnull(ff.file_name,ffd.folder_name)!=""
+        and ds.valid_time >NOW()
+        <if test="name != null and name != ''">
+            AND FF.FILE_NAME like CONCAT(CONCAT('%',#{name}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ds.create_user_id = #{userId}
+        </if>
+        <if test="folderIds != null and folderIds.size >0">
+            AND (D.fold_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+            OR ffd.folder_id IN
+            <foreach collection="folderIds" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>)
+        </if>
+        )t
+
+    </select>
+</mapper>

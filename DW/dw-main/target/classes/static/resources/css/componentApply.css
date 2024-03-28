@@ -1,0 +1,87 @@
+.layui-form{padding-right: 40px;padding-bottom: 20px;border-bottom: 1px solid #CDCDCD;margin-bottom: 20px}
+.layui-form-item{clear: none;}
+.layui-form-radio{margin: 0;line-height: 30px;border: 1px solid #CCC;padding: 0 34px}
+.layui-form-radio:last-child{margin-left: -9.5px!important;}
+.layui-form-radioed{background: #2980ff;color: #fff;border: none !important;height: 32px;line-height: 32px;}
+.layui-form-radio i{display: none!important;}
+.layui-form-label{padding: 0 !important;text-align: left !important;width: 80px !important;}
+.layui-input:focus{border-color: #2980ff !important;}
+.layui-btn,.self-btn{border-radius: 2px !important;padding: 0;}
+.textarea-div{width: calc( 100% - 120px) !important;}
+.layui-form-radio{margin: 0 !important;}
+#componentType>:nth-child(2),#componentOrigin>:nth-child(2){border-radius:2px 0 0 2px !important;}
+#componentType>div:last-child,#componentOrigin>div:last-child{margin: 0 0 0 -4px !important;border-radius:0 2px 2px 0!important;}
+.layui-table tr{height: 30px !important;}
+.layui-table td{ padding: 5px 0px !important;}
+.bottom-btns {margin-top: 9px;height: 40px;}
+#fileList td:nth-child(3){padding-left: 10px !important;}
+.table-box{min-height: 200px !important;padding: 0 20px;}
+.layui-table tbody tr:hover{background-color: rgba(246,250,255,0.7) !important;}
+.layui-table td {border-color: rgb(242, 246, 253) !important;}
+.layui-table th {border-color: rgba(242,246,253,1) !important;}
+.layui-input-inline {
+    width: calc(100% - 90px) !important;
+}
+button#saveBtn{}
+button#cancel{}
+span.message {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    line-height: 44px;
+    padding-left: 20px;
+}
+body.weadmin-body {
+    overflow: auto;
+}
+div#collectList {
+    padding-bottom: 20px;
+}
+.layui-input:hover, .layui-textarea:hover {
+    border-color: #2890ff!important;
+}
+button#cancel{
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222;
+    padding: 0;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+/*取消*/
+button#saveBtn {
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    padding: 0;
+    text-align: center;
+    float: right;
+    font-size: 14px;
+}
+.layui-form-label{line-height: 30px}
+/*button#saveBtn{background:#27b7b0 !important;float: none !important;}*/
+@media screen and (min-width:700px) and (max-width:1366px) {
+    button#saveBtn{
+        width:64px;
+        height:26px;
+        line-height: 25px;
+        font-size: 12px;
+    }
+    /*取消*/
+    button#cancel{
+        width: 64px;
+        height: 26px;
+        line-height: 25px;
+        font-size: 12px;
+    }
+
+}

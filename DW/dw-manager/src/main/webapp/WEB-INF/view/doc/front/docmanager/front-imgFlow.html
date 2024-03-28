@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${session.projectTitle}-图片检索</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/search_new.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/front-imgFlow.css?v=${h_version}">
+    <style>
+        .main-box{margin-top: 12px}
+    </style>
+</head>
+<body>
+@include("/common/front-header_new2.html"){}
+<div class="main-box ">
+    <div class="container ">
+        <div class="left-container">
+            <div class="layui-row row">
+                <div class="col-sm-6 doc-num-title"><span> ${key!} </span>相关图片</div>
+                <div class="col-sm-3 doc-num" id="orderPicByTime" style="cursor: pointer">按时间排序
+                    <i class="layui-icon" id="orderPic" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"  src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                    </i>
+                    <i class="layui-icon" id="orderPic1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                    </i>
+                </div>
+                <div class="col-sm-3 doc-num ">
+                    <span >为您找到</span><span id="totalCount"></span><span class="after">张图片</span>
+                </div>
+            </div>
+            <input  type="hidden" class="hide"  id="count" >
+            <input  type="hidden" class="hide"  id="adminFlag"  value="${adminFlag}">
+            <input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType!}">
+            <input  type="hidden" class="hide"  id="tagString" value="${tagString!}">
+            <input  type="hidden" class="hide"  id="UIFolder" value="${UIFolder!}">
+            <!--筛选-->
+            <div class="filtration layui-form">
+                <div class="filtration-item" id="type">
+                    <label>分类:</label>
+                    <!--全部 网页UI BS系统 CS软件 APP 大屏 平板 平面 其他-->
+
+                </div>
+                <div class="filtration-item" id="industry_type">
+                    <label>行业:</label>
+                    <!--全部 电力 军工 铁路 公安 航天 通讯 政府 其他-->
+
+                </div>
+                <div class="filtration-item" id="color">
+                    <label>颜色:</label>
+                    <!--all red orange yellow green cyanine blue violet white gray black-->
+                    <!--<span class="all-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="reds-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="orange-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="yellow-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="green-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="cyanine-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="blue-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="violet-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="white-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="gray-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                    <!--<span class="black-color color-select"><i class="iconfont">&#xe605;</i></span>-->
+                </div>
+            </div>
+            <!---->
+            <div class="grid layui-row layui-col-space10 " id="articleItem" >
+
+            </div>
+            <!--分页请参考其他页面-->
+            <div class="text-center pageBox" >
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="rit-container">
+                <div class="btn-rit">
+                    <a href="${ctxPath}/personalcenter?toUpload=true" target="_blank">
+                        上传文件
+                    </a>
+                </div>
+            </div>
+            <div class="history">
+                <div class="title">搜索历史</div>
+                <div class='history-total'>
+                </div>
+            </div>
+            <div class="hot hide">
+                <div class="title">热搜文章</div>
+                <div class="hot-total">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@include("/common/front-footer.html"){}
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+@include("/common/front-rit.html"){}
+<script src="${ctxPath}/static/doc/front/docmanager/js/masonry.pkgd.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/imagesloaded.pkgd.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-imgFlow.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/component.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+
+    <style>
+
+        .tdStyle {
+            width: 50%;
+            height: 120px;
+            border-color:#F2F6FD !important;
+        }
+        .selectUser:hover{
+            text-decoration: underline!important;
+        }
+        .layui-form-checkbox span{
+            width: 60px;
+        }
+        .layui-form-checkbox[lay-skin=primary]{
+            height: 25px!important;
+        }
+        .layui-btn:hover {
+            opacity: 1;
+            filter: alpha(opacity=80);
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content clearfix" id="collectList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="message">中台咨询会议记录<span id="amount"></span></div>
+                    <div class="search-wrapper">
+                        <input class="search-input" id="style" hidden  style="display: none" value="${style}">
+                        <input class="search-input" id="type" hidden  style="display: none" value="${type}">
+                        <input class="search-input" id="origin" hidden  style="display: none" value="${origin}">
+                        <input class="search-input" id="state" hidden  style="display: none" value="${state}">
+                        <input class="search-input" id="dept" hidden  style="display: none" value="${dept}">
+                        <input class="search-input" id="check" hidden  style="display: none" value="${check}">
+                        <!--<input class="search-input" id="searchName" placeholder="按名称查找记录" value="">-->
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                    <div class="toolBar"  style="min-height: 50px">
+                        <!--<button id="cancelCollect" class="layui-btn cancelCollect" >取消收藏</button>-->
+                    </div>
+                </div>
+                <div id="uploader" class="wu-example">
+                    <div class="fast-button">
+                        <div class="shadow">
+
+                        </div>
+                        <div id="dndArea">
+                            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="height: auto">
+                                <ul class="layui-tab-title changeTab" style="width: 200px">
+
+                                    <li class="layui-this">全部</li>
+                                    <li>我的</li>
+                                </ul>
+                                <div class="layui-tab-content">
+
+                                    <div class="layui-tab-item layui-show">
+
+                                        <div class="fileButtonGroup " style="">
+                                            <form class="layui-form" action="">
+                                                <div class="layui-form-item item-last" pane="">
+                                                    <label class="layui-form-label">部门：</label>
+                                                    <div class="layui-input-block" id="dept2">
+                                                        <input name="dept2" title="全部" value="" type="checkbox"  lay-skin="primary" lay-filter="dept2"checked>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <button id="componentApplyAll" class="newFolder layui-btn hideBtn addBtn" style="bottom: 0px !important" >新增记录</button>
+                                            <button id="delComponentBtnAll" class=" newFolder layui-btn  clickBtn hideBtn"  style="float: none;margin-left:-1px !important;bottom: 0px !important" hidden>记录删除</button>
+                                            <!--<button id="updateComponentApplyAll" class="newFolder layui-btn clickBtn hideBtn" style="float: none;margin-left:-15px !important;bottom: 0px !important" hidden>记录修改</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="layui-tab-item ">
+
+                                        <div class="fileButtonGroup2 fileButtonGroup" style="width:100%;height: 80px;">
+                                            <!--<form class="layui-form" action="">-->
+                                                <!--<div class="layui-form-item" pane="">-->
+                                                    <!--<label class="layui-form-label">分类：</label>-->
+                                                    <!--<div class="layui-input-block">-->
+                                                        <!--<input name="type" title="全部" type="checkbox"  value="" lay-skin="primary" lay-filter="type" checked>-->
+                                                        <!--<input name="type" title="技术组件" type="checkbox" value="0" lay-skin="primary" lay-filter="type">-->
+                                                        <!--<input name="type" title="解决方案"  type="checkbox" value="1" lay-skin="primary" lay-filter="type">-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+                                                <!--<div class="layui-form-item" pane="">-->
+                                                    <!--<label class="layui-form-label">来源：</label>-->
+                                                    <!--<div class="layui-input-block">-->
+                                                        <!--<input name="origin" title="全部" type="checkbox" value="" lay-skin="primary"  lay-filter="origin"checked>-->
+                                                        <!--<input name="origin" title="项目开发" type="checkbox" value="0" lay-skin="primary" lay-filter="origin">-->
+                                                        <!--<input name="origin" title="技术预研"  type="checkbox" value="1" lay-skin="primary" lay-filter="origin">-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+                                                <!--<div class="layui-form-item" pane="">-->
+                                                    <!--<label class="layui-form-label">状态：</label>-->
+                                                    <!--<div class="layui-input-block">-->
+                                                        <!--<input name="state" title="全部" value="" type="checkbox"  lay-skin="primary" lay-filter="state"checked>-->
+                                                        <!--<input name="state" title="待审核" value="0" type="checkbox" lay-skin="primary"lay-filter="state">-->
+                                                        <!--<input name="state" title="待发布"  value="1" type="checkbox" lay-skin="primary"lay-filter="state">-->
+                                                        <!--<input name="state" title="已发布"  value="2"type="checkbox" lay-skin="primary"lay-filter="state">-->
+                                                        <!--<input name="state" title="已驳回"  value="3" type="checkbox" lay-skin="primary"lay-filter="state">-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+
+                                            <!--</form>-->
+                                            <button id="componentApply" class="newFolder layui-btn hideBtn addBtn" style="position: static;bottom: 0px !important">新增记录</button>
+                                            <button id="delComponentBtn" class=" newFolder layui-btn  clickBtn hideBtn"  style="float: none;margin-left:-1px !important;bottom: 0px !important" hidden>记录删除</button>
+                                            <button id="updateComponentApply" class="newFolder layui-btn clickBtn hideBtn" style="float: none;margin-left:-15px !important;bottom: 0px !important" hidden>记录修改</button>
+                                        </div>
+                                    </div>
+                                    <!--<div class="layui-tab-item">
+                                        <div class="fileButtonGroup3 fileButtonGroup" style="width:100%;height: 30px;">
+
+                                            <button id="multiplexApply" class="newFolder layui-btn hideBtn addBtn" style="margin-top: -30px !important;">新增复用</button>
+                                            <button id="delMultiplex" class=" newFolder layui-btn  clickBtn hideBtn" style="margin-top: -30px !important;" hidden>复用删除</button>
+                                            <button id="updateMultiplex" class="newFolder layui-btn clickBtn hideBtn" style="margin-top: -30px !important;" hidden>复用修改</button>
+                                            &lt;!&ndash; <button id="multiplexApply" class="newFolder layui-btn hideBtn" style="margin-left: -11px !important;">复用登记</button>
+                                             <button id="multiplexList" class="newFolder layui-btn hideBtn" style="margin-left: -11px !important;">我的复用</button>&ndash;&gt;
+
+
+                                        </div>
+                                    </div>-->
+                                </div>
+
+                            </div>
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card popWin success" style="display: none" >
+                        <div class="layui-card-header">
+                            <span>记录</span>
+                            <div class="fr">
+                                <i class="iconfont controls-down">&#xe61a;</i>
+                                <i class="iconfont controls-close">&#x1006;</i>
+                            </div>
+                            <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="success-msg"></div>
+                            <div class="btns">
+                                <div class="uploader-list upload-head">
+                                    <div  class="item">
+                                        <h4 class="info">文件名</h4>
+                                        <h4 class="state">文件状态</h4>
+                                        <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                    </div>
+                                </div>
+                                <!-- 文件列表：选择文件后在该div显示 -->
+                                <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                <label class="text-right"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="noDataTip">未找到相关内容~</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<script id="demo1" type="text/html">
+    <table class="layui-table table_list" >
+        <!--<colgroup>
+            <col width="200">
+            <col width="90">
+            <col>
+            <col width="90">
+            <col width="90">
+        </colgroup>-->
+        <thead>
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <tr class='hoverEvent' ondblclick="dbclick('{{item.consulationId}}','{{item.fileType}}','{{item.fileName}}')"  onclick="clickCheck(this,'{{item.consulationId}}','{{item.fileType}}','{{item.fileName}}','{{item.componentState}}')">
+            <td class="tdStyle">
+                <div class="rows" style="cursor:default"><div class="row-title"><span  id="name{{index}}" class="nameTitpe titleName title-span"  title="{{ item.consulationTitle }}"
+                                                                                       style="cursor: default;font-size: 16px;max-width: 1100px"><a class="fileName"
+                                                                                                                                                    onclick="dbclick('{{item.consulationId}}','{{item.fileType}}','{{item.fileName}}','{{item.componentState}}')"
+                                                                                                                                                    src="">{{ item.consulationTitle }}</a></span>
+                </div>
+
+                    <!--<div class="status">-->
+                        <!--{{# if(item.componentState=='0'){   }}-->
+                        <!--<span style="border:1px solid #deedff;color:#3C91FD;" class="spans"> 待审核</span>-->
+                        <!--{{#  }else if (item.componentState=='1'){  }}-->
+                        <!--<span style="border:1px solid #ffebcc;color:#FE9F11;"  class="spans"> 待发布</span>-->
+                        <!--{{#  }else if (item.componentState=='2'){  }}-->
+                        <!--<span style="border:1px solid #def5eb;color:#82D8B3;"  class="spans"> 已发布</span>-->
+                        <!--{{#  }else {  }}-->
+                        <!--<span style="border:1px solid #ffe0cc;color:#FE0E0E;" class="spans"> 已驳回</span>-->
+                        <!--{{#  } }}-->
+                    <!--</div>-->
+                </div>
+                <div class="rows" style="text-align: left;max-width:1100px;font-size: 14px" >
+                <span  class="componame" title="{{ item.tontentText }}" style="cursor:default">
+                 {{# if(item.contentText==null||item.contentText==""){   }}
+                    暂无描述
+                       {{#  }else {  }}
+                         {{item.contentText}}
+                      {{#  } }}
+                    </span>
+                </div>
+                <div class="rows" style="cursor:default;">
+                    <div style="width:50%;float: right;height:100%;font-size: 12px;color: #5ACC9B;text-align: right ">
+
+
+                        {{#
+                        var titlesub = function(){
+                        var result='';
+                        var time=item.createTime;
+                        result=time.substr(0, 11);
+
+                        return result;
+                        };
+
+                        }}
+                        {{titlesub()}}<!--|
+                        {{# if(item.componentType=='0'){   }}
+                        技术组件
+                        {{#  }else {  }}
+                        解决方案
+                        {{#  } }}|
+                        {{# if(item.componentOrigin=='0'){   }}
+                        项目开发
+                        {{#  }else {  }}
+                        技术预研
+                        {{#  } }}-->
+                    </div>
+
+                    <div style="width: 50%;float: left;height:100%;text-align: left;color: #0188FB;font-size: 12px">
+                        {{# if(d.style=='1'){    }}
+                        {{item.createUserName}}
+
+                        {{#  }else {  }}
+                        {{item.createUserName}}
+                        {{#  } }}
+
+                        <span>&nbsp;</span> · <span>&nbsp;</span>  {{item.deptName}}
+                    </div>
+                </div>
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }
+
+        ); }}
+        </tbody>
+    </table>
+
+</script>
+<script id="demo2" type="text/html">
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col width="200">
+            <col width="90">
+            <col>
+            <col width="90">
+            <col width="90">
+        </colgroup>
+        <thead>
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <tr class='hoverEvent' onclick="clickCheck(this,'{{item.projectId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td class="tdStyle">
+                <div class="rows"><div class="row-title"><span  id="name{{index}}" class="nameTitpes titleName title-span" title="{{ item.projectName }}"
+                                                                style="cursor: default"><a class="fileName"
+                                                                                           src="">{{ item.projectName }}</a></span>
+                </div>
+                </div>
+                <div class="rows" style="text-align: left;max-width:1100px;" >
+                <span  class="componame" title="{{ item.componentName }}" style="cursor:default">
+                {{item.componentName}}
+                    </span>
+                </div>
+                <div class="rows">
+                    <div style="width: 50%;float: left;height:100%;text-align: left;color:#0188FB;font-size: 12px;cursor:default">
+                        {{item.projectUser}} <span>&nbsp;</span> · <span>&nbsp;</span>  {{item.projectDept}}
+                    </div>
+                    <div style="width: 50%;float: right;height:100%;text-align: right;color: #5ACC9B;font-size: 12px;cursor:default">
+                        {{item.createTime}}
+                    </div>
+                </div>
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }
+
+        ); }}
+        </tbody>
+    </table>
+
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/middlegroundConsulation.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#collectList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+
+</script>
+</body>

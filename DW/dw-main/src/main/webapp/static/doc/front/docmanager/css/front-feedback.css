@@ -1,0 +1,83 @@
+form{
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    padding-left: 10%;
+}
+.textarea,.textbox,.checkbox,.img_div{
+    width: 90%;
+}
+
+.btn-radio-left{
+    border:1px solid rgba(209, 222, 237, 1);
+    border-radius:2px 0px 0px 2px;
+    margin-right:20px;
+}
+.btn-radio-right{
+    border:1px solid rgba(209, 222, 237, 1);
+    border-radius:0px 2px 2px 0px;
+}
+.radio-active,.btn:hover{
+    color: rgba(60, 145, 253, 1);
+    border:1px solid rgba(60, 145, 253, 1);
+}
+.feedback_submit,.layui-btn:hover{
+    width:93px;
+    height:38px;
+    color: rgba(60,145,253,1);
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(60,145,253,1);
+    border-radius:19px;
+}
+.btn-center{
+    margin-top: 5%;
+    padding-left: 35%;
+}
+.attach_img{
+    width:70px;
+    height:69px;
+    border:1px solid rgba(209, 222, 237, 1);
+}
+.add_img{
+    width:70px;
+    height:69px;
+    background: url(../img/feedback-addimg.png) no-repeat center;
+    cursor: pointer;
+    border:1px solid rgba(209, 222, 237, 1);
+    /*margin-left: -9px;*/
+}
+
+.add_msg{
+    font-size:12px;
+    color:rgba(164,179,195,1);
+}
+.btn-delPic{
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: url("../img/feedback-attach-close.png") no-repeat center;
+    position: absolute;
+    top: -10%;
+    left: 84%;
+}
+.btn-group .btn+.btn, .btn-group .btn+.btn-group, .btn-group .btn-group+.btn, .btn-group .btn-group+.btn-group {
+    margin-left: 0px;
+}
+.feedback-item{
+    width: 100%;
+}
+.textarea{
+    height: 120px;
+}
+textarea:hover::-webkit-input-placeholder{
+    color: #3e5b82;
+}
+.layui-layer-ico5{
+    background: url(../img/icon2.png) no-repeat!important;
+}
+.layui-form-label {
+    width: 82px!important;
+}
+.layui-layer-ico1 {
+    background: url(../../../../resources/img/icon1-blue.png) no-repeat!important;
+}

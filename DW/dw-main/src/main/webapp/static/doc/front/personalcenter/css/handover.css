@@ -1,0 +1,375 @@
+@charset "utf-8";
+.table-top.table-top1.clearfix {
+    height: 52px;
+    background: #FBFBFB;
+    border-color: #F0F0F0;
+}
+.table-top.table-top2.clearfix {
+    height: 54px;
+    margin: 0 28px;
+    border-color: #F1F2F4;
+    width: calc(100% - 56px);
+    padding: 0;
+    position: relative;
+}
+.table-top.table-top1 .layui-tab.layui-tab-brief {
+    display: inline-block;
+    margin: 0;
+    height: 100%;
+    position: relative;
+}
+.changeTab{
+    border: 0;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.changeTab li{
+    width: 76px;
+    height: 32px;
+    color: #777777;
+    line-height: 32px;
+    font-size: 14px;
+}
+.changeTab li:first-child{
+    margin-right: 20px;
+}
+.layui-tab-brief>.layui-tab-title.changeTab li.layui-this{
+    background: #2980ff;
+    border: 0 !important;
+    color: #fff !important;
+    border-radius: 2px;
+}
+.layui-tab-brief>.layui-tab-title.changeTab li.layui-this:after{
+    display: none;
+}
+.search-wrapper {
+    margin: 0;
+    height: 100%;
+    position: relative;
+}
+input#searchName ,div#searchBtn{
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.table-top.table-top2>span{
+    color: #2980FF;
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+.table-top.table-top2>span>span{
+    color: #777777;
+    text-indent: 10px;
+    display: inline-block;
+}
+.fileButtonGroup {
+    height: 100%;
+    width: 50%;
+}
+.fileButtonGroup form.layui-form,.fileButtonGroup .layui-form-item {
+    height: 100%;
+    margin: 0;
+    position: relative;
+}
+.fileButtonGroup label.layui-form-label {
+    top: 50%;
+    position: absolute;
+    transform: translate(0, -50%);
+    padding-left: 0;
+    color: #222222;
+}
+.fileButtonGroup .layui-input-block{
+    height: 0;
+    margin-left: 72px;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -56%);
+}
+.fileButtonGroup .layui-input-block span{
+    color: #777;
+}
+.fileButtonGroup .layui-input-block .layui-form-checked i,.fileButtonGroup .layui-input-block .layui-form-checkbox:hover i{
+    border-color: #2980ff !important;
+}
+.fileButtonGroup i.layui-icon.layui-icon-ok {
+    top: 2px;
+    width: 15px;
+    height: 15px;
+}
+.fileButtonGroup .layui-input-block .layui-form-checkbox {
+    padding-left: 30px;
+    width: auto !important;
+}
+.fileButtonGroup .layui-icon-ok:before {
+    position: relative;
+    top: -5px;
+}
+.message {
+    color: #777777;
+    font-size: 12px;
+    font-weight: 400;
+    position: relative;
+    margin: 0 28px;
+    padding: 0;
+    width: calc(100% - 56px);
+}
+.message>span{
+    position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+    margin: 0;
+}
+span#amount{
+    margin: 0;
+}
+button#handover{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    margin: 0;
+    margin-top: 6px;
+    width: 94px;
+    height: 34px;
+    background: #2980ff;
+    border: 0;
+    border-radius: 2px;
+    color: #fff;
+}
+.fast-button{
+    margin: 0 28px;
+    height: calc(100% - 168px) !important;
+}
+.handover-operation .spans{
+    width: 52px;
+    height: 22px;
+    border-radius: 2px;
+    line-height: 20px;
+    font-size: 12px;
+    display: inline-block;
+    text-align: center;
+}
+.handover-operation .wait-examine{
+    background: #e6f7ff;
+    border: 1px solid #91d5ff;
+    color: #2793ff;
+}
+.handover-operation .reject-handover{
+    background: #fff2e8;
+    border: 1px solid #ffbb96;
+    color: #FB541C;
+}
+.handover-operation .no-handover{
+    background: #f1f2f4;
+    border: 1px solid #e4e4e6;
+    color: #777777;
+}
+.handover-operation .pass-handover{
+    border:1px solid #def5eb;color:#82D8B3;
+}
+/*审核*/
+.fileButtonGroup1 .newFolder{
+    margin: 0;
+    width: 84px;
+    height: 32px;
+    border: 1px solid #DBDBDB;
+    border-radius: 2px;
+    color: #222222;
+    line-height: 30px;
+    text-indent: 27px;
+    font-size: 14px;
+}
+.fileButtonGroup1{
+    position: absolute;
+    height: auto;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: auto;
+    right: 0;
+}
+button#pass {
+    border-color: #2980ff;
+    color: #fff;
+    background:#2980ff url("../img/pass.png") no-repeat left;
+    background-size: 20px 20px;
+    background-position-x: 12px;
+}
+button#back {
+    margin-left: 10px !important;
+    background: url("../img/reject.png") no-repeat left;
+    background-size: 20px 20px;
+    background-position-x: 12px;
+}
+div#uploader{
+    height: 100% !important;
+}
+#marg .file-container-flatten {
+    height: calc(100% - 40px) !important;
+}
+div#addDiv {
+    height: 100%;
+    padding: 23px 21px;
+}
+div#addDiv .layui-form-label{
+    font-size: 12px;
+    color: #222222;
+    line-height: 15px;
+    margin: 0;
+    padding: 0;
+}
+div#addDiv .layui-form-label.confirm{
+    font-size: 12px;
+    color: #2980ff;
+    line-height: 14px;
+    background: url("../img/warn.png") no-repeat left;
+    background-size: 14px 14px;
+    text-indent: 22px;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 28px;
+}
+.handover-type .layui-input-block{
+    margin-left: 68px;
+    text-align: left;
+    min-height: 0;
+}
+.handover-person .layui-form-label{
+    line-height: 36px !important;
+}
+.handover-person{
+    display: block;
+    float: left;
+    width: 100%;
+}
+.handover-type {
+    height: 15px;
+    display: block;
+    float: left;
+    width: 100%;
+    margin-bottom: 26px;
+}
+div#addDiv .layui-input-block .layui-form-radio{
+    margin: 0 20px 0 0 !important;
+    height: 15px;
+    float: left;
+}
+div#addDiv .layui-input-block .layui-form-radio i{
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    height: 15px;
+    float: left;
+    line-height: 16px;
+}
+div#addDiv .layui-input-block .layui-form-radio.layui-unselect i{
+    color: #DBDBDB;
+}
+div#addDiv .layui-input-block .layui-form-radio.layui-form-radioed i{
+    color: #2980ff;
+}
+div#addDiv .layui-input-block .layui-form-radio div{
+    line-height: 15px;
+    font-size: 12px;
+    margin-left: 6px;
+    float: left;
+}
+input#authorName {
+    height: 36px;
+    width: 254px;
+}
+.creat-folder-dialog .layui-layer-btn a{
+    margin-top: 0px;
+}
+/*选择接收人*/
+div#showEmployeeTree {
+    float: left;
+    width: 100%;
+    height: calc(100% - 70px);
+    overflow: auto;
+}
+.handover-detail iframe{
+    height: 100% !important;
+}
+a.layui-layer-ico.layui-layer-max {
+    display: none;
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe>.fileName:hover{
+    color: #222 !important;
+}
+.jstree-children .jstree-themeicon{
+    background-image: url(../../../../assets/img/treeContext/blue/deptOld.png);
+    background-position: center;
+}
+/*i.jstree-icon.jstree-themeicon {*/
+    /*background: url("../img/handover-person-icon.png") no-repeat left !important;*/
+    /*background-size: 22px 22px !important;*/
+/*}*/
+.layui-input-inline.personSearch {
+    width: 100%;
+    margin: 0;
+    padding:10px 0 18px;
+}
+input#personSearch {
+    width: 300px !important;
+    height: 32px;
+    border-color: #D9D9D9;
+    margin: 0 auto;
+    background: url("../img/search.svg") no-repeat right;
+    background-position-x: calc(100% - 8px);
+    background-size: 13px 13px;
+}
+.search-results {
+    display: none;
+}
+ul.jstree-container-ul.jstree-children.jstree-no-dots {
+    margin-top: 0;
+}
+a.layui-layer-min {
+    display: none !important;
+}
+.message span{
+    color: #777;
+}
+.table_list.layui-table tr td:first-child, .table_list.layui-table tr th:first-child{
+    position: relative;
+}
+.table_list.layui-table tr .layui-form-checkbox{
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    margin-top: 0 !important;
+}
+.table_list tbody>tr>td:first-child>span.nameTitpe{
+    display: inline-block!important;
+    width: calc(100% - 90px) !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translate(0, -50%);
+    left: 40px !important;
+}
+@media only screen and (max-width:1366px) {
+    .handover-detail{
+        height: 530px !important;
+    }
+    .handover-detail .layui-layer-content{
+        height: calc(100% - 80px);
+    }
+    .fileButtonGroup .layui-input-block .layui-form-checkbox {
+        /*width: 79px !important;*/
+    }
+    .fileButtonGroup .layui-input-block span {
+        text-indent: 26px;
+    }
+    .fileButtonGroup i.layui-icon.layui-icon-ok {
+        top: 3px;
+    }
+    .fileButtonGroup .layui-icon-ok:before {
+        left: -2px;
+    }
+}

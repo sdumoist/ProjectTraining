@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>在线编辑</title>
+    <link rel="shortcut icon" href="${ctxPath}/static/resources/img/front/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/onlyoffice/css/editor.css" />
+
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="${docserviceApiUrl}"></script>
+
+    <script type="text/javascript" language="javascript">
+
+        var docEditor;
+
+        var innerAlert = function (message) {
+            if (console && console.log)
+                console.log(message);
+        };
+
+        var onAppReady = function () {
+            innerAlert("Document editor ready");
+        };
+
+        var onDocumentStateChange = function (event) {
+            var title = document.title.replace(/\*$/g, "");
+            document.title = title + (event.data ? "*" : "");
+        };
+
+        var onRequestEditRights = function () {
+            location.href = location.href.replace(RegExp("mode=view\&?", "i"), "");
+        };
+
+        var onError = function (event) {
+            if (event)
+                innerAlert(event.data);
+        };
+
+        var onOutdatedVersion = function (event) {
+            location.reload(true);
+        };
+
+        var config = JSON.parse('${file}');
+        config.width = "100%";
+        config.height = "100%";
+        config.events = {
+            "onAppReady": onAppReady,
+            "onDocumentStateChange": onDocumentStateChange,
+            'onRequestEditRights': onRequestEditRights,
+            "onError": onError,
+            "onOutdatedVersion": onOutdatedVersion
+        };
+
+        var connectEditor = function () {
+            docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+        };
+
+        var histArray = eval('(' + '${histArray}' + ')');
+        var histObj = histArray[0];
+        var historyData = histArray[1];
+
+        if (histObj != "" && historyData != "") {
+            config.events['onRequestHistory'] = function () {
+                docEditor.refreshHistory(histObj);
+            };
+            config.events['onRequestHistoryData'] = function (event) {
+                var ver = event.data;
+                var histData = historyData;
+                docEditor.setHistoryData(histData[ver]);
+            };
+            config.events['onRequestHistoryClose'] = function () {
+                document.location.reload();
+            };
+        }
+
+        if (window.addEventListener) {
+            window.addEventListener("load", connectEditor);
+        } else if (window.attachEvent) {
+            window.attachEvent("load", connectEditor);
+        }
+    </script>
+
+</head>
+<body>
+<div class="form">
+    <div id="iframeEditor"></div>
+</div>
+</body>
+</html>

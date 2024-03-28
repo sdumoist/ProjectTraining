@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${projectTitle}-音频预览</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <style>
+        html{height: 100%;overflow-y: scroll}
+        body#top{position: relative;height: 100%;overflow:hidden;min-height: 100%;padding-bottom: 44px}
+        .header-with-search{position: static;top:0}
+        .breadCrumbs{display: none}
+        body#top .divtop,.layui-col-sm12,.pdf-view,body#top .viewContent{height: 100%!important;min-height: 100%}
+        body#top .container-new{margin-top: 0;height: calc(100% - 60px);}
+        body#top .viewContent{padding: 10px 0;background: none;}
+        body#top .pdf-content{height: 100%!important;}
+        body > .container{margin-top: 60px}
+        body > .container.footer{position: absolute;bottom: 0;width: 100%;height: 60px;margin-top:auto}
+
+        .btn-rit{display: none}
+        /*body#top .container {margin-top: 10px;}*/
+        .viewTitle.type-mp3{margin-top: 10px;margin-bottom: 10px;}
+        .content-bottom{height: calc(100% - 48px);}
+
+    </style>
+    <script type="text/javascript">
+        projectTitle = "${projectTitle}";
+    </script>
+</head>
+<body id="top">
+<a name="goTop" id="goTop"></a>
+@include("/common/share-header.html"){}
+<input type="hidden" class="hide" id="docType" value="${fileType}"/>
+<input type="hidden" class="hide" id="hash" value="${hash}"/>
+<input type="hidden" class="hide" id="category" value="${category}"/>
+<div class="container-new container-pdf" id="container-pdf">
+    <div class="container">
+        <div class="breadCrumbs">
+            <label></label>
+            <div class="pathes"></div>
+        </div>
+        <div id="title" class="viewTitle"></div>
+<!--        <div class="docView">-->
+<!--            <span class="textOver" id="owner"></span>-->
+<!--            <span class="textOver" id="uploadTime"></span>-->
+<!--            <span class="textOver" id="fileSize"></span>-->
+<!--            <span class="textOver" id="downloadNum"></span>-->
+<!--            <span class="textOver" id="previewNum"></span>-->
+<!--        </div>-->
+<!--        <div class="doc-desc">-->
+<!--            <span id="docAbstract"></span>-->
+<!--        </div>-->
+    </div>
+    <div class="content-bottom">
+        <div class="layui-row divtop container">
+            <div class="layui-col-sm12">
+                <div class="pdf-view">
+                    <div class="viewContent">
+                        <div class="viewContent">
+                            <div class="pdf-content">
+                                <audio id="audio" controls>
+                                    <source id="s1" src="" type="audio/mpeg">
+                                    您的浏览器不支持 audio 元素。
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@include("/common/front-footer.html"){}
+@include("/common/front-rit-share.html"){}
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/shareVoice.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.front.groupmanager.dao.FrontDocGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.groupmanager.model.DocGroup" >
+    <id column="GROUP_ID" property="groupId" jdbcType="VARCHAR" />
+    <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+    <result column="GROUP_LEVEL" property="groupLevel" jdbcType="INTEGER" />
+    <result column="PARENT_GROUP_ID" property="parenteGroupId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER_ID" property="createUserId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LEVEL_CODE" property="levelCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    GROUP_ID, GROUP_NAME,GROUP_LEVEL, PARENT_GROUP_ID, CREATE_USER_ID, CREATE_TIME, LEVEL_CODE
+  </sql>
+  <!--群组列表查询-->
+  <select id="getPremission" resultType="String">
+    SELECT T.GROUP_ID groupId FROM DOC_GROUP_USER T WHERE T.USER_ID = #{userId}
+  </select>
+</mapper>

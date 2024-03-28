@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>资源管理器</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/docmanager/css/resource-manager.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/doc/manager/docmanager/css/fileinput.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/uplod.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+</head>
+<body>
+<script type="text/javascript">
+    // 此段代码处于 顶层（top） 页面中
+    var layerFrameConfig = {};
+</script>
+<div class="background">
+    <div class="content">
+
+        <div class="layui-col-md3  layui-col-sm3 con-full-l leftArea">
+            <div class="pims-tree">
+                <div class="tree-box"  >
+                    <div id="fileTree" class="jsTree" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg">
+                <div class="table-top clearfix">
+                    <div class="search-wrapper">
+                        <input class="layui-input" id="searchName" placeholder="在当前目录查找" value="">
+                        <button class="layui-btn" id="searchBtn"><i class="layui-icon">&#xe615;</i>查询</button>
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                    <div class="toolBar">
+                        <!--<button id="uploadBtn" class="layui-btn"><i class="layui-icon">&#xea0c;</i>上传</button>-->
+                        <input id="jindutiao" type="hidden" />
+                        <div id="uploader" class="wu-example">
+                            <div class="shadow">
+                                <div class="cloud">
+                                    <div class="upload-img iconfont">&#xe04a;</div>
+                                </div>
+                                <button class="layui-btn">上传至当前文件夹</button>
+                            </div>
+                            <div id="dndArea">
+                                <div class="file-container-flatten" id="">
+                                    <div id="view"></div>
+                                </div>
+                            </div>
+                            <div id="picker" class="webuploader-container" >
+                                <div class="webuploader-pick layui-btn"><i class="layui-icon">&#xea0c;</i>上传</div>
+                                <div id="rt_rt_1bchdejhrarjdvd11h41eoh1nt1">
+                                    <input id="file_bp" name="file"
+                                           class="webuploader-element-invisible" type="file" /> <label ></label>
+                                </div>
+                            </div>
+                            <div class="layui-card popWin success" style="display: none" >
+                                <div class="layui-card-header">
+                                    <span>文件上传</span>
+                                    <div class="fr">
+                                        <i class="iconfont controls-down">&#xe61a;</i>
+                                        <i class="iconfont controls-close">&#x1006;</i>
+                                    </div>
+                                    <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                                </div>
+                                <div class="layui-card-body">
+                                    <div class="success-msg"></div>
+                                    <div class="btns">
+                                        <div class="uploader-list upload-head">
+                                            <div  class="item">
+                                                <h4 class="info">文件名</h4>
+                                                <h4 class="state">文件状态</h4>
+                                                <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                            </div>
+                                        </div>
+                                        <!-- 文件列表：选择文件后在该div显示 -->
+                                        <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                        <label class="text-right"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button id="reName" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea11;</i>文件授权</button>
+                        <button id="setTip" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea11;</i>设置标签</button>
+                        <button id="updateName" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea04;</i>重命名</button>
+                        <button id="delCategoryBtn" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea0f;</i>删除</button>
+                        <button id="cutFile" class="layui-btn hideBtn clickBtn">   <img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/move.png">移动</button>
+                        <button id="mulDownLoad" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea07;</i>下载</button>
+                        <button id="manyMulDownLoad" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea07;</i>打包下载</button>
+                        <button id="joinTopic" class="layui-btn hideBtn clickBtn"><i class="layui-icon">&#xea0d;</i>加入专题</button>
+                    </div>
+                </div>
+                <div id="pathDiv">
+                    <div id="upDiv" class="left">
+                        <img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/uplevelicongreen.png"><span id="upLevel" style="cursor: pointer;color:#26B7B1">返回上级</span>|
+                    </div>
+                    <div class="outer-nav"><i class="layui-icon control-btn-l">&#xe603;</i><div id="path" class="left"></div><i class="layui-icon control-btn-r">&#xe602;</i></div>
+                </div>
+                <div class="rit-menu clearfix">
+
+                    <div id="listStyle1" title="平铺模式" class="rit-menu1 rit-menus  fr"></div>
+                    <div id="listStyle2" title="列表模式" class="rit-menu2 rit-menus fr active"></div>
+                </div>
+
+                <div id="laypageAre">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<input  type="hidden" class="hide"  id="fileId"/>
+<input  type="hidden" class="hide"  id="filePid"/>
+<input  type="hidden" class="hide"  id="fileType"/>
+<div id="addDiv" style="display: none;text-align:right" class="addFont">
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <div style="margin-top:25px">
+                <label class="layui-form-label" style="text-align:right">
+                    <span class="we-red">*</span>目录名称
+                </label>
+                <input type="text" id="categoryName" autocomplete="off"  maxlength="30" lay-verify="required|categoryName" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-md12">
+                <label  class="layui-form-label" style="text-align:right">
+                    <span class="we-red">*</span>保密等级
+                </label>
+                <div class="layui-input-inline textarea-div layui-form">
+                    <select id="levelId" lay-verify="" lay-filter="level" lay-search></select>
+                </div>
+                <button id="setAuthority" type="button" class="layui-btn">权限设置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="editDiv" style="display: none;" class="addFont change-file">
+    <form class="layui-form" >
+
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>标题
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="categoryEditName" style="width: 100%"  autocomplete="off"  maxlength="40" lay-verify="required|categoryName" class="layui-input">
+                </div>
+            </div>
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>作者
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="authorName"  readonly="readonly" placeholder="作者选择"  class="layui-input">
+                    <input  type="hidden" class="hide"  id="authorId" >
+                </div>
+            </div>
+        </div>
+       <!-- <div class="layui-form-item">
+            <label class="layui-form-label">
+                描述
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="docAbstract"  class="layui-textarea" lay-verify="topicDesc"></textarea>
+            </div>
+        </div>-->
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">可见范围</label>
+            <div class="layui-input-block  view-inline">
+                <input type="radio" name="visibleEdit" lay-filter="visibleEdit" value="0" title="完全公开" >
+                <input type="radio" name="visibleEdit" lay-filter="visibleEdit" value="1" title="部分可见" checked="">
+                <div class="layui-inline bot range-bot">
+                    <button style="" id="setEditAuthority" type="button" class="layui-btn view-range ">可见范围</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">操作权限</label>
+            <div class="layui-input-block pow-inline">
+                <input type="checkbox" name="isPe" id="isPe" lay-skin="primary" title="预览" checked>
+                <input type="checkbox" name="isEditEdit" id="isEditEdit" lay-skin="primary" title="下载" >
+                <input type="checkbox" name="isCollect" id="isCollect" lay-skin="primary" title="收藏" >
+                <input type="checkbox" name="isShare" id="isShare" lay-skin="primary" title="分享" >
+                <input type="checkbox" name="isPrint" id="isPrint" lay-skin="primary" title="打印" >
+            </div>
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">安全水印</label>
+            <div class="layui-input-block pow-inline">
+                <input type="checkbox" id="watermark_company_isChecked" lay-skin="primary" title="公司名称" >
+                <input type="text" id="watermark_company" lay-skin="primary"class="layui-input" style="width: 100px;float:right;margin-right: 50%">
+            </div>
+            <div class="layui-input-block pow-inline" >
+                <input type="checkbox" id="watermark_user" lay-skin="primary" title="用户名称" >
+            </div>
+        </div>
+
+        <div class="layui-form-item bot-form-item">
+
+        </div>
+        <div class="edit-name-list clearfix">
+
+        </div>
+    </form>
+</div>
+<div id="authorDiv" style="display: none;"  class="formmargin">
+    <div class="pims-tree">
+        <!--添加检索结果-->
+        <div id="treeArea">
+            <div class="searchArea clearfix">
+                <div class="layui-input-inline personSearch">
+                    <input id="authorTreeSearch" placeholder="请输入你想查询的作者" class="layui-input">
+                </div>
+                <div class="search-results"></div>
+            </div>
+            <div id="showAuthorTree" class="jsTree"></div>
+        </div>
+    </div>
+</div>
+
+<div id="filTree" style="display: none;overflow: auto" class="leftArea">
+    <div id="fileTree2" class="jsTree"></div>
+</div>
+<div id="contactsTreeDiv" style="display: none;"  class="formmargin">
+    <div class="layui-input-inline personSearch">
+        <input id="contactsTreeSearch" placeholder="请输入你想查询的联系人" class="layui-input">
+    </div>
+    <!--添加检索结果-->
+    <div class="search-results"></div>
+    <div id="treeArea" style="overflow: auto">
+        <div class="search-results"></div>
+        <div id="showContactsTree" class="jsTree"></div>
+    </div>
+
+</div>
+
+<script id="demo" type="text/html">
+    <ul>
+        {{#  layui.each(d.list, function(index, item){ }}
+
+        {{#
+        var titlesub = function(){
+        var result='';
+        if(item.fileType!="folder"){
+        result=item.fileName+item.fileType;
+        }else{
+        result=item.fileName
+        }
+        return result;
+        };
+
+        }}
+        <li class="file" ondblclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')" title="{{titlesub()}}" onclick="clickOneTime(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.authorId}}')"  >
+            <div class="left visible-range">
+                {{#  if((item.visibleRange==0)){ }}
+
+                {{#  }else{ }}
+
+                {{#  } }}
+            </div>
+            <div class="right">
+                {{#  if(item.fileType != 'folder'&&(item.authority=='1'||item.authority=='2'||d.adminFlag==1)){ }}
+                <button class="downloadBtn" onclick="download('{{ item.fileId }}','{{ item.fileName }}')" ondblclick="stopPop()">下载</button>
+                {{#  }else{ }}
+                <button class="downloadBtn visHide">下载</button>
+                {{#  } }}
+            </div>
+            <div  class="file-selection" >
+                <section class="icon">
+                    {{#  if(item.fileType === 'folder'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/folder.png">
+                    {{#  }else if(item.fileType === '.doc'||item.fileType === '.docx'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/word.png">
+                    {{#  }else if(item.fileType === '.txt'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/txt.png">
+                    {{#  }else if(item.fileType === '.ppt'||item.fileType === '.pptx'||item.fileType === '.ppsx'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/ppt.png">
+                    {{#  }else if(item.fileType === '.pdf'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/pdf.png">
+                    {{#  }else if(item.fileType === '.ceb'){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/ceb.png">
+                    {{#  }else if(['.CD','.OGG','.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.fileType)!=-1){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/audio.png">
+                    {{#  }else if(['.mp4','.avi', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.fileType)!=-1){ }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/video.png">
+                    {{#  }else if(item.fileType === '.xls'||item.fileType === '.xlsx') {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/excel.png">
+                    {{#  }else if(['.png','.jpeg','.gif','.jpg','.bmp'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/picture.png">
+                    {{#  }else if(['.zip','.rar'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/zip.png">
+                    {{#  }else if(['.exe'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/exe.png">
+                    {{#  }else if(['.psd'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-psd26.png">
+                    {{#  }else if(['.html'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/html.png">
+                    {{#  }else if(['.bmp'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/bmp.png">
+                    {{#  }else {  }}
+                    <img  src="${ctxPath}/static/resources/img/fsfile/other.png">
+                    {{#  } }}
+                </section>
+                <section class="profile">
+                    {{#
+                    var sub = function(){
+                    var result='';
+                    if(item.fileType!="folder"){
+                    result=item.fileName+item.fileType;
+                    }else{
+                    result=item.fileName
+                    }
+                    if(result.length>16){
+                    result=result.substring(0,15)+'...';
+                    }
+                    return result;
+                    };
+
+                    }}
+                    <h1 id="name{{index}}" class="" >{{ sub() }}</h1>
+                    <input type="text" id="inputName{{index}}"  maxlength="30"  value="{{item.fileName}}" class="layui-input hide">
+                </section>
+            </div>
+            {{#  if(item.fileType != 'folder'){     }}
+            <div class="condition">
+                <img src="${ctxPath}/static/resources/img/fsfile/downPic.png"/><span id="downNum{{ item.fileId }}" class="vertical"></span>&nbsp;&nbsp;
+                <img src="${ctxPath}/static/resources/img/fsfile/lookPic.png"/><span id="readNum{{ item.fileId }}" class="vertical"></span>&nbsp;&nbsp;
+                <span id="person{{ item.fileId }}" class="vertical"></span>
+                <span id="authority{{ item.fileId }}" class="vertical" style="display: none"></span>
+            </div>
+            {{#  } }}
+        </li>
+        {{#  }); }}
+    </ul>
+</script>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col>
+                <col  width="180">
+                <col width="120">
+                <col  width="120">
+                <col width="90">
+            </colgroup>
+            <thead>
+            <tr>
+                <th lay-data="{field:'filename'}" style="text-align: center">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                        <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                    </div>
+                    文件名
+                </th>
+                <th lay-data="{field:'time'}" style="text-align: center">上传时间</th>
+                <th lay-data="{field:'user'}" style="text-align: center">上传人</th>
+                <th lay-data="{field:'size'}" style="text-align: center">大小</th>
+                <th lay-data="{field:'setAuthority'}" style="text-align: center">权限设置</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col>
+            <col  width="180">
+            <col width="120">
+            <col  width="120">
+            <col width="90">
+        </colgroup>
+        <thead>
+        <tr>
+            <th lay-data="{field:'filename'}" style="text-align: center">
+                <input  onclick="checkAll()"  type="checkbox" class="checkAll"  style="float: left" >
+                <div class="layui-unselect layui-form-checkbox" onclick="checkAll()"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                    <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                </div>
+                文件名</th>
+
+            <th lay-data="{field:'time'}" style="text-align: center">上传时间</th>
+
+            <th lay-data="{field:'user'}" style="text-align: center">上传人</th>
+            <th lay-data="{field:'size'}" style="text-align: center">大小</th>
+            <th lay-data="{field:'setAuthority'}" style="text-align: center">权限设置</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+
+        {{#
+        var titlesub = function(){
+        var result='';
+        if(item.fileType!="folder"){
+        result=item.fileName+item.fileType;
+        }else{
+        result=item.fileName
+        }
+        return result;
+        };
+
+        }}
+        <tr  ondblclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')" title="{{titlesub()}}"  onclick="clickCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td>
+                <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >
+                <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                    <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                </div>
+                <input  class="checkFileId" hidden value="{{item.fileId}}">
+                <input  class="checkFileType" hidden value="{{item.fileType}}">
+                <input  class="checkFileName" hidden value="{{item.fileName}}">
+                <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                {{#  if(item.fileType === 'folder'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-folder26.png">
+                {{#  }else if(item.fileType === '.doc'||item.fileType === '.docx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-word26.png">
+                {{#  }else if(item.fileType === '.txt'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-txt26.png">
+                {{#  }else if(item.fileType === '.ppt'||item.fileType === '.pptx'||item.fileType === '.ppsx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-ppt26.png">
+                {{#  }else if(item.fileType === '.pdf'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-pdf26.png">
+                {{#  }else if(item.fileType === '.ceb'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-ceb26.png">
+                {{#  }else if(['.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.fileType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-audio26.png">
+                {{#  }else if(['.mp4','.avi', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.fileType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-video26.png">
+                {{#  }else if(item.fileType === '.xls'||item.fileType === '.xlsx') {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-excel26.png">
+                {{#  }else if(['.png','.jpeg','.gif','.jpg'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-img26.png">
+                {{#  }else if(['.bmp'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-bmp26.png">
+                {{#  }else if(['.psd'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-psd26.png">
+                {{#  }else if(['.html'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-html26.png">
+                {{#  }else if(['.exe'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-exe26.png">
+                {{#  }else if(['.zip','.rar'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-zip26.png">
+                {{#  }else {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-other26.png">
+                {{#  } }}
+                {{#
+                var sub = function(){
+                var result='';
+                if(item.fileType!="folder"){
+                 result=item.fileName+item.fileType;
+                }else{
+                 result=item.fileName
+                }
+
+                if(width<1600){
+                    if(result.length>15){
+                         result=result.substring(0,15)+'...';
+                    }
+                }else{
+                    if(result.length>30){
+                         result=result.substring(0,30)+'...';
+                    }
+                }
+
+                return result;
+                };
+
+                }}
+                <span id="name{{index}}" class="" style="cursor: default" >{{ sub() }}</span>
+                <input type="text" id="inputName{{index}}" style="width:78%;float:right"  maxlength="30"  value="{{item.fileName}}" class="layui-input hide">
+            </td>
+            <td> {{item.createTime}}</td>
+            <td> {{item.createUserName}}</td>
+
+            <td>    {{#  if(item.fileType != 'folder'){     }}
+                {{item.fileSize}}
+                {{#  } }}</td>
+            <td> {{#  if(item.fileType != 'folder'){        }}
+                {{#  if(item.setAuthority == ''||item.setAuthority == null||item.setAuthority == '1'){        }}
+                未设置
+                {{#  }else {  }}
+                已设置
+                {{#  } }}
+                {{#  } }}
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }); }}
+        </tbody>
+    </table>
+
+</script>
+
+
+<script src="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.nolog.js"></script>
+<script src="${ctxPath}/static/doc/manager/docmanager/js/resource-manager.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js"></script>
+<script>
+    var width = $(window).width();
+</script>
+</body>
+</html>

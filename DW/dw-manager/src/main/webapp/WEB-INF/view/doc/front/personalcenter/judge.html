@@ -1,0 +1,246 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <meta charset="UTF-8">
+    <title>待我审批页面</title>
+
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+
+    <style>
+        .reject-dialog {
+            padding-bottom: 10px !important;
+            background: #fff !important;
+        }
+        .reject-dialog .layui-layer-content {
+            height: calc(100% - 84px);
+        }
+        .check{
+            background-color: #2980FF !important;
+            color: #fff !important;
+            border-color: #2980FF !important;
+        }
+
+        span.nofolder {
+            left: 74px !important;
+        }
+        .reject-dialog .layui-layer-btn .layui-layer-btn0,.reject-dialog .layui-layer-btn .layui-layer-btn1{
+            position: relative !important;
+            bottom: 45px !important;
+        }
+        .confirm-class .layui-layer-btn .layui-layer-btn1, .confirm-class .layui-layer-btn .layui-layer-btn0 {
+            position: relative !important;
+            bottom: 45px !important;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="content clearfix" id="judgeList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="message"> 待我审批<span id="amount"></span></div>
+                    <button type="button" class="layui-btn check" id="adopt" style="margin-top: 8px;margin-left: 25px"><i class="layui-icon" style="margin-left: 0;padding-top: 0;display: inline-block;line-height: 28px">&#xe605;</i>通过</button>
+                    <button type="button" class="layui-btn check" id="reject" style="margin-top: 8px"><i class="layui-icon" style="margin-left: 0;padding-top: 0;display: inline-block;line-height: 28px">&#x1006;</i>驳回</button>
+                    <div class="search-wrapper">
+                        <input class="search-input" id="searchName" placeholder="按名称查找文件" value="" autocomplete="off">
+                        <div class="search-btn" id="searchBtn">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="fast-button">
+                    <div id="uploader" class="wu-example">
+                        <div id="dndArea">
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="noDataTip">未找到相关内容~</div>
+<div id="rejectDiv" style="display: none;text-align:right" class="addFont">
+    <div class="popup layui-popup">
+        <form class="layui-form">
+            <div class="layui-form-item" style="margin-right: 10px">
+                <label class="layui-form-label">驳回原因</label>
+                <div class="layui-input-block" style="margin-left:80px">
+                    <textarea type="text" id="auditOpinion" autocomplete="off" class="layui-input" maxlength="200" style="height: 100px"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col width="56%">
+                <col width="220">
+                <col>
+                <col width="220">
+            </colgroup>
+            <thead>
+            <tr style="color: #8796AB;">
+                <th style="text-align: left;cursor: pointer;text-indent:5px">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 12px;height: 14px;padding-right:12px;margin-top:8px">
+                        <i class="iconfont" style="width: 12px;height:12px;font-size: 12px;" >&#xe605;</i>
+                    </div>
+                    <div onclick="orderByName()" lay-data="{field:'filename'}" style="text-indent: 10px">
+                        名称
+                        <i class="layui-icon" id="orderName"style="cursor: pointer ;font-size: 13px;display: none;">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                        <i class="layui-icon" id="orderName1"  style="cursor: pointer ;font-size: 13px;display: none;">
+                            <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </div>
+                </th>
+                <th onclick="orderByTime()" lay-data="{field:'createTime'}" style="text-align: left;cursor: pointer;">
+                    上传时间
+                    <i class="layui-icon" id="orderTime"style="cursor: pointer ;font-size: 13px;display: none;">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none;">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderBySize()" lay-data="{field:'fileSize'}" style="text-align: left;cursor: pointer">
+                    文件大小
+                    <i class="layui-icon" id="orderSize"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderSize1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th lay-data="{field:''}" style="text-align: left;">
+                    操作
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="member-center-list">
+        <table class="layui-table table_list" >
+            <colgroup>
+                <col width="56%">
+                <col width="220">
+                <col>
+                <col width="220">
+            </colgroup>
+            <tbody>
+            {{#  layui.each(d.list, function(index, item){ }}
+            {{#
+            var titlesub = function(){
+            var result='';
+            if(item.fileType!="folder"){
+            result=item.fileName+item.fileType;
+            }else{
+            result=item.fileName
+            }
+            return result;
+            };
+
+            }}
+            {{# if(null != item.fileName){}}
+            <tr class="hoverEvent" ondblclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')"  onclick="clickCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                <td>
+                    <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >
+                    <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                        <i class="iconfont" style="width: 12px;height: 12px;font-size: 12px;" >&#xe605;</i>
+                    </div>
+                    <input  class="checkFileId" hidden value="{{item.fileId}}">
+                    <input  class="checkFileType" hidden value="{{item.fileType}}">
+                    <input  class="checkFileName" hidden value="{{item.fileName}}">
+                    <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                    <input id="{{item.fileId}}" value="{{index}}"hidden>
+                    {{#  if(item.fileType === 'folder'){ }}
+                    <img class="folder-img" src="{{d.imgs.folderMember1}}">
+                    {{#  }else if(item.fileType === '.doc'||item.fileType === '.docx'){ }}
+                    <img  src="{{d.imgs.word}}">
+                    {{#  }else if(item.fileType === '.txt'){ }}
+                    <img  src="{{d.imgs.txt}}">
+                    {{#  }else if(item.fileType === '.ppt'||item.fileType === '.pptx'){ }}
+                    <img  src="{{d.imgs.ppt}}">
+                    {{#  }else if(item.fileType === '.pdf'){ }}
+                    <img  src="{{d.imgs.pdf}}">
+                    {{#  }else if(item.fileType === '.ceb'){ }}
+                    <img  src="{{d.imgs.ceb}}">
+                    {{#  }else if(['.CD','.OGG','.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.fileType)!=-1){ }}
+                    <img  src="{{d.imgs.music}}">
+                    {{#  }else if(['.mp4','.avi', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.fileType)!=-1){ }}
+                    <img  src="{{d.imgs.video}}">
+                    {{#  }else if(item.fileType === '.xls'||item.fileType === '.xlsx') {  }}
+                    <img  src="{{d.imgs.excel}}">
+                    {{#  }else if(['.png','.jpeg','.gif','.jpg'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.pic}}">
+                    {{#  }else if(['.zip','.rar'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.rar}}">
+                    {{#  }else if(['.exe'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.exe}}">
+                    {{#  }else if(['.psd'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.psd}}">
+                    {{#  }else if(['.html'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.html}}">
+                    {{#  }else if(['.bmp'].indexOf(item.fileType)!=-1) {  }}
+                    <img  src="{{d.imgs.bmp}}">
+                    {{#  }else {  }}
+                    <img  src="{{d.imgs.other}}">
+                    {{#  } }}
+                    {{#
+                    var sub = function(){
+                    var result=item.fileName + item.fileType;
+
+                    return result;
+                    };
+
+                    }}
+                    <span id="name{{index}}"  class ="nameTitpe nofolder" title="{{sub()}}" style="cursor: default" ><a class="fileName" onclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')">{{ sub() }}</a></span>
+                    <span style="display: none" id="hoverSpan" class="hoverSpan">
+                    <span style="display: inline-block;float: right">
+                        <i class="layui-icon wenku-font wenku-font-download" title="下载" onclick="iconDownLoad(this,'{{item.fileId}}','{{item.fileName}}')" style="font-size: 14px;cursor: pointer"></i>
+                        <input class="index" hidden value="{{index}}">
+                    </span>
+                </span>
+                    <input type="text" id="inputName{{index}}" style="width:93%;float:right;margin-right: 5px"  maxlength="30"  value="{{item.fileName}}" class="layui-input hide ishover">
+                </td>
+                <td>
+                    {{item.createTime.substring(0,item.createTime.lastIndexOf(':'))}}
+                </td>
+                <td>
+                    {{item.fileSize}}
+                </td>
+                <td>
+                    <div class="operation pass" title="通过" onclick="pass(this,'{{item.fileId}}','{{item.fileName}}')"></div><div class="operation refuse" title="驳回" onclick="refuse(this,'{{item.fileId}}','{{item.fileName}}')"></div>
+                </td>
+                <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+                <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            </tr>
+            {{#  }}}
+            {{#  }); }}
+            </tbody>
+        </table>
+    </div>
+</script>
+<script src="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.nolog.version.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/judge.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#judgeList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+</script>
+</body>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>统计分析</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/statistics/css/statistics.css?v=${h_version}"/>
+    <style>
+        .layui-table tbody tr:hover {
+            background: #F9FBFF!important;
+        }
+
+    </style>
+</head>
+<body><div id="uploadList">
+    <div class=" analysis-box">
+        <!--统计数据-->
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md2">
+                <div class="analysis-item"  id="analysis-doc-today">
+                    <span  class="total"><span class="amount"></span><span class="times">份</span></span> <em>今日上传</em>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="analysis-item" id="analysis-doc">
+                    <span  class="total"><span class="amount"></span><span class="times">份</span></span> <em>累计上传</em>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="analysis-item" id="analysis-visit-today">
+                    <span class="total"><span class="amount"></span><span class="times">次</span></span> <em>今日访问</em>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="analysis-item"  id="analysis-visit">
+                    <span  class="total"><span class="amount"></span><span class="times">次</span></span> <em>累计访问</em>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="analysis-item" id="analysis-download">
+                    <span  class="total"><span class="amount"></span><span class="times">次</span></span> <em>累计下载</em>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="analysis-item" id="analysis-prevew">
+                    <span  class="total"><span class="amount"></span><span class="times">次</span></span><em>累计预览</em>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="analysis-box">
+        <div class="analysis-box-in layui-col-space30 clearfix">
+            <div class="analysis-title">文件统计
+                <!--<button class="layui-btn" style="float: right;margin-right: 30px;width: 60px;height: 28px;line-height: 28px;" id="html2canvas">截图</button>-->
+            </div>
+
+            <div class="analysis-panel layui-col-md12">
+                <div class="analysis-panel-head"><span>目录文件统计</span></div>
+                <div class="analysis-panel-body">
+                    <div class="switch clearfix folder-statistical"  style="float: right;position: relative;z-index: 999;width: 150px">
+                        <div class="month active" value="dept" >按部门</div>
+                        <div class="month" value="account">按数量</div>
+
+                    </div>
+                    <div id="firchart" class="main-chart"></div>
+                </div>
+            </div>
+            <div class="analysis-panel layui-col-md6">
+                <div class="analysis-panel-head"><span>文件下载排行</span></div>
+                <div class="analysis-panel-table">
+                    <table class="layui-table" lay-skin="line" id="firTable" lay-filter="firTable">
+
+                    </table>
+                </div>
+            </div>
+            <div class="analysis-panel layui-col-md6">
+                <div class="analysis-panel-head"><span>文件预览排行</span></div>
+                <div class="analysis-panel-table">
+                    <table class="layui-table" lay-skin="line" id="secTable" lay-filter="secTable">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="analysis-box">
+        <div class="analysis-box-in layui-col-space30 clearfix">
+            <div class="analysis-title">贡献榜</div>
+            <div class="analysis-panel layui-col-md6">
+                <div class="analysis-panel-head"><span>部门贡献统计</span></div>
+                <div class="analysis-panel-table">
+                    <table class="layui-table" lay-skin="line" id="tirTable">
+
+                    </table>
+                </div>
+            </div>
+            <div class="analysis-panel layui-col-md6">
+                <div class="analysis-panel-head"><span>个人贡献统计</span></div>
+                <div class="analysis-panel-table">
+                    <table class="layui-table" lay-skin="line" id="lastTable">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="analysis-box">
+        <div class="analysis-box-in clearfix">
+            <div class="analysis-title">用户活跃度</div>
+            <div class="analysis-body">
+                <div class="switch clearfix user">
+                    <div class="today active" value="today">今天</div>
+                    <div class="threeDay" value="threeday">三天</div>
+                    <div class="week" value="week">一周</div>
+                    <div class="month" value="month">一月</div>
+                </div>
+                <div id="chart" class="main-chart"></div>
+            </div>
+
+        </div>
+    </div>
+    <div class="analysis-box">
+        <div class="analysis-box-in clearfix">
+            <div class="analysis-title">用户来源</div>
+            <div class="analysis-body">
+                <div class="switch clearfix origin">
+                    <div class="today active" value="today">今天</div>
+                    <div class="threeDay" value="threeday">三天</div>
+                    <div class="week" value="week">一周</div>
+                    <div class="month" value="month">一月</div>
+                </div>
+                <div id="chartOrigin" class="main-chart"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="html2canvasDiv" style="display: none"></div>
+<script src="${ctxPath}/static/resources/js/common/echarts.common.min.js"></script>
+<script src="${ctxPath}/static/doc/manager/statistics/js/statisticalAnalysis.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/js/base64.js"></script>
+<script src="${ctxPath}/static/js/canvas2image.js"></script>
+<script src="${ctxPath}/static/js/html2canvas.min.js"></script>
+</body>
+</html>

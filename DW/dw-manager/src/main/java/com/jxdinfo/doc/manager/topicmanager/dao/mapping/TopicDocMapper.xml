@@ -1,0 +1,206 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.topicmanager.dao.TopicDocMapper">
+    <!--获取主题下拉框-->
+    <select id="searchTopic" resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+          select t.topic_id topicId,t.topic_name topicName from doc_special_topic t   ORDER BY
+                    t.show_order
+    </select>
+    <!--获取文档列表-->
+    <select id="getDocByFsFile" resultType="Map">
+        (SELECT
+			D.FILE_ID fileId,
+			D.DOC_ID docId,
+			D.TITLE title,
+			D.TAG tag,
+			D.DOC_ABSTRACT fileAbstract,
+			D.CREATE_TIME createTime,
+			D.UPDATE_TIME updateTime,
+			U.USER_NAME userName
+		FROM
+			DOC_INFO D
+		LEFT JOIN sys_users U ON U.USER_ID = D.AUTHOR_ID
+        WHERE
+        	1 = 1
+        AND 
+        	D.FILE_ID IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ) UNION all (
+        SELECT
+        D.folder_id fileId,
+        D.folder_id docId,
+        D.folder_name title,
+        "" tag,
+        "" fileAbstract,
+        D.CREATE_TIME createTime,
+        D.UPDATE_TIME updateTime,
+        U.USER_NAME userName
+        FROM
+        Fs_folder D
+        LEFT JOIN sys_users U ON U.USER_ID = D.create_user_id
+        WHERE
+        1 = 1
+        AND
+        D.folder_id IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+    </select>
+    <!--循环插入主题文档-->
+    <insert id="saveTopicDoc" parameterType="java.util.List">
+        insert into doc_special_topic_files (topic_file_id,doc_id,topic_id,show_order,create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator="," close=";">
+            (#{item.topicFileId,jdbcType=VARCHAR}, #{item.docId,jdbcType=VARCHAR}, #{item.specialTopicId,jdbcType=VARCHAR}, #{item.showOrder
+            ,jdbcType=INTEGER},#{item.createTime})
+        </foreach>
+    </insert>
+    <!--专题详情查询-->
+    <select id="getTopicDetail"  resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+        SELECT
+            t.id,
+            t.topic_name topicName,
+            t.topic_desc topicDesc,
+            DATE_FORMAT(t.create_time, '%Y-%m-%d') createTime,
+            t.author_name authorName,
+            t.author_id authorId
+        FROM
+            doc_special_topic t
+        WHERE
+            t.id =#{topicId}
+    </select>
+    <select id="getTopicDoclist"  resultType="Map">
+        SELECT
+            tf.doc_id id,
+            d.title title,
+            d.file_type fileType,
+            d.file_abstract fileAbstract,
+            d.create_time createTime,
+            u.user_name author
+        FROM
+            doc_special_topic_files tf
+        LEFT JOIN (
+            SELECT
+                doc.doc_id,
+                doc.title,
+                doc.tag,
+                doc.file_abstract,
+                doc.file_type,
+                doc.author_id,
+                doc.create_time
+            FROM
+                doc_info doc
+        ) d ON d.doc_id = tf.doc_id
+        LEFT JOIN (
+            SELECT
+                user_id,
+                user_name
+            FROM
+                sys_users
+        ) u ON u.user_id = d.author_id
+        WHERE
+            tf.special_topic_id= #{topicId}
+        ORDER BY
+            tf.show_order
+            LIMIT #{startNum},#{size}
+    </select>
+    <select id="getTopicList"  resultType="com.jxdinfo.doc.manager.topicmanager.model.SpecialTopic">
+       SELECT
+            d.id id,
+            d.topic_name topicName,
+            d.show_order showOrder,
+            d.topic_desc topicDesc,
+            d.topic_show topicShow,
+            d.create_time createTime,
+            u.user_name authorName,
+            d.start_time startTime,
+            d.end_time endTime
+        FROM
+            doc_special_topic d
+        LEFT JOIN (
+            SELECT
+                user_id,
+                user_name
+            FROM
+                sys_users
+        ) u ON u.user_id = d.author_id
+        where d.topic_show = 1
+                ORDER BY
+                    d.show_order
+    </select>
+    <select id="checkIsExist" resultType="int">
+          select count(*) from doc_special_topic_files d where d.doc_id = #{docId} and topic_id = #{topicId}
+    </select>
+
+    <select id="checkIsSameNameExist" resultType="int">
+        SELECT
+	    count(*)
+        FROM
+	    doc_special_topic_files dstf
+        LEFT JOIN doc_info di ON dstf.doc_id = di.doc_id
+        WHERE  dstf.topic_id = #{topicId}
+        and di.doc_id=#{docId}
+        and di.valid_flag='1'
+    </select>
+    <delete id="delTopicFile" parameterType="list">
+        DELETE FROM doc_special_topic_files  where doc_id in
+        <foreach collection="list" item="idItem" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="getDocCountTopicId" resultType="int">
+
+         SELECT count(*) FROM `doc_special_topic_files` dstf  left join doc_info di on dstf.doc_id = di.doc_id  where  dstf. topic_id = #{topicId}  and di.valid_flag='1' ;
+    </select>
+    <select id="checkIsSameFolderNameExist" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        doc_special_topic_files dstf
+        LEFT JOIN fs_folder di ON dstf.doc_id = di.folder_id
+        WHERE  dstf.topic_id = #{topicId}
+        and di.folder_id=#{docId}
+    </select>
+
+    <insert id="insertResourceLog" parameterType="java.util.List">
+        insert into doc_resource_log
+        (
+        ID,
+        RESOURCE_ID,
+        RESOURCE_TYPE,
+        USER_ID,
+        OPERATE_TYPE,
+        OPERATE_TIME,
+        VALID_FLAG,
+        before_id,
+        after_id,
+        before_name,
+        after_name,
+        delete_path,
+        address_ip
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.resourceId},
+            #{item.resourceType},
+            #{item.userId},
+            #{item.operateType},
+            #{item.operateTime},
+            #{item.validFlag},
+            #{item.beforeId},
+            #{item.afterId},
+            #{item.beforeName},
+            #{item.afterName},
+            #{item.deletePath},
+            #{item.addressIp}
+
+            )
+        </foreach>
+    </insert>
+</mapper>

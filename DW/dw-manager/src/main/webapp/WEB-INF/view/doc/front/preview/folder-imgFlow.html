@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${session.projectTitle}-项目图集</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/search_new.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/front-imgFlow.css?v=${h_version}">
+    <style>
+        html{width: 100%;overflow-y: scroll;}
+        body{height: auto;position: relative;}
+        em {font-style: normal;color: #3E5B82;}
+        body#top .container-new{overflow: hidden}
+        .container{padding: 0;margin-top: 0}
+        /*.container.divtop{padding-bottom: 80px;}*/
+        .container.divtop{padding-top: 49px;min-height: calc(100% - 60px)}
+        .breadCrumbs{height: 41px;line-height: 41px;}
+        .pathes a{color: #222}
+        #resultName{font-size: 14px}
+        .header-with-search-2{position: fixed!important;}
+    </style>
+</head>
+<body>
+@include("/common/front-header_new2.html"){}
+<input class="hide" type="hidden" value="${docId}" id="docId">
+<input class="hide" type="hidden" value="${folderId}" id="folderId">
+<input  type="hidden" class="hide"  id="count" >
+<div class="container divtop" >
+    <div class="breadCrumbs container">
+        <div class="pathes"><span><a href='javascript:void (0)' >“ <span id="resultName">${fileName}</span> ”</a> 的项目图集</span></div>
+    </div >
+    <div class="layui-row divtop" >
+        <div class="layui-col-sm9_5">
+            <div class="container mainCon">
+                <!---->
+                <div class="grid layui-row layui-col-space10 " id="articleItem" >
+
+                </div>
+                <!--分页请参考其他页面-->
+                <div class="text-center pageBox" >
+                    <div id="laypageAre"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@include("/common/front-footer.html"){}
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+@include("/common/front-rit.html"){}
+
+<script src="${ctxPath}/static/doc/front/docmanager/js/masonry.pkgd.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/imagesloaded.pkgd.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/preview/js/folder-imgFlow.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+</body>
+</html>

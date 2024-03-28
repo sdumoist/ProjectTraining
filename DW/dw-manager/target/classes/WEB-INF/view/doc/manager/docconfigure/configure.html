@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>资源管理器</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/docconfigure/css/configure.css?v=${h_version}"/>
+    <script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<style>
+    button#saveBtn{
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        padding: 0 16px;
+        border-radius: 3px;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 12px;
+        cursor: pointer;
+        border: 1px solid #018cff !important;
+        background: #018cff!important;
+        float: inherit;
+        margin-bottom: 10px;
+    }
+</style>
+<body>
+<script type="text/javascript">
+    // 此段代码处于 顶层（top） 页面中
+    var layerFrameConfig = {};
+</script>
+<div id="editDiv"  class="addFont">
+    <div class="popup layui-popup">
+        <form class="layui-form">
+            <div class="weadmin-body">
+                <div class="layui-elem-quote" style="margin-top: 10px;margin-left: 10px;">
+                    <label id="opsType">通用设置</label>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 30px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>不可上传类型
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="filetype"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">请输入文件类型后缀，以英文逗号隔开</span>
+                    </div>
+                </div>
+                <div class="layui-form-item more-div">
+                    <label class="layui-form-label" style="width: 114px; text-align: right">
+                        安全水印
+                    </label>
+                    <div class="layui-input-block">
+                        <div class=" layui-inline" style="margin-left: 16px; margin-top: 6px">
+                            <input type="checkbox" name="user" id="user" lay-skin="primary"  title="用户名称" lay-filter="user">
+                        </div>
+                        <div class=" layui-inline" style="margin-left: 34px; margin-top: 6px">
+                            <input type="checkbox" name="watermarkCompany" id="watermarkCompany" lay-skin="primary" title="公司名称" lay-filter="watermarkCompany">
+                        </div>
+                        <div class=" layui-inline" style="margin-top: 6px">
+                            <input id="company"   class="layui-input" maxlength="300" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item more-div">
+                    <label class="layui-form-label" style="width: 114px; text-align: right">
+                        显示设置
+                    </label>
+                    <div class="layui-input-block">
+                        <div class=" layui-inline" style=" margin-left: 16px; margin-top: 8px">
+                            <input type="checkbox" name="clientShow" id="clientShow" lay-skin="primary" title="显示客户端" lay-filter="clientShow">
+                        </div>
+                        <div class=" layui-inline" style=" margin-left: 20px; margin-top: 8px">
+                            <input type="checkbox" name="contactShow" id="contactShow" lay-skin="primary"  title="显示联系方式" lay-filter="contactShow">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 47px;">*</span>目录层级
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 10%;margin-left: -1px;">
+                        <input id="amount"   class="layui-input" style="width: 100%" maxlength="20">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">目录不得少于4层</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>可预览文档
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="previewType"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">请输入文件类型后缀，以英文逗号隔开</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>可预览图片
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="imgType"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">请输入文件类型后缀，以英文逗号隔开</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>可预览视频
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="videoType"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">请输入文件类型后缀，以英文逗号隔开</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>可预览音频
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="voiceType"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">请输入文件类型后缀，以英文逗号隔开</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>目录名称
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="folderName"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">不允许出现特殊字符</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>项目标题
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="projectTitle"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <div class=" layui-inline">
+                        <span style="color: #999;">不允许出现特殊字符</span>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>分享地址
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="serverAddress"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            <span class="we-red" style="left: 19px;">*</span>底部信息
+                        </label>
+                    </div>
+                    <div class=" layui-inline" style="width: 545px;margin-left: -1px;">
+                        <input id="companyInfo"   class="layui-input" style="width: 100%" maxlength="300">
+                    </div>
+                    <!--  <div class=" layui-inline">
+                          <span style="color: #999;">不允许出现特殊字符</span>
+                      </div>-->
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            项目logo
+                        </label>
+                    </div>
+                    <div class="layui-inline"  id="projectLogoView">
+                        <button id="download" type="button" class="layui-btn" style="width: 75px;">批量下载</button>
+                        <button id="uploadLogo" type="button" class="layui-btn" style="width: 75px;">批量上传</button>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="  padding-left: 100px;padding-top: 0px;float: left; width: 100%">
+                    <div class=" layui-inline">
+                        <label class="layui-form-label" style="width: 120px; text-align: right">
+                            上传使用手册
+                        </label>
+                    </div>
+                    <div class="layui-inline"  id="handbook">
+                        <button id="uploadHandbook" type="button" class="layui-btn" style="width: 75px;">上传</button>
+                    </div>
+                </div>
+                <div class="layui-form-item hide">
+                    <button onclick="clearServerAddress()">清除服务器地址缓存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="bot-btnss" style=" padding-top: 440px;text-align: center; width: 56%" >
+    <button id="saveBtn" class="layui-btn" style="width: 56px;">确定</button>
+</div>
+<script src="${ctxPath}/static/doc/manager/docconfigure/js/configure.js?v=${h_version}"></script>
+</body>
+</html>

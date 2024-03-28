@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.foldermanager.dao.DocFoldAuthorityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.foldermanager.model.DocFoldAuthority">
+        <id column="ID" property="id" />
+        <result column="FOLD_ID" property="foldId" />
+        <result column="AUTHOR_ID" property="authorId" />
+        <result column="AUTHOR_TYPE" property="authorType" />
+        <result column="IS_EDIT" property="isEdit" />
+    </resultMap>
+
+    <delete id="deleteAuthByFoldId">
+        delete from doc_fold_authority where folder_id in
+        <foreach item="idItem" collection="allFoldIds" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="selectUserRole" resultType="DocFoldAuthority">
+        SELECT
+        DFA.FOLDER_ID foldId
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        <if test="type != null and type != '' ">
+        and dfa.operate_type=#{type}
+        </if>
+    </select>
+    <select id="findEdit" resultType="String">
+        SELECT
+        DFA.is_edit
+        FROM
+        doc_fold_authority DFA
+        LEFT  JOIN  fs_folder DF on  DF.FOLDER_ID=DFA.FOLDER_ID
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        OR (DFA.AUTHOR_ID = #{userId}))
+        )
+        and DF.level_code IN
+        <foreach item="idItem" collection="levelCodeList" open="(" separator="," close=")">#{idItem}
+        </foreach>
+
+        and operate_type='1'
+
+    </select>
+
+    <!-- 查询文件是否有编辑权限 -->
+    <select id="findEditNew" resultType="int">
+        SELECT
+        count(*) as count
+        FROM
+        doc_fold_authority DFA
+        LEFT  JOIN  fs_folder DF on  DF.FOLDER_ID=DFA.FOLDER_ID
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR DFA.AUTHOR_ID IN (
+        SELECT
+        ur.GRANTED_ROLE
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+
+        <if test="userId != null and userId != ''">
+            OR (DFA.AUTHOR_ID = #{userId})
+        </if>
+        <if test="orgName != null and orgName != ''">
+            OR (FIND_IN_SET(DFA.organ_id, #{orgName}) > 0)
+        </if>
+        OR DFA.AUTHOR_ID = 'allpersonflag'
+        )
+        and DF.level_code IN
+        <foreach item="idItem" collection="levelCodeList" open="(" separator="," close=")">#{idItem}
+        </foreach>
+        and operate_type='2'
+    </select>
+</mapper>

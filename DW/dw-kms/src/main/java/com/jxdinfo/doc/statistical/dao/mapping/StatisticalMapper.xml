@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.statistical.dao.StatisticalMapper">
+
+    <select id="distinguishMajor" resultType="Map">
+        SELECT
+            qq.MAJOR_ID majorId,
+            qq.MAJOR_NAME majorName,
+            qp.User_Name reviewer,
+            COUNT(DISTINCT qq.QUE_ID) num,
+            GROUP_CONCAT(qq.QUE_ID) queIdStr
+        FROM
+            qa_question qq
+        LEFT JOIN qa_professional qp ON qq.MAJOR_ID = qp.major_ID
+        WHERE
+            qq.STATE != '3'
+         AND ifnull(qq.MAJOR_ID,0) != 0
+        GROUP BY
+            qq.MAJOR_ID
+    </select>
+
+    <select id="timelyRate" resultType="int">
+        SELECT
+            COUNT(DISTINCT qia.ID)
+        FROM
+            qa_invite_answer qia
+        WHERE
+            FIND_IN_SET(qia.QUE_ID, #{queIdStr})
+        AND qia.ANSWER_FLAG = '1'
+        AND qia.TIMELY_FLAG = '2'
+    </select>
+
+</mapper>

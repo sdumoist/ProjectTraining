@@ -1,0 +1,37 @@
+@charset "UTF-8";
+body#top .container-new {
+    margin-top: 0;
+    height: calc(100% - 49px);
+    overflow: hidden;
+}
+.viewTitle{margin-top: 10px}
+.content-bottom {height: calc(100% - 46px) !important;}
+.layui-col-sm12{height: 100%;width: 1200px}
+.pdf-view {
+    height: 100%;
+}
+#video {
+    height: 100% !important;
+    max-width: 100%;
+}
+body#top .viewContent{background: none}
+body#top .video-content {
+    width: auto;
+    height: calc(100% - 20px) !important;
+}
+body#top .divtop {
+    height: 100% !important;
+}
+body#top .header-with-search{
+    position: static !important;
+    padding-top: 0;
+}
+.img-container {
+    height: 100%;
+    min-height: 0;
+}
+.img-container .img-con>img {
+    height: 100%;
+    max-width: 100%;
+}
+.header-bar .ul-header >li >a{line-height: 62px}

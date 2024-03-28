@@ -1,0 +1,20 @@
+/*左-侧边栏leftbar*/
+.jsTree>ul {
+    margin: 10px 10px 0;
+}
+.jstree-default .jstree-anchor, .jstree-default .jstree-icon:empty {
+    line-height: 30px;
+    height: 30px;
+}
+.view-table {
+    top: 132px;
+}
+.layui-table, .layui-table-view {
+    margin: 0;
+}
+.file-container-flatten{
+    padding: 0px 0px  8px;
+    background-color: #FFFFFF;
+    height: calc(100% - 133px);
+    overflow: auto;
+}

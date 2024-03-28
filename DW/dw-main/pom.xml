@@ -1,0 +1,238 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.8.RELEASE</version>
+	</parent>
+	<groupId>com.jxdinfo.hussar</groupId>
+	<artifactId>dw-main</artifactId>
+	<version>2.5.0</version>
+
+	<description>文库-Web</description>
+	<packaging>war</packaging>
+
+	<repositories>
+		<repository>
+			<id>nexus-public</id>
+			<url>http://123.232.10.234:8212/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>central</name>
+			<url>https://maven.aliyun.com/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<maven.test.skip>true</maven.test.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!-- 产品相关包版本管理 -->
+		<dw-common.version>2.5.0</dw-common.version>
+		<dw-fastdfs.version>2.5.0</dw-fastdfs.version>
+		<dw-yyzc.version>2.5.0</dw-yyzc.version>
+		<dw-manager.version>2.5.0</dw-manager.version>
+		<dw-mobile.version>2.5.0</dw-mobile.version>
+		<dw-kms.version>2.5.0</dw-kms.version>
+		<fastjson.version>1.2.83</fastjson.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>2.17.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!--hussar 平台业务包 -->
+		<dependency>
+			<groupId>com.jxdinfo.hussar</groupId>
+			<artifactId>hussar-lcdp</artifactId>
+			<version>8.2.0.4</version>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>formdesign-code-publish</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>formdesign-ionic-component</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>formdesign-el-component</artifactId>
+				</exclusion>
+				<!--工作流依赖 -->
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>lcdp-bpm-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-nosql</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.jxdinfo.hussar</groupId>
+					<artifactId>hussar-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.jxdinfo.hussar</groupId>
+			<artifactId>hussar-core</artifactId>
+			<version>3.0.6-cus-docbase</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba</groupId>
+					<artifactId>fastjson</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+		<!-- <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-devtools</artifactId>
+         </dependency>-->
+		<!-- 通用方法包依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-common</artifactId>
+			<version>${dw-common.version}</version>
+		</dependency>
+
+		<!-- 运营支撑包相关依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-yyzc</artifactId>
+			<version>${dw-yyzc.version}</version>
+		</dependency>
+
+		<!-- fastdfs包相关依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-fastdfs</artifactId>
+			<version>${dw-fastdfs.version}</version>
+		</dependency>
+
+		<!-- 后台包相关依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-manager</artifactId>
+			<version>${dw-manager.version}</version>
+		</dependency>
+		<!-- 移动端包相关依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-mobile</artifactId>
+			<version>${dw-mobile.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-client</artifactId>
+			<version>${dw-common.version}</version>
+		</dependency>
+		<!-- 知识管理包相关依赖 -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dw-kms</artifactId>
+			<version>${dw-kms.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-client</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>7.5.2</version>
+		</dependency>
+		<!--&lt;!&ndash; CAS相关依赖 &ndash;&gt;-->
+		<!--<dependency>-->
+		<!--<groupId>com.jxdinfo.hussar</groupId>-->
+		<!--<artifactId>hussar-cas-agent</artifactId>-->
+		<!--<version>2.1.0</version>-->
+		<!--</dependency>-->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<addResources>true</addResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.jxdinfo.hussar</groupId>
+				<artifactId>hussar-maven-plugin</artifactId>
+				<version>2.2.8</version>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/webapp</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.yml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>

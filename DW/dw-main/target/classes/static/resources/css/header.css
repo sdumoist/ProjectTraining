@@ -1,0 +1,13 @@
+body{background: #f7f7fa}
+.main{margin: 24px auto}
+.wrapper{width: 980px;margin: auto}
+.header{background: #0b7be0;;height: 32px;}
+.header a{color: #fff;margin-right: 20px;line-height: 30px}
+.search-box{width: 785px;margin: 40px auto 24px}
+.btn-self{border: 0;background: #0b7be0;color: #fff}
+.logo{float: left;width: 147px;height: 62px;}
+.search{float: left}
+.searchInputStyle{width: 536px;height: 40px;border: 1px solid #b8b8b8;padding-left: 8px ;background: transparent}
+.searchButtonStyle{line-height: 40px;width: 100px;margin-left: -4px; font-size: 16px}
+.chooseType{line-height: 30px;color: #727272;}
+input[type=checkbox], input[type=radio]{margin: 0 1px 0 10px;border: 1px solid #727272;}

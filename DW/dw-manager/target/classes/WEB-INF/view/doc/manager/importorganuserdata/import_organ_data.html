@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导入组织机构用户</title>
+    
+    <!--外部css和js开始-->
+    @include("/common/plugins.html"){}
+    <style>
+        .layui-form-label {
+            width: 110px;
+        }
+
+        .layui-form-radio {
+            margin: 0 65px 5px -63px;
+        }
+
+        .tdStyle {
+            background-color: #f1faf7;
+        }
+        .layui-input-block{
+            margin-left:0px;
+        }
+        .layui-form-item {
+            margin-bottom: 20px;
+        }
+        .layui-input, .layui-textarea{
+            width: 80%;
+            height:300px;
+        }
+    </style>
+</head>
+<body>
+<div class="weadmin-body">
+    <form class="layui-form" action="" id="searchForm">
+        <div class="layui-form-item" style="margin-top: 20px">
+            <div>
+                <button type="button" class="layui-btn" id="importOrgan"><i class="layui-icon" >&#xe613;</i>导入组织机构</button>
+                <button type="button" class="layui-btn" id="importUser"><i class="layui-icon" >&#xe770;</i>导入用户</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <p>注意事项:</p>
+            <p>导入组织机构: 组织机构名称(必传项)、父级组织机构、组织机构类型(必传项)。如果是顶级组织机构,父级组织机构请传空值。组织机构类型,单位传1、部门传2、岗位传3。</p>
+            <p>导入用户: 用户名称(必传项)、部门名称(必传项)、登录账号(必传项)。</p>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <span>导入结果:</span>
+            <div class="layui-input-block">
+                <textarea id="importresult" name="importresult" class="layui-textarea" readonly></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<!--脚本区域开始-->
+<script src="${ctxPath}/static/doc/manager/importorganuserdata/importOrganData.js?v=${h_version}"></script></body>
+<!--脚本区域结束-->
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no"/>
+    <title>统计分析</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/statistics.css?v=${h_version}"/>
+</head>
+<body>
+<div class="statistic-container">
+    <div class="statistic-content">
+        <div class="statistic-title">问答统计</div>
+        <div id="echarts"></div>
+        <div id="table">
+            <table class="layui-table" lay-skin="line" id="firTable" lay-filter="firTable"></table>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/resources/js/common/echarts.common.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/statistical/statistical.js?v=${h_version}"></script>
+</body>
+</html>

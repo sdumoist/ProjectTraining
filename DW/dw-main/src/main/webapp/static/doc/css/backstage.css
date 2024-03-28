@@ -1,0 +1,60 @@
+.layui-layer-btn {
+    text-align: center;
+    padding: 2px 15px 8px !important;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    border-top: 1px solid #e5e5e5;
+}
+.layui-layer-btn0{
+    padding: 0 15px;
+    margin: 0 5px 0;
+    border-radius: 2px;
+    border: 1px solid #018cff !important;
+    background: #018cff !important;
+}
+.layui-layer-btn1 {
+    display: inline-block;
+    background-color: #fff!important;
+    border: 1px solid #018cff;
+    color: #018cff;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 3px;
+}
+.confirm-class .layui-layer-btn .layui-layer-btn1 {
+    margin: 5px 5px 0 !important;
+    color: #018cff !important;
+}
+.confirm-class .layui-layer-btn .layui-layer-btn0 {
+    margin: 5px 5px 0 !important;
+    color:#fff !important;
+}
+.layui-layer-btn.layui-layer-btn-{text-align: center !important;}
+.layui-form-checkbox i{
+    border-left: 1px solid #d2d2d2;
+    height: auto;!important;
+}
+.layui-layer-title {
+    background: rgb(234, 239, 240)!important;
+    color: #333 !important;
+}
+.layui-form-checked[lay-skin=primary] i {
+    border-color:#018cff !important;
+    background-color: #018cff;
+    color: #fff;
+}
+ .white-btn:hover, .confirm-class .layui-layer-btn .layui-layer-btn1:hover, .layui-layer-btn .layui-layer-btn1:hover, button#cancel:hover, button#cancelBtn:hover {
+     background-color: #fff;
+ }
+.layui-form-checked i{
+    border-color: #018cff!important;
+    border-radius: 2px;
+}
+.layui-layer-molv .layui-layer-btn a{
+    border-color: #018cff!important;
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.componentmanager.dao.ComponentApplyAttachmentMapper">
+ <select id="getAttachmentList" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApplyAttachment">
+    SELECT
+    a.attachment_id attachmentId,
+    a.attachment_type attachmentType,
+    a.attachment_name attachmentName,
+    di.doc_type fileType,
+    	ff.file_size fileSize
+    FROM
+    component_apply_attachment a left join doc_info di on di.doc_id = a.attachment_id
+    LEFT JOIN fs_file ff ON di.file_id = ff.file_id
+    WHERE 1=1 and a.component_id =#{componentId}
+    order by a.attachment_type
+
+
+</select>
+</mapper>

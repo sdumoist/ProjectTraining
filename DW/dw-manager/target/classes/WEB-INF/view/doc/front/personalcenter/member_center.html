@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<head xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <meta name="renderer" content="webkit">
+    <title>${userName}-个人中心</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/doc/front/personalcenter/css/member_center.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/doc/front/personalcenter/css/font.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+</head>
+<body id="top" style="height: 100%;width: 100%;min-width: 1000px;min-height: 600px;overflow: auto">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-header-with-search_new.html"){}
+<div class="container mainCon" >
+    <div class="main">
+        <div class="left">
+            <div class="memberInfo">
+                <div class="count" style="height: 8px">
+
+                </div>
+                <div class="upload" >
+                    <a     onclick="window.open('${ctxPath}/frontUpload/uploadFile','mainFrame') ;return false" id="uploadOpen"   target="_blank">
+                        <button class="layui-btn uploader-btn">上传文件</button>
+                    </a>
+                </div>
+
+                <input hidden id="menu" value="${menu!}">
+
+            </div>
+            <div class="memberNav">
+                <ul id="myNav" class="nav">
+                    <li class="mItem active">
+                        <a href="${ctxPath}/frontUpload/upload" class="on" target="mainFrame"><span>文档空间</span></a>
+                    </li >
+                    <span class="divide"></span>
+                    <li class="mItem"><a href="${ctxPath}/frontCommonFolder/list" target="mainFrame"><span>常用目录</span></a></li>
+                    <li class="mItem"><a href="${ctxPath}/frontPersonalCollection/list" target="mainFrame"><span>我的收藏</span></a></li>
+                    <li class="mItem">
+                        <a id="downloadMenu" href="${ctxPath}/frontDownload/list" class="on" target="mainFrame"><span>我的下载</span></a>
+                    </li >
+                    <!--<li class="mItem"><a href="/member/account.jspx" target="mainFrame"><i class="menu-icon m-nav7"></i><span>服务中心</span></a></li>-->
+                    <li class="mItem"><a href="${ctxPath}/frontPreview/list" target="mainFrame"><span>我的浏览</span></a></li>
+                    <li class="mItem"><a id="uploadMenu" href="${ctxPath}/frontUpload/list" target="mainFrame"><span>我的上传</span></a></li>
+                    <li class="mItem"><a id="shareMenu" href="${ctxPath}/frontShare/list" target="mainFrame"><span>我的分享</span></a></li>
+                    <li class="mItem"><a id="recycleMenu" href="${ctxPath}/frontRecycle/list" target="mainFrame"><span>回收站</span></a></li>
+                    <li class="mItem"><a id="statisticalAnalysis" href="${ctxPath}/fileStatistics/statisticalAnalysis" target="mainFrame"><span>文档统计</span></a></li>
+                    <li class="mItem"><a id="entry" href="${ctxPath}/entry/entryList" target="mainFrame"><span>词条录入</span></a></li>
+                    @if(entryAudit == true){
+                    <li class="mItem"><a id="entryAudit" href="${ctxPath}/entry/auditList" target="mainFrame"><span>词条审核</span></a></li>
+                    @}
+                    @if(auditUsing == "true"){
+                    <!--<li class="mItem"><a id="testMenu" href="${ctxPath}/docInfoAudit/view" target="mainFrame"><span>待我审批</span></a></li>-->
+                    @}
+                    @if(session.projectFlag!=true){
+                    <span class="divide"></span>
+                    <!--<li class="mItem"><a href="/frontIntegral/list" target="mainFrame"><span>我的积分</span></a></li>-->
+                    <li class="mItem"><a id="componentMenu" href="${ctxPath}/frontComponent/myList" target="mainFrame"><span>科研成果</span></a></li>
+                    <li class="mItem"><a id="componentGraphCountView" href="${ctxPath}/component/componentGraphCountView" target="mainFrame"><span>成果统计</span></a></li>
+                    @if(hasMiddleGroundAuthority || adminFlag == 1){
+                    <!--<li class="mItem mItemRecord"><a id="middlegroundConsulation" href="${ctxPath}/FrontMeetingRecord/meetingRecordList" target="mainFrame"><span>中台咨询记录</span></a></li>-->
+                    @}
+                    <li class="mItem mItemOver"><a id="handover" href="${ctxPath}/handover/handoverView" target="mainFrame"><span>文件交接</span></a></li>
+                    @}
+                    @if(personalGroupMaintainFlag == true){
+                    <!--<li class="mItem" id="userGroups"><a href="${ctxPath}/group/personalGroupListView" target="mainFrame"><span>我的用户组</span></a></li>-->
+                    @}
+                    <!--<<li class="mItem" id="knowledgeBase"><a href="${ctxPath}/routePath/knowledgeBase" target="mainFrame"><span>知识管理</span></a></li>-->
+                    <!--<li class="mItem" id="statistics"><a href="${ctxPath}/routePath/statisticalPage" target="mainFrame"><span>问答统计</span></a></li>-->
+                    <!--<<li class="mItem" id="answerList"><a href="${ctxPath}/routePath/allQuestionList" target="mainFrame"><span>知识问答</span></a></li>-->
+                </ul>
+
+            </div>
+            <div class="left-progress">
+                <p class="progress-left">已用<span id="used"></span>/<span id="total"></span></p>
+                <div class="layui-progress" lay-filter="personal">
+                    <div class="layui-progress-bar" lay-percent="40%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="inner">
+                @if(toUpload){
+                <iframe id="myIframe"  src="${ctxPath}/frontUpload/uploadFile" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='1'){
+                <iframe id="myIframe"  src="${ctxPath}/frontUpload/upload" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='2'){
+                <iframe id="myIframe"  src="${ctxPath}/frontPersonalCollection/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='3'){
+                <iframe id="myIframe"  src="${ctxPath}/frontDownload/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='4'){
+                <iframe id="myIframe"  src="${ctxPath}/frontPreview/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='5'){
+                <iframe id="myIframe"  src="${ctxPath}/frontUpload/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='6'){
+                <iframe id="myIframe"  src="${ctxPath}/frontIntegral/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="yes"   ></iframe>
+                @}else if(menu=='9'){
+                <iframe id="myIframe"  src="${ctxPath}/entry/entryList" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="yes"   ></iframe>
+                @}else if(menu=='11'){
+                <iframe id="myIframe"  src="${ctxPath}/frontUpload/upload?openFileId=${folderId}&folderName=${folderName}" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @} else if(menu=='12'){
+                <iframe id="myIframe"  src="${ctxPath}/frontComponent/myList" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='13'){
+                <iframe id="myIframe"  src="${ctxPath}/frontComponent/myList?check=1" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else if(menu=='14'){
+                <iframe id="myIframe"  src="${ctxPath}/frontCommonFolder/list" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}else {
+                <iframe id="myIframe"  src="${ctxPath}/frontUpload/upload" width="100%"  height="100%" frameborder="0" name="mainFrame" scrolling="no"   ></iframe>
+                @}
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!--<div class="btn-rit" style="display: none">-->
+
+<!--<a href="/personalcenter?toUpload=true" target="_blank">-->
+<!--上传文件-->
+<!--</a>-->
+
+<!--</div>-->
+<ul class="btn-rit-bottom"><!---->
+    <li>
+        <div class="phone rit-item"></div>
+        <label>电话：18560195621</label>
+    </li>
+    <li onclick="">
+        <a class="qq rit-item" href="http://wpa.qq.com/msgrd?v=3&amp;uin=772581151&amp;site=qq&amp;menu=yes" target="_blank"></a>
+        <label class="phone-label"><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=772581151&amp;site=qq&amp;menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a class="qq rit-item" href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">
+            <!--            <span>联系<br/>客服</span>-->
+        </a>
+        <label class="qq-label"><a href="tencent://message/?uin=1014430261&amp;Site=qq&amp;Menu=yes" target="_blank">点击联系客服</a></label>
+    </li>
+    <li>
+        <a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank" title="下载客户端" class="pcDownload rit-item">
+        </a>
+        <label class="qq-label"><a href="https://d.jxdinfo.com:8194/jqwkclient" target="_blank">点击下载客户端</a></label>
+    </li>
+    <li>
+        <a href="javascript:show_feedback()" class="feedback rit-item"></a>
+        <label class="feedback-label"><a href="javascript:show_feedback()">意见反馈</a></label>
+    </li>
+    <li>
+        <div class="goToTop rit-item"  style="display: none"></div>
+    </li>
+</ul>
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function(){
+            if ($(window).scrollTop()>0){
+                $(".goToTop").show()
+            }
+            else
+            {
+                $(".goToTop").hide()
+            }
+        });
+
+    })
+    $(".goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn(){
+            var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+            if(oTop > 0){
+                scrollTo(0,oTop-50);
+                timer = requestAnimationFrame(fn);
+            }else{
+                $(".goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/member_center.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>
+<script>
+    // var url=document.referrer
+    // console.log(url,'前一个页面')
+    // window.onbeforeunload=function (){
+    //     console.log('监听页面刷新事件')
+    //
+    //     console.log( window.parent.location.href,' window.parent.location.href')
+    //     // window.parent.location.href='http://localhost:8001/personalcenter?zhangzhiwu'
+    //     document.getElementById('myIframe').setAttribute('src','/entry/entryList')
+    //     console.log(document.getElementById('myIframe').getAttribute('src'),'我要疯了')
+    // }
+    // console.log(window.parent.location.href,'window.parent.location.href')
+    // console.log(window.top.location.href,'window.top.location.href')
+    //
+    // console.log(document.getElementById('myIframe').getAttribute('src'),'document.getElementById(myIframe).getAttribute(\'src\')')
+    // window.onload = function() {
+    //
+    // }
+    $(
+        function (){
+            var from = sessionStorage.getItem("from");
+            if(from == 'pageA') {
+                //balabala  要触发的点击事件  $('#xxx').click()
+                document.getElementById('myIframe').setAttribute('src','/entry/entryAdd')
+                sessionStorage.setItem("from",""); //销毁 from 防止在b页面刷新 依然触发$('#xxx').click()
+            }
+        }
+    )
+</script>
+</body>
+</html>

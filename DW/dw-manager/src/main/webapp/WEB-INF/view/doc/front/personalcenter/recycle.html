@@ -1,0 +1,252 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/recycle.css?v=${h_version}"/>
+    <link rel="stylesheet"href="${ctxPath}/static/doc/css/uploadList.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/commonLoading.css?v=${h_version}"/>
+
+</head>
+<body>
+<div class="background">
+    <div class="content clearfix" id="previewList">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="message recycle" style="padding-left: 10px;width: 50%"> 回收站<span id="amount" style="display: inline-block ;min-width: 50px;"></span></div>
+                    <div class="search-wrapper1">
+                        <!--<input class="search-input" id="searchName" placeholder="按名称查找文件" value="">-->
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                        <span  class="recycle-info">提示：文件保存10天后将被自动清除</span>
+                        <div class="clear-history"><a id="clearHistoryBtn">清空回收站</a></div>
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                    <div class="toolBar"  style="min-height: 50px">
+
+                        <!--<button id="delHistoryBtn" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea0f;</i>取消收藏</button>-->
+                    </div>
+                </div>
+                <div class="fast-button">
+                    <div class="fileButtonGroup index-crumbs">
+                    </div>
+                    <!--<button id="delHistoryBtn" class="layui-btn delRecord" >删除记录</button>-->
+                    <!--<button id="clearHistoryBtn" class="layui-btn delRecord" >清空记录</button>-->
+                    <div id="uploader" class="wu-example">
+                        <div class="shadow">
+
+                        </div>
+                        <div id="dndArea">
+                            <div class="file-container-flatten" id="">
+                                <div id="view"></div>
+                            </div>
+                        </div>
+                        <div class="layui-card popWin success" style="display: none" >
+                            <div class="layui-card-header">
+                                <span>预览记录</span>
+                                <div class="fr">
+                                    <i class="iconfont controls-down">&#xe61a;</i>
+                                    <i class="iconfont controls-close">&#x1006;</i>
+                                </div>
+                                <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="success-msg"></div>
+                                <div class="btns">
+                                    <div class="uploader-list upload-head">
+                                        <div  class="item">
+                                            <h4 class="info">文件名</h4>
+                                            <h4 class="state">文件状态</h4>
+                                            <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                        </div>
+                                    </div>
+                                    <!-- 文件列表：选择文件后在该div显示 -->
+                                    <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                    <label class="text-right"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="filTree" style="display: none;" class="leftArea">
+    <div id="fileTree" class="jsTree"></div>
+</div>
+<div class="noDataTip">未找到相关内容~</div>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col width="56%">
+                <col width="180">
+                <col width="120">
+                <col>
+            </colgroup>
+            <thead>
+            <tr style="color: #8796AB;">
+                <th lay-data="{field:'filename'}" style="text-align: left;cursor: pointer;text-indent: 5px" onclick="orderByName()">
+                    <!--<input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">-->
+                    <!--<div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">-->
+                    <!--<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>-->
+                    <!--</div>-->
+                    名称
+                    <i class="layui-icon" id="orderName"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderName1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+                <th onclick="orderByTime()" lay-data="{field:'optime'}" style="text-align: left;cursor: pointer">
+                    删除时间
+                    <i class="layui-icon" id="orderTime"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                </th>
+
+                <th onclick="orderBySize()" lay-data="{field:'fileSize'}" style="text-align: left;cursor: pointer">
+                    文件大小
+                    <i class="layui-icon" id="orderSize"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderSize1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </th>
+                <th onclick="orderByEffectiveTime()" style="text-align: left;cursor: pointer">有效时间
+                    <i class="layui-icon" id="orderEffectiveTime"style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png"></i>
+                    <i class="layui-icon" id="orderEffectiveTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img class="file-order" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png"></i>
+                    </th>
+
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="member-center-list">
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col width="56%">
+            <col width="180">
+            <col width="120">
+            <col>
+        </colgroup>
+<!--        <thead>-->
+<!--        <tr style="color: #8796AB;">-->
+<!--            <th lay-data="{field:'filename'}" style="text-align: left">-->
+<!--                &lt;!&ndash;<input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">&ndash;&gt;-->
+<!--                &lt;!&ndash;<div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">&ndash;&gt;-->
+<!--                &lt;!&ndash;<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>&ndash;&gt;-->
+<!--                &lt;!&ndash;</div>&ndash;&gt;-->
+<!--                名称-->
+<!--                <i class="layui-icon" onclick="getNameOrder()" id="" style="display: none;cursor: pointer ;font-size: 13px"> <img style="width:10px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1.png"></i>-->
+<!--                <i class="layui-icon" onclick="getNameOrder1()" id=""  style="cursor: pointer ;font-size: 13px"><img style="width:10px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2.png"></i>-->
+<!--            </th>-->
+<!--            <th lay-data="{field:'optime'}" style="text-align: left">-->
+<!--                删除时间-->
+<!--                <i class="layui-icon" onclick="getTimeOrder()" id=""style="cursor: pointer ;font-size: 13px"><img   style="margin-top: 4px;width:10px;height: auto" class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/authority/front-order1.png"></i>-->
+<!--                <i class="layui-icon" onclick="getTimeOrder1()" id=""  style="cursor: pointer ;font-size: 13px"><img class="btnIcon"  style="margin-top: 4px;width:10px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2.png"></i>-->
+<!--            </th>-->
+
+<!--            <th style="text-align: left">文件大小</th>-->
+<!--            <th style="text-align: left">有效时间</th>-->
+
+<!--        </tr>-->
+<!--        </thead>-->
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        {{# if(null != item.title){}}
+        <tr class="hoverEvent" onclick="clickCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td>
+                <!--<input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.id}}','{{item.docType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >-->
+                <!--<div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.id}}','{{item.docType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">-->
+                <!--<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>-->
+                <!--</div>-->
+                <input  class="checkFileId" hidden value="{{item.id}}">
+                <input  class="checkdocType" hidden value="{{item.docType}}">
+                <input  class="checkFileName" hidden value="{{item.fileName}}">
+                <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                {{#  if(item.docType === 'folder'){ }}
+                <img class="folder-img" src="${ctxPath}/static/resources/img/fsfile/folder_member1.png">
+                {{#  }else if(item.docType === '.doc'||item.docType === '.docx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/word.png">
+                {{#  }else if(item.docType === '.txt'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/txt.png">
+                {{#  }else if(item.docType === '.ppt'||item.docType === '.pptx'||item.docType === '.ppsx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/ppt.png">
+                {{#  }else if(item.docType === '.pdf'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/pdf.png">
+                {{#  }else if(item.docType === '.ceb'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/ceb.png">
+                {{#  }else if(['.CD','.OGG','.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.docType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/music.png">
+                {{#  }else if(['.mp4','.avi', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.docType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/video.png">
+                {{#  }else if(item.docType === '.xls'||item.docType === '.xlsx') {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/excel.png">
+                {{#  }else if(['.png','.jpeg','.gif','.jpg','.bmp'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/pic.png">
+                {{#  }else if(['.zip','.rar'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/rar.png">
+                {{#  }else if(['.exe'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/exe.png">
+                {{#  }else if(['.psd'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/psd.png">
+                {{#  }else if(['.html'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/html.png">
+                {{#  }else if(['.bmp'].indexOf(item.docType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/bmp.png">
+                {{#  }else {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-iconNew/other.png">
+                {{#  } }}
+
+                <span id="name{{index}}"  class ="nameTitpe nofolder" title="{{item.title}}" style="cursor: default" >{{ item.title }}</span>
+                <span style="display: none" id="hoverSpan" class="hoverSpan">
+                    <span style="display: inline-block;float: right">
+                        <i style="color: transparent">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                        <i class="layui-icon wenku-font wenku-font-restore" title="还原" onclick="iconRestore(this,'{{item.fileId}}','{{item.fileName}}')" style="font-size: 12px;cursor: pointer"></i>
+                        <!--<i class="layui-icon" title="清除" onclick="(this,'{{item.fileId}}','{{item.fileName}}')" style="font-size: 14px;cursor: pointer">&#xea0f;</i>-->
+                    </span>
+                </span>
+                <input type="text" id="inputName{{index}}" style="width:93%;float:right;margin-right: 5px"  maxlength="130"  value="{{item.fileName}}" class="layui-input hide ishover">
+            </td>
+            <td>
+                {{item.deleteTime.substring(0,item.deleteTime.lastIndexOf(':'))}}
+            </td>
+
+            <td>
+                {{item.fileSize}}
+            </td>
+            <td>
+                {{item.activeTime}}
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }}}
+        {{#  }); }}
+        </tbody>
+    </table>
+    </div>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/recycle.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/loading.js?v=${h_version}"></script>
+
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h=$("#previewList").height()+50;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    },300)
+
+
+</script>
+</body>

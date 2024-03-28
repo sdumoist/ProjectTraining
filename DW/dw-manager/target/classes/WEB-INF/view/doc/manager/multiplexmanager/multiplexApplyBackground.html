@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>复用登记</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/doc/front/personalcenter/css/upload-listBackground.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/topicBackground.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_add.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .layui-textarea:hover{border-color: #26b7b1 !important;}
+        .fr{
+            line-height: 26px!important;
+        }
+
+       .bottom-btns {
+            margin-top: 4px!important;
+            height: 40px;
+        }
+    </style>
+</head>
+<body class="newBody weadmin-body">
+<div class="new-top clearfix">
+    <span>复用登记</span>
+</div>
+<div  id="collectList" class="collections">
+    <div class="layui-form" >
+        <div class="layui-form-item">
+            <input type="text" id="multiplexId" name="multiplexId" hidden value="${multiplexId}" class="layui-input" style="display: none">
+            <div class=" layui-inline">
+                <label for="projectName" class="layui-form-label">
+                    项目名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="projectName" name="projectName" autocomplete="off" class="layui-input" style="height:33px" readonly>
+                </div>
+                <button class="layui-btn" id="changeDoc">选择项目</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">复用描述</label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="multiplexDesc" name="multiplexDesc" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <hr class="under-line" />
+        <div class="layui-form-item ">
+            <button class="layui-btn fr" id="selectComponent"> 选择成果</button>
+        </div>
+
+        <div class="table-box">
+            <table class="layui-table">
+            <colgroup>
+                <col width="60" >
+                <col width="150">
+                <col >
+                <col width="150" >
+                <col width="150">
+            </colgroup>
+            <thead>
+            <tr>
+                <th >序号</th>
+                <th >成果分类</th>
+                <th >成果名称</th>
+                <th >上传人</th>
+                <th >操作</th>
+            </tr>
+            </thead>
+            <tbody id="componentList">
+
+            </tbody>
+        </table>
+        </div>
+        <div class="bottom-btns">
+            <button id="saveBtn" type="button" class="self-btn fr"style="cursor: pointer;margin-right:0px !important" lay-filter="add" lay-submit="">保存</button>
+            <button id="cancel" class="self-btn white-btn fr" lay-filter="cancel" style="border-color:#26b7b1!important;color:#26b7b1!important" type="button" >返回</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/multiplexmanager/js/multiplexApplyBackground.js?v=${h_version}"></script>
+
+<script>
+    var width = $(window).width();
+</script>
+<script language="javascript">
+
+    setInterval(function () {
+        var h = $("#collectList").height() + 100 ;
+
+        $(window.parent.document).find("iframe[id='myIframe']").height(h);
+    }, 300)
+
+</script>
+</body>
+</html>

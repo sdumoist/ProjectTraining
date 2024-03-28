@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>反馈详情</title>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/feedbackmanager/css/feedback-detail.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/viewer.css?v=${h_version}">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <style>
+        .viewer-list{
+            width: auto!important;
+        }
+    </style>
+</head>
+<body>
+<form>
+    <div style="display:none;" id="feedbackType">${feedback.feedbackType}</div>
+    <div class="layui-form-item">
+        <label class="layui-form-label feedback-item">问题类型：</label>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label feedback-item">问题描述：</label>
+        <div>
+            <textarea class="layui-textarea textarea"
+                      name="feedbackDescribe" disabled>${feedback.feedbackDescribe}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" id="imgArea" style="display: none">
+        <label class="layui-form-label">相关图片</label>
+        <div id="view" style="display:none">${imgs}</div>
+        <div id="viewImg"></div>
+        <script id="imgContainer" type="text/html">
+            <div class="layui-upload-list">
+                <div class="img_div layui-inline" id="img-div">
+                    {{#  layui.each(d.list, function(index, item){ }}
+                        <img src="/preview/list?fileId={{ item.attachmentUrl }}" class='layui-upload-img attach_img' onclick='show_attachment(this)'>
+                    {{#  }); }}
+                </div>
+            </div>
+        </script>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label feedback-item">反馈人：${feedback.feedbackUser}</label>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label feedback-item">联系方式：${feedback.contackWay}</label>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label feedback-item">反馈时间：${feedback.feedbackTime,dateFormat="yyyy-MM-dd HH:mm:ss"}</label>
+    </div>
+</form>
+
+</body>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-feedback.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/viewer.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/manager/feedbackmanager/js/feedback-detail.js?v=${h_version}"></script>
+
+</html>

@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.interfaces.system.dao.YYZCUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.interfaces.system.model.YYZCUser">
+        <result column="USERID" property="userid" />
+        <result column="DEPTID" property="deptid" />
+        <result column="USERCODE" property="usercode" />
+        <result column="USERNAME" property="username" />
+        <result column="BYNAME" property="byname" />
+        <result column="PASSWD" property="passwd" />
+        <result column="SHOWORDER" property="showorder" />
+        <result column="CREATEDATE" property="createdate" />
+        <result column="CREATEUSERID" property="createuserid" />
+        <result column="DATASTATUSID" property="datastatusid" />
+        <result column="XB" property="xb" />
+        <result column="JOBNUMBER" property="jobnumber" />
+        <result column="STARTTIME" property="starttime" />
+        <result column="ENDTIME" property="endtime" />
+        <result column="MAXSESSION" property="maxsession" />
+        <result column="STATUS" property="status" />
+        <result column="COMPID" property="compid" />
+        <result column="PASSWORDEXPIRES" property="passwordexpires" />
+        <result column="SIGNIMGURL" property="signimgurl" />
+        <result column="MD5" property="md5" />
+        <result column="MOBILE" property="mobile" />
+        <result column="ZWMC" property="zwmc" />
+        <result column="ZWORDER" property="zworder" />
+    </resultMap>
+    <insert id="insertList" parameterType="java.util.List">
+    insert into jxd7_xt_user
+    (   
+        USERID,
+        DEPTID,
+        USERCODE,
+        USERNAME,
+        PASSWD,
+        BYNAME,
+        SHOWORDER,
+        CREATEDATE,
+        CREATEUSERID,
+        DATASTATUSID,
+        XB,
+        JOBNUMBER,
+        STARTTIME,
+        ENDTIME,
+        MAXSESSION,
+        STATUS,
+        COMPID,
+        PASSWORDEXPIRES,
+        SIGNIMGURL,
+        MD5,
+        MOBILE,
+        ZWORDER,
+        ZWMC
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.userid},
+        #{item.deptid},
+        #{item.usercode},
+        #{item.username},
+        #{item.passwd},
+        #{item.byname},
+        
+        #{item.showorder},
+        #{item.createdate},
+        #{item.createuserid},
+        #{item.datastatusid},
+        
+        #{item.xb},
+        #{item.jobnumber},
+        #{item.starttime},
+        #{item.endtime},
+        #{item.maxsession},
+        
+        #{item.status},
+        #{item.compid},
+        #{item.passwordexpires},
+        #{item.signimgurl},
+        #{item.md5},
+        #{item.mobile},
+        #{item.zworder},
+        #{item.zwmc}
+        
+    )
+    </foreach>
+
+    </insert>
+
+    <insert id="insertSysUsers" parameterType="java.util.List">
+    INSERT INTO SYS_USERS
+    (   
+        USER_ID,
+        USER_NAME,
+        PASSWORD,
+        CREATE_TIME,
+        MAX_SESSIONS,
+        EMPLOYEE_ID,
+        CORPORATION_ID,
+        DEPARTMENT_ID,
+        ACCOUNT_STATUS,
+        IS_SYS,
+        USER_ORDER,
+        MOBILE,
+        USER_ACCOUNT,SECURITY_LEVEL
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.username},
+        #{item.username},
+        #{item.passwd},
+        #{item.createdate},
+        "-1",
+        #{item.userid},
+        <!-- 'ef0a0f74c8c44ba198b3166e97b54003',
+        'ef0a0f74c8c44ba198b3166e97b54003', -->
+        #{item.deptid},
+        #{item.deptid},
+        '1',
+        '1',
+        concat(#{item.zworder},#{item.showorder}),
+        #{item.mobile},
+        #{item.username},
+      '1'
+        <!-- #{item.deptid},
+        #{item.deptid} -->
+    )
+    </foreach>
+
+    </insert>
+    
+    <insert id="insertSysOrgan" parameterType="java.util.List">
+    insert into sys_organ
+    (   
+        organ_id,   
+        organ_code ,
+        organ_name ,
+        short_name ,
+        organ_type , 
+        begin_date ,
+        end_date ,
+        in_use
+        <!--,create_time,
+        parent_type_code -->
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.userid},
+        #{item.usercode},
+        #{item.username},
+        #{item.jobnumber},
+        '9',
+        #{item.starttime},
+        #{item.endtime},
+        #{item.datastatusid}
+        <!--,
+        #{item.createdate},
+        #{item.deptid} -->
+    )
+    </foreach>
+
+    </insert>
+    
+    <insert id="insertSysStru" parameterType="java.util.List">
+    insert into sys_stru
+    (   
+        stru_id,
+        stru_type,
+        organ_id,
+        organ_alias,
+        parent_id,
+        stru_level,
+        stru_order,
+        is_leaf,
+        in_use,
+        <!-- create_time, -->
+        is_employee,
+        staff_position
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.userid},
+        '9',
+        #{item.userid},
+        #{item.username},
+        #{item.deptid}, 
+        <!-- 'ef0a0f74c8c44ba198b3166e97b54003', -->
+        #{item.zworder},
+        concat(#{item.zworder},#{item.showorder}) ,
+        '0',
+        #{item.datastatusid},
+        <!-- #{item.createdate}, -->
+        '1',
+        #{item.zwmc}
+    )
+    </foreach>
+
+    </insert>
+    
+    <insert id="insertSysUserRole" parameterType="java.util.List">
+    insert into sys_user_role
+    (   
+        user_id, 
+        granted_role ,
+        admin_option
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.username},
+        'public_role',
+        '1'
+    )
+    </foreach>
+
+    </insert>
+
+    <update id="updateSysUsers">
+        update SYS_USERS
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="USER_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="USER_NAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PASSWORD =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.passwd != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.passwd}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CORPORATION_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.deptid != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.deptid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="DEPARTMENT_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.deptid != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.deptid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="USER_ORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zworder != null">
+                        when EMPLOYEE_ID =  #{item.userid} then concat(#{item.zworder},#{item.showorder})
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="MOBILE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.mobile != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.mobile}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="USER_ACCOUNT =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when EMPLOYEE_ID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+        EMPLOYEE_ID in
+        <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+            #{item.userid}
+        </foreach>
+        </where>
+    </update>
+
+    <update id="updateSysOrgan">
+        update SYS_ORGAN
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="ORGAN_CODE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.usercode != null">
+                        when ORGAN_ID =  #{item.userid} then #{item.usercode}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGAN_NAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when ORGAN_ID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SHORT_NAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.jobnumber != null">
+                        when ORGAN_ID =  #{item.userid} then #{item.jobnumber}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="IN_USE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when ORGAN_ID =  #{item.userid} then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            ORGAN_ID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                #{item.userid}
+            </foreach>
+        </where>
+    </update>
+
+    <update id="updateSysStru">
+        update SYS_STRU
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="ORGAN_ALIAS =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when STRU_ID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PARENT_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.deptid != null">
+                        when STRU_ID =  #{item.userid} then #{item.deptid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="IN_USE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when STRU_ID =  #{item.userid} then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STRU_LEVEL =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zworder != null">
+                        when STRU_ID =  #{item.userid} then #{item.zworder}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STRU_ORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zworder != null">
+                        when STRU_ID =  #{item.userid} then concat(#{item.zworder},#{item.showorder})
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STAFF_POSITION =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zwmc != null">
+                        when STRU_ID =  #{item.userid} then #{item.zwmc}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            STRU_ID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                #{item.userid}
+            </foreach>
+        </where>
+    </update>
+
+
+    <update id="updateList">
+        update JXD7_XT_USER
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="DEPTID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.deptid != null">
+                        when USERID =  #{item.userid} then #{item.deptid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="USERNAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when USERID =  #{item.userid} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="USERCODE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.usercode != null">
+                        when USERID =  #{item.userid} then #{item.usercode}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PASSWD =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.passwd != null">
+                        when USERID =  #{item.userid} then #{item.passwd}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="BYNAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.byname != null">
+                        when USERID =  #{item.userid} then #{item.byname}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SHOWORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.showorder != null">
+                        when USERID =  #{item.userid} then #{item.showorder}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATEDATE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createdate != null">
+                        when USERID =  #{item.userid} then #{item.createdate}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATEUSERID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createuserid != null">
+                        when USERID =  #{item.userid} then #{item.createuserid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="DATASTATUSID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when USERID =  #{item.userid} then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="XB =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.xb != null">
+                        when USERID =  #{item.userid} then #{item.xb}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="JOBNUMBER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.jobnumber != null">
+                        when USERID =  #{item.userid} then #{item.jobnumber}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STARTTIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.starttime != null">
+                        when USERID =  #{item.userid} then #{item.starttime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ENDTIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.endtime != null">
+                        when USERID =  #{item.userid} then #{item.endtime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="MAXSESSION =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.maxsession != null">
+                        when USERID =  #{item.userid} then #{item.maxsession}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STATUS =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.status != null">
+                        when USERID =  #{item.userid} then #{item.status}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="COMPID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.compid != null">
+                        when USERID =  #{item.userid} then #{item.compid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PASSWORDEXPIRES =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.passwordexpires != null">
+                        when USERID =  #{item.userid} then #{item.passwordexpires}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SIGNIMGURL =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.signimgurl != null">
+                        when USERID =  #{item.userid} then #{item.signimgurl}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="MD5 =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.md5 != null">
+                        when USERID =  #{item.userid} then #{item.md5}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="MOBILE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.mobile != null">
+                        when USERID =  #{item.userid} then #{item.mobile}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ZWMC =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zwmc != null">
+                        when USERID =  #{item.userid} then #{item.zwmc}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ZWORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.zworder != null">
+                        when USERID =  #{item.userid} then #{item.zworder}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            USERID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                #{item.userid}
+            </foreach>
+        </where>
+    </update>
+
+    <select id="getYyzcUserList" resultMap="BaseResultMap">
+        SELECT * FROM JXD7_XT_USER 
+    </select>
+
+    <update id="updateSysUserRole">
+        update SYS_USER_ROLE
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="USER_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.username != null">
+                        when USER_ID =  #{item.usercode} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            USER_ID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                #{item.usercode}
+            </foreach>
+            and
+            GRANTED_ROLE ='public_role'
+        </where>
+    </update>
+    
+    <select id="getYyzcUserHeadPhotos" resultType="com.jxdinfo.doc.interfaces.system.model.HeadPhoto">
+        SELECT * FROM JXD7_XT_HEADPICTURE
+    </select>
+    
+    <insert id="insertUserPhotoList" parameterType="java.util.List">
+    insert into JXD7_XT_HEADPICTURE
+    (   
+        userid, 
+        username ,
+        createdate,
+        picture64,
+        md5,
+        path
+    )
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+        #{item.userid},
+        #{item.username},
+        #{item.createdate},
+        #{item.picture64},
+        #{item.md5},
+        #{item.path}
+    )
+    </foreach>
+
+    </insert>
+    
+     <update id="updateUserPhotoList" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" separator=";">
+        UPDATE JXD7_XT_HEADPICTURE set
+        USERNAME = #{item.username},
+        CREATEDATE = #{item.createdate},
+        PICTURE64 = #{item.picture64},
+        MD5 = #{item.md5},
+        path = #{item.path}
+        WHERE USERID = #{item.userid}
+        </foreach>
+    </update>
+    
+    <select id="getDeptidlist" resultType="String">
+        SELECT   ORGANISEID  FROM JXD7_XT_ORGANISE 
+        WHERE REPLACE(ORGANISEID,"-","") IN 
+        (SELECT   DISTINCT DEPTID FROM  JXD7_XT_USER )
+        AND  ORGANISENAME !='离职人员'
+    </select>
+
+    <delete id="delYYZCList">
+        DELETE FROM jxd7_xt_user WHERE userID IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <delete id="delSysOrgan">
+        DELETE FROM sys_organ WHERE organ_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <update id="delSysStru">
+        DELETE FROM sys_stru  WHERE stru_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <update id="delSysUsers">
+        DELETE FROM sys_users WHERE employee_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </update>
+    <delete id="delUserRole">
+        DELETE FROM sys_user_role WHERE user_id IN
+        (select user_id from sys_users where employee_id in
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+        )
+
+    </delete>
+    <delete id="delDocFileAuthority">
+        DELETE FROM doc_file_authority
+        WHERE author_id IN 
+        ( SELECT user_id FROM sys_users WHERE employee_id IN
+        <foreach collection="list" item="idItem" open="(" close=")" separator=",">
+            #{idItem}
+        </foreach>
+        )
+    </delete>
+    
+    <delete id="delDocFoldAuthority">
+        DELETE FROM doc_fold_authority
+        WHERE author_id IN
+        ( SELECT user_id FROM sys_users WHERE employee_id IN
+        <foreach collection="list" item="idItem" open="(" close=")" separator=",">
+            #{idItem}
+        </foreach>
+        )
+    </delete>
+
+    <select id="checkUser"  resultType="String">
+    SELECT
+        COUNT(1)
+    FROM
+        SYS_USERS USERS
+    WHERE
+        USERS.USER_NAME =  #{arg0}
+    AND USERS.PASSWORD = #{arg1}
+    </select>
+</mapper>

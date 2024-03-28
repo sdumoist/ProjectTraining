@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.docsearch.dao.SeachStrengthenMapper">
+    <select id="getFileInfo" resultType="map">
+        select
+            info.doc_id fileId,
+            info.title fileName,
+            ffl.folder_id directoryId,
+            ffl.folder_name directoryName,
+            info.doc_type fileType,
+            DATE_FORMAT(info.create_time, '%Y-%m-%d %H:%i:%s') uploadTime,
+            ifnull(info.READ_NUM, 0) readNum,
+            ifnull(info.DOWNLOAD_NUM,0) downloadNum,
+            ff.file_path filePath,
+            ff.file_pdf_path filePdfPath
+        from
+            doc_info info
+                left join fs_folder ffl on
+                info.fold_id = ffl.folder_id
+                left join sys_users uuser on
+                info.user_id = uuser.user_id
+                left join fs_file ff on
+                info.file_id = ff.file_id
+                left join sys_stru ss on
+                uuser.DEPARTMENT_ID = ss.STRU_ID
+        where info.doc_id = #{id}
+    </select>
+
+</mapper>

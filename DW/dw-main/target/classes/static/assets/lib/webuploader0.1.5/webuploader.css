@@ -1,0 +1,47 @@
+
+@media only screen and (max-width: 1366px){
+    .webuploader-pick  {
+        font-size: 12px!important;
+    }
+}
+
+.change-file{background: #fff}
+.webuploader-element-invisible {position: absolute !important;clip: rect(1px 1px 1px 1px); /* IE6, IE7 */clip: rect(1px,1px,1px,1px);}
+.webuploader-pick {position: relative; z-index:2;display: inline-block;margin-right: 7px;padding: 0 15px;height: 30px;line-height: 30px;background-color: #018cff;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;border: 0;border-radius: 2px;cursor: pointer;font-family: inherit;overflow: hidden}
+.webuploader-pick-hover {opacity: .8}
+.webuploader-pick-disable {opacity: 0.6;pointer-events:none;}
+.uploader-list  .info{width: 60%;float: left;margin:0;padding: 0;border: 0;font-size: 14px;line-height: 30px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.uploader-list .state{width: 20%;float: left;text-align: center;margin:0;padding: 0;border: 0;font-size: 14px}
+.uploader-list  .state{float: left;margin:0;padding: 0;border: 0;font-size: 14px;line-height: 30px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.uploader-list  .operation{ width:20%;float: left;margin:0;padding: 0;border: 0;font-size: 14px;line-height: 30px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+
+.uploader-list .file_btn_head{width:20%;float: left;margin:0;padding: 0;border: 0;font-size: 14px}
+.uploader-list  .item{height: 30px;line-height: 30px;}
+.list-group-item{padding: 0}
+.upload-head .item{color:#666 ;background: rgb(231, 235, 238);border-collapse: collapse;border-bottom: 1px solid #e6e6e6 ;font-size: 14px;}
+.upload-head .item h4{font-weight: bold;font-size: 14px}
+.uploader-body .item {background: rgb(255, 255, 255);border-collapse: collapse;border-bottom: 1px solid #e6e6e6 ;border-top: none;}
+.layui-upload,#uploader,#picker{float: left;}
+#picker{position: relative;padding-top: 11px}
+#dndArea {position: absolute;border-color: transparent;border-style: dashed;width: 100%;height: calc(100% - 145px);left: 0;z-index: 1;top: 85px;}
+.shadow {display: none;    position: absolute;width: 99.8%;height: calc(100% - 145px);left: .08%;z-index: 0;bottom: 55px;background: rgba(51, 133, 255, 0.2);text-align: center;font-size: 33px;border: 1px dashed rgba(51, 133, 255,1);}
+.shadow .cloud{text-align: center;background: url(upload-cloud.png) no-repeat center bottom 40px;background-size: auto;padding-top: 11%;margin-top: 10%;}
+.shadow .cloud .upload-img{font-size: 24px;color:#056df5;transform: translateY(0);animation: up .7s infinite alternate linear;}
+.shadow .layui-btn{padding: 0 35px;margin-top: -70px;color: #fff;background: #056df5;border: 1px solid #056df5;font-size: 14px;line-height: 40px;height: 40px;border-radius: 20px;}
+
+#rt_rt_1bchdejhrarjdvd11h41eoh1nt1{position: absolute; top: 0; left: 0; width: 88px; height: 35px; overflow: hidden; bottom: auto; right: auto;}
+#rt_rt_1bchdejhrarjdvd11h41eoh1nt1 label{opacity: 0; width: 100%; height: 100%; display: block; cursor: pointer; background: rgb(255, 255, 255) none repeat scroll 0 0;}
+.btns label.text-right{font-weight: 100; float: left; margin-left: 15px; width: 144px; margin-right: 15px;}
+#startOrStopBtn{padding: 7px 50px; margin-top: 20px;}
+.progress-bar{height: 100%;background: rgba(39, 183, 176, 0.4)}
+.layui-card.popWin{position:absolute; z-index: 500;bottom:0;right:-2px;width: 635px;box-shadow: -5px -5px 10px 0 rgba(234, 239, 240, 0.75);border: 1px solid rgba(234, 239, 240,1);transition: bottom .25s ease}
+.layui-card.popWin.success{bottom:-302px;right: -2px;width: 240px}
+.layui-card.popWin .layui-card-header{background: #fafafa}
+.layui-card.popWin .layui-card-header i{cursor: pointer}
+.layui-card.popWin .layui-card-body{ width:100%;height: 300px;padding: 0;overflow-y: auto}
+.success-msg{display: none;background: #26b7b0;color: #fff;padding: 8px 15px;}
+.layui-btn{position: relative;z-index: 2}
+@keyframes up {
+    0%{transform:  translateY(-40px)}
+    100%{transform: translateY(-50px)}
+}

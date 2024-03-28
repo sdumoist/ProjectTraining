@@ -1,0 +1,315 @@
+<head>
+    @include("/common/front-style.html"){}
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/upload-list.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css?v=${h_version}">
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/component.css?v=${h_version}"/>
+    <style>
+
+        .table-top {
+            position: fixed;
+            top: 0;
+            z-index: 999;
+            margin: 0 20px;
+            width:100%;
+            background: #fff;
+            /* border-bottom: 1px solid rgba(223,231,241,1); */
+            height: 63px;
+            border-bottom: none;
+        }
+        .wu-example{margin-top: 63px}
+        .status{
+            width: 100%;
+            float: none;
+        }
+        #marg{background: white;height:auto;min-height: 400px;}
+        .download-info .layui-layer-btn .layui-layer-btn0{margin-bottom: 10px}
+    </style>
+</head>
+<body>
+<div class="background">
+    <input type="text" id="userName" value="${userName}" style="display: none">
+    <div class="content clearfix" >
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="message">科研成果<span id="amount"></span></div>
+                    <div class="search-wrapper">
+                        <input class="search-input" id="style" hidden  style="display: none" value="${style}">
+                        <input class="search-input" id="searchName" placeholder="按名称查找成果" value="">
+                        <div class="search-btn" id="searchBtn">&nbsp;</div>
+
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                    <div class="toolBar"  style="min-height: 50px">
+
+                        <!--<button id="cancelCollect" class="layui-btn cancelCollect" >取消收藏</button>-->
+                    </div>
+                </div>
+                <div id="uploader" class="wu-example">
+                    <div class="fast-button">
+                    <div class="shadow">
+
+                    </div>
+                    <div id="dndArea">
+                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="height: auto">
+
+
+
+                        </div>
+                        <div class="file-container-flatten" id="">
+                            <div id="view"></div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="layui-card popWin success" style="display: none" >
+                        <div class="layui-card-header">
+                            <span>记录</span>
+                            <div class="fr">
+                                <i class="iconfont controls-down">&#xe61a;</i>
+                                <i class="iconfont controls-close">&#x1006;</i>
+                            </div>
+                            <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="success-msg"></div>
+                            <div class="btns">
+                                <div class="uploader-list upload-head">
+                                    <div  class="item">
+                                        <h4 class="info">文件名</h4>
+                                        <h4 class="state">文件状态</h4>
+                                        <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                    </div>
+                                </div>
+                                <!-- 文件列表：选择文件后在该div显示 -->
+                                <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                <label class="text-right"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="noDataTip" style="top: 36%">未找到相关内容~</div>
+<div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+<script id="demo1" type="text/html">
+    <table class="layui-table table_list" >
+        <!--<colgroup>
+            <col width="200">
+            <col width="90">
+            <col>
+            <col width="90">
+            <col width="90">
+        </colgroup>-->
+        <thead>
+        <!--<tr style="color: #8796AB;">
+            <th lay-data="{field:'filename'}" style="text-align: center;">
+                &lt;!&ndash;<input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">&ndash;&gt;
+                &lt;!&ndash;<div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">&ndash;&gt;
+                &lt;!&ndash;<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>&ndash;&gt;
+                &lt;!&ndash;</div>&ndash;&gt;
+                成果名称
+
+            </th>
+            <th lay-data="{field:'optime'}" style="text-align: center">
+                成果描述
+
+            </th>
+            <th lay-data="{field:'author'}" style="text-align: center">成果分类</th>
+            <th lay-data="{field:'author'}" style="text-align: center">成果来源</th>
+            <th lay-data="{field:'author'}" style="text-align: center">是否应用</th>
+            <th lay-data="{field:'author'}" style="text-align: center">状态</th>
+
+        </tr>-->
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <tr class='hoverEvent'  style="height: auto" ondblclick="dbclick('{{item.componentId}}','{{item.fileType}}','{{item.fileName}}')"  onclick="clickCheck(this,'{{item.componentId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td class="tdStyle" style="height: auto">
+               <!-- <input type="checkbox" class="checkbox" name="checkboxname"
+                       onclick="tryPop(this,'{{item.componentId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')"
+                       style="position: absolute;opacity: 0">
+                <div class="layui-unselect layui-form-checkbox"
+                     style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px"
+                     onclick="clickIconCheck(this,'{{item.componentId}}','{{item.componentState}}')">
+                    <i class="iconfont" style="width: 12px;font-size: 12px;">&#xe605;</i>
+                </div>
+                <input class="checkFileId" hidden value="{{item.componentId}}">
+                <input class="checkFileName" hidden value="{{item.componentName}}">
+                <input class="chooseFileAuthor" hidden value="{{item.userId}}">
+                <input class="chooseFileState" hidden value="{{item.componentState}}">
+                &nbsp;-->
+                <!--<img style="width: auto" src="/static/resources/img/front/file-icon/ic-component02.png">-->
+               <div class="rows"><div class="row-title"><span  id="name{{index}}" class="nameTitpe titleName title-span" title="{{ item.componentName }}"
+                      style="cursor: default"><a class="fileName"
+                                                 onclick="dbclick('{{item.componentId}}','{{item.fileType}}','{{item.fileName}}')"
+                                                 src="">{{ item.componentName }}</a></span>
+                </div>
+
+            <div class="status" style="cursor:default">
+                {{# if(item.componentState=='0'){   }}
+                <span style="border:1px solid #deedff;color:#3C91FD;" class="spans"> 待审核</span>
+                {{#  }else if (item.componentState=='1'){  }}
+                <span style="border:1px solid #ffebcc;color:#FE9F11;"  class="spans"> 待发布</span>
+                {{#  }else if (item.componentState=='2'){  }}
+                <span style="border:1px solid #def5eb;color:#82D8B3;"  class="spans"> 已发布</span>
+                    {{#  }else {  }}
+                <a href="javascript:void(0)" title="查看成果复用" style="cursor:pointer"
+                   onclick="viewReason('{{item.componentId}}')">   <span style="border:1px solid #ffe0cc;color:#FE0E0E;" class="spans"> 已驳回</span></a>
+                {{#  } }}
+            </div></div>
+
+            <div class="rows"><div style="width:50%;float:right;height:100%;cursor:default;text-align: right;color: #5ACC9B;font-size: 12px">
+
+
+                        {{#
+                        var titlesub = function(){
+                        var result='';
+                        var time=item.createTime;
+                        result=time.substr(0, 11);
+
+                        return result;
+                        };
+
+                        }}
+                        {{titlesub()}}|
+                    {{# if(item.componentType=='0'){   }}
+                    技术组件
+                    {{#  }else {  }}
+                    解决方案
+                    {{#  } }}|
+                    {{# if(item.componentOrigin=='0'){   }}
+                    项目开发
+                    {{#  }else {  }}
+                    技术预研
+                    {{#  } }}
+
+
+
+            </div>
+                <div style="width: 50%;float: left;height:100%;text-align: left;color: #0188FB;font-size: 12px;color: #0188FB">
+                    <span style="cursor:default">
+
+                        {{item.userName}}  <span>&nbsp;</span> · <span>&nbsp;</span> {{item.organAlias}}
+                    </span>
+
+                </div>
+            </div>
+            </td>
+            <!--<td>
+                {{# if(item.isProject =='0'||item.isProject ==0){   }}
+                否
+                {{#  }else {  }}
+                <a href="javascript:void(0)" title="查看成果复用" style="cursor:pointer" id="component-project"
+                   onclick="projectCheck('{{item.componentId}}')">是</a>
+                {{#  } }}
+            </td>-->
+
+
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }
+
+        ); }}
+        </tbody>
+    </table>
+
+</script>
+<script id="demo2" type="text/html">
+    <table class="layui-table table_list" >
+        <!--<colgroup>
+            <col width="200">
+            <col width="90">
+            <col>
+            <col width="90">
+            <col width="90">
+        </colgroup>-->
+        <thead>
+        <!--<tr style="color: #8796AB;">
+            <th lay-data="{field:'filename'}" style="text-align: center;">
+                &lt;!&ndash;<input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">&ndash;&gt;
+                &lt;!&ndash;<div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">&ndash;&gt;
+                &lt;!&ndash;<i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>&ndash;&gt;
+                &lt;!&ndash;</div>&ndash;&gt;
+                成果名称
+
+            </th>
+            <th lay-data="{field:'optime'}" style="text-align: center">
+                成果描述
+
+            </th>
+            <th lay-data="{field:'author'}" style="text-align: center">成果分类</th>
+            <th lay-data="{field:'author'}" style="text-align: center">成果来源</th>
+            <th lay-data="{field:'author'}" style="text-align: center">是否应用</th>
+            <th lay-data="{field:'author'}" style="text-align: center">状态</th>
+
+        </tr>-->
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <tr class='hoverEvent' onclick="clickCheck(this,'{{item.projectId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td class="tdStyle">
+                <!-- <input type="checkbox" class="checkbox" name="checkboxname"
+                        onclick="tryPop(this,'{{item.componentId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')"
+                        style="position: absolute;opacity: 0">
+                 <div class="layui-unselect layui-form-checkbox"
+                      style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px"
+                      onclick="clickIconCheck(this,'{{item.componentId}}','{{item.componentState}}')">
+                     <i class="iconfont" style="width: 12px;font-size: 12px;">&#xe605;</i>
+                 </div>
+                 <input class="checkFileId" hidden value="{{item.componentId}}">
+                 <input class="checkFileName" hidden value="{{item.componentName}}">
+                 <input class="chooseFileAuthor" hidden value="{{item.userId}}">
+                 <input class="chooseFileState" hidden value="{{item.componentState}}">
+                 &nbsp;-->
+                <!--<img style="width: auto" src="/static/resources/img/front/file-icon/ic-component02.png">-->
+                <div class="rows"><div class="row-title"><span  id="name{{index}}" class="nameTitpes titleName title-span" title="{{ item.projectName }}"
+                                                                                                         style="cursor: default"><a class="fileName"
+                                                                                                                                    src="">{{ item.projectName }}</a></span>
+                </div>
+                </div>
+                <div class="rows" style="text-align: left;width:100%;" >
+                <span  class="componame" title="{{ item.componentName }}" style="cursor:default">
+                {{item.componentName}}
+                    </span>
+                </div>
+                <div class="rows">
+                    <div style="width: 50%;float: right;height:100%;text-align: right;font-size: 12px">
+                        {{item.projectUser}} | {{item.projectDept}}
+                    </div>
+                </div>
+            </td>
+            <!--<td>
+                {{# if(item.isProject =='0'||item.isProject ==0){   }}
+                否
+                {{#  }else {  }}
+                <a href="javascript:void(0)" title="查看成果复用" style="cursor:pointer" id="component-project"
+                   onclick="projectCheck('{{item.componentId}}')">是</a>
+                {{#  } }}
+            </td>-->
+
+
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }
+
+        ); }}
+        </tbody>
+    </table>
+
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/personalcenter/js/component.js?v=${h_version}"></script>
+
+<script>
+    var width = $(window).width();
+</script>
+
+</body>

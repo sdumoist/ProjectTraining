@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+
+    <meta name="renderer" content="webkit">
+    <title>全部词条</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/personalcenter/css/personalcenter-common.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/entry/css/all_entrys.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/search_new.css?v=${h_version}"/>
+</head>
+<body id="top" style="entryheight: 100%;width: 100%;min-width: 1000px;margin:0px">
+@include("/common/front-header_new2.html"){}
+<input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType}">
+<div style="width: 100%;margin: 0 auto;background-color: #fff;height: calc(100% - 109px);overflow: auto;">
+    <div style="display: flex;width: 60%;margin: 0 auto;">
+        <div class="entryLetf">
+            <div class="moreEntry">
+                <div><span id="searchName"></span>相关词条</div>
+                <div class="col-sm-3 doc-num" id="entryOrderPicByTime" style="cursor: pointer">按时间排序
+                    <i class="layui-icon" id="entryorderPic" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"
+                             src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                    </i>
+                    <i class="layui-icon" id="entryorderPic1" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"
+                             src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                    </i>
+                </div>
+                <div>为您找到<span id="searchNumber">0</span>条词条</div>
+            </div>
+            <!-- 标签-->
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+
+                    <div class="layui-input-inline" id="industry_type_inline" style="margin-left: 89px;">
+                        <div class="edit-name-list-power clearfix" id="industry_type"></div>
+                    </div>
+                    <label class="layui-form-label">标签:</label>
+                    <div class="layui-input-block">
+                    </div>
+                </div>
+            </form>
+            <div id="searchINfo">
+            </div>
+            <div class="noDataTip">未找到相关内容~</div>
+            <div class="text-center">
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+        <div style="width: 20%;padding-left: 10px">
+            <div class="right-container">
+                <div class="rit-container">
+                    @include("/common/front-rit.html"){}
+                </div>
+                <div class="hot">
+                    <div class="title">热搜文章</div>
+                    <div class="hot-total">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@include("/common/front-footer.html"){}
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/entry/js/all_entrys.js?v=${h_version}"></script>
+
+
+</body>
+</html>

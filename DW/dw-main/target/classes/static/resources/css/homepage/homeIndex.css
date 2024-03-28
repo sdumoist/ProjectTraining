@@ -1,0 +1,50 @@
+.loginMainCon{margin:auto;width:100%;height: 100%;padding-top:50px;background: url(../../img/homepage/loginBg.jpg) no-repeat center bottom;background-size:100% 100%;}
+.loginMainCon .loginWrapper{margin:auto;width:500px; height: 542px;background: url(../../img/homepage/loginFormBg.png) no-repeat center bottom;background-size:100% 100%;border-radius:10px 10px;}
+.loginMainCon .loginWrapper .login-header{background: url(../../img/homepage/logo-bg.png) no-repeat center bottom;background-size:100% 100%;height:160px;}
+.loginMainCon .logo{width:100%;height: 85px;background: url(../../img/homepage/logo.png) no-repeat center;}
+.login-header{ display: flex;  justify-content: center;  align-items: center;}
+.loginFormRow {position:relative;height: 40px;margin-bottom: 50px;}
+.loginMainCon .login-body{padding:0px 50px 18px;}
+.loginFormRow:nth-child(2){margin-bottom: 0;}
+.loginFormRow .icon{position: absolute;top:0;left: 0;width: 30px;height: 100%;}
+.loginFormRow .icon{position: absolute;top:0;left: 0;width: 30px;height: 40px;}
+.loginFormRow .icon-user{background: url(../../img/homepage/user-icon.png) no-repeat left center;}
+.loginFormRow .icon-pwd{background: url(../../img/homepage/pwd-icon.png) no-repeat left center;}
+.loginFormRow .icon-pwdch{margin-left: 350px;background: url(../../img/homepage/pwdnoch-icon.png) no-repeat right center;}
+.icon-pwdch:hover{background: url(../../img/homepage/pwdChoose-icon.png) no-repeat right center;}
+.loginFormRow .icon-remember_pwd{width:20px;background: url(../../img/homepage/normbpwd-icon.png) no-repeat left center;}
+.remember_pwd{background: url(../../img/homepage/rmbpwdch--icon.png) no-repeat left center;}
+.loginFormRow input{padding-left:50px;width: 100%;font-size: 16px;border: none;border-bottom: 1px solid #ebebeb;border-radius: 0;line-height: 40px;color: #999999;;}
+/*.loginFormRow input:focus{border: none;border-bottom:1px solid #778189;}*/
+.loginRemberPwd { margin: 20px 0px 30px 0px;}
+.loginBtnRow{margin: auto;width:400px;height: 70px;-moz-border-radius: 27px;-webkit-border-radius: 27px;background: url(../../img/homepage/logBtn.png) no-repeat center;transition: all .3s linear;cursor:  pointer;}
+.loginBtnRow:hover,.loginBtnRow:active{background: url(../../img/homepage/logBtnClick.png) no-repeat center; }
+.loginWrapper{transform: scale(0.8);}
+/*媒体查询*/
+@media screen and (min-width: 1400px){
+    .loginMainCon{padding-top: 150px}
+    .loginWrapper{transform: scale(1);}
+}
+
+
+/*----------- 头部 ----------*/
+.searchHeaderBar{height: 60px;line-height: 32px;font-size: 12px;border-bottom:2px solid #3894fc;}
+.searchMenuBar{float:right;width: auto;margin-right: 60px; height:60px;line-height: 60px;}
+.searchMenuBar>a{padding-left: 0px; padding-right: 20px; padding-top: 3px;color: #3893fc;transition: all ease .3s;}
+.searchMenuBar .btn-icon:hover{color: #0b7be0;background: #fff;border-radius: 10px;}
+.searchMenuBar .cancelBtn{}
+.header
+
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #fff;
+}
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #fff;
+}
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #fff;
+}
+input:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    #fff;
+}
+.footer{position: fixed;  bottom: 0; right: 0;  left: 0;height: 40px;line-height: 40px;text-align:center;color: #666666;margin-bottom: 20px;}

@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docmanager.dao.FsFileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.docmanager.model.FsFile">
+        <id column="file_id" property="fileId"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_icon" property="fileIcon"/>
+        <result column="file_pid" property="filePid"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_desc" property="fileDesc"/>
+        <result column="show_order" property="showOrder"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <delete id="deleteScopeReally">
+        DELETE from fs_file WHERE file_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <delete id="deleteDocInfoReally">
+        DELETE from doc_info WHERE doc_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFileUploadReally">
+        DELETE from fs_file_upload WHERE file_id IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+
+    <select id="getChildrenFolder" resultType="FsFile">
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+        AND  DF.FILE_TYPE = 'folder'
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLD_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLD_ID = DF.file_id
+        )
+        or DF.secuity_level = 0
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getChildrenFolderBySuperAdmin"  resultType="FsFile">
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        AND  DF.FILE_TYPE = 'folder'
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getChildren" resultType="FsFile">
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLD_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLD_ID = DF.file_id
+        )
+        or DF.secuity_level = 0
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+
+    <select id="getChildrenTable" resultType="Map">
+        SELECT fs.fileId, fs.fileName, fs.filePid, fs.fileType,fs.fileSize,fs.createTime,
+        sysUsers.USER_NAME name
+        FROM (
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType,Df.FILE_SIZE file_size,Df.create_time createTime
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLD_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        ( DFA.group_id IN (
+        SELECT
+        dgu.USER_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLD_ID = DF.file_id
+        )
+        or DF.secuity_level = 0
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE CONCAT('%',#{name},'%')
+        </if>
+        ) fs
+        LEFT join doc_file docfile on docfile.file_id = fs.fileId
+        LEFT  JOIN doc_info docInfo on docInfo.doc_id= docfile.doc_id
+        LEFT  join sys_users sysUsers on docInfo.AUTHOR_ID=sysUsers.USER_ID
+
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getChildrenTableBySuperAdmin" resultType="Map">
+        SELECT fs.fileId, fs.fileName, fs.filePid, fs.fileType,fs.fileSize,fs.createTime,
+        sysUsers.USER_NAME name
+        FROM (
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+        ) fs
+        LEFT join doc_file docfile on docfile.file_id = fs.fileId
+        LEFT  JOIN doc_info docInfo on docInfo.doc_id= docfile.doc_id
+        LEFT  join sys_users sysUsers on docInfo.AUTHOR_ID=sysUsers.USER_ID
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getChildrenBySuperAdmin" resultType="FsFile">
+        SELECT
+        DF.FILE_ID fileId, DF.FILE_NAME fileName, DF.FILE_PID filePid, DF.FILE_TYPE fileType
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+        <if test="orderResult != null and orderResult != '' ">
+            ORDER BY SHOW_ORDER,DF.${orderResult}
+        </if>
+        LIMIT #{pageNumber}, #{pageSize}
+
+    </select>
+    <select id="getNum" resultType="int">
+
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+        AND (
+        EXISTS (
+        SELECT
+        DFA.FOLD_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLD_ID = DF.file_id
+        )
+        or DF.secuity_level = 0
+        )
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+    </select>
+
+    <select id="getNumByChildFloder" resultType="int">
+
+        SELECT
+        COUNT(*)
+        FROM
+        FS_Folder DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND parent_folder_id = #{id}
+        </if>
+
+
+    </select>
+
+
+    <select id="getNumBySuperAdmin" resultType="int">
+
+        SELECT
+        COUNT(*)
+        FROM
+        FS_FILE DF
+        WHERE
+        1=1
+        <if test="id != null and id != ''">
+            AND FILE_PID = #{id}
+        </if>
+
+        <if test="typeArr != null and typeArr.length >0">
+            AND DF.FILE_TYPE IN
+            <foreach collection="typeArr" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="name != null and name != '' ">
+            AND DF.FILE_NAME LIKE  CONCAT('%',#{name},'%')
+        </if>
+
+    </select>
+
+
+    <select id="addCheck" resultType="DocInfo">
+        SELECT doc_id docId, title title
+        FROM
+        doc_info
+        WHERE  fold_id = #{pid}
+        AND title = #{name}
+         AND valid_flag = '1'
+    </select>
+
+    <select id="countFileName" resultType="FsFile">
+        SELECT
+        F.FILE_ID fileId
+        FROM
+        DOC_INFO D
+        LEFT JOIN FS_FILE F ON F.FILE_ID = D.FILE_ID
+        WHERE
+        D.FOLD_ID = #{pid}
+        AND (
+        <foreach collection="list" item="item" index="index" separator="or">
+            (F.FILE_NAME = #{item.name} AND D.DOC_TYPE = #{item.type})
+        </foreach>
+        )
+    </select>
+    <select id="getRoot" resultType="FsFolder">
+        SELECT Folder_ID folderId, Folder_NAME folderName, parent_folder_id parentFolderId
+        FROM
+        FS_Folder
+        WHERE  parent_folder_id = 'root'
+
+        ORDER BY folder_NAME
+    </select>
+    <delete id="deleteInIds">
+        DELETE FROM FS_FILE WHERE FILE_ID IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <!--批量新增-->
+    <insert id="insertDocRecycle">
+        insert into DOC_RECYCLE (recycle_id,doc_id,file_id,delete_time,delete_user_id,clear_flag)
+        VALUES
+        <foreach collection="list" item="arr" index= "index" separator=",">
+            ((SELECT IFNULL(Lpad(Max(temp.recycle_id) + 1,6,'0'),'000001') FROM DOC_RECYCLE temp),
+            '3' ,#{arr,jdbcType=VARCHAR},NOW(),#{userId,jdbcType=VARCHAR},'1')
+        </foreach>
+    </insert>
+    <delete id="deleteScope">
+        update  doc_info  set valid_flag=0  WHERE doc_id  IN
+        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+            #{idItem}
+        </foreach>
+    </delete>
+    <select id="getChildFsFile" parameterType="string" resultType="string">
+        SELECT GETCHILDFSFILE(#{rootId})
+    </select>
+    <select id="getTreeDataLazy" resultType="Fsfolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId
+
+        FROM
+        FS_folder DF
+        WHERE
+        DF.parent_folder_id = #{id}
+        AND ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        <if test="type==0 ">
+            or DF.visible_range = 0
+        </if>
+        or DF.create_user_id=#{userId}
+        )
+        ORDER BY SHOW_ORDER,CREATE_TIME
+
+    </select>
+
+    <select id="getTreeDataLazyBySuper" resultType="FsFolder">
+        SELECT
+           DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId,
+                DF.level_code levelCode,
+        DF.create_user_id createUserId,
+        DF.create_time createTime
+        FROM
+        FS_folder DF
+        WHERE
+         DF.parent_folder_id = #{id}
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+    <select id="getInfo" parameterType="list" resultType="Map">
+
+        <!--SELECT
+        U.USER_NAME name,
+        W.DOWNLOAD_NUM downNum,
+        W.READ_NUM readNum,
+        W.doc_id fileId,
+        W.authority authority
+        FROM
+        doc_info W
+        LEFT JOIN sys_users U ON w.AUTHOR_ID = u.USER_ID
+        WHERE
+        W.doc_id IN
+         <if test="list != null and list.size() >0">
+	        <foreach item="idItem" collection="list" open="(" separator="," close=")">
+	            #{idItem}
+	        </foreach>
+	     </if>-->
+        SELECT
+        U.USER_NAME name,
+        W.DOWNLOAD_NUM downNum,
+        W.valid_flag validFlag,
+        W.READ_NUM readNum,
+        W.doc_id fileId,
+        W.fold_id folderId,
+        CASE
+        WHEN W.author_id = #{userId} THEN
+        '2'
+        <if test="levelCode != null and levelCode != ''">
+            WHEN  FFD.level_code IN ${levelCode} THEN
+            '2'
+        </if>
+        ELSE
+        T1.authority
+        END authority
+
+        FROM
+        (
+        SELECT
+        DOWNLOAD_NUM,
+        READ_NUM,
+        valid_flag,
+        doc_id,
+        AUTHOR_ID,
+        authority,
+        fold_id
+        FROM
+        doc_info
+        WHERE
+        doc_id IN
+        <if test="list != null and list.size() >0">
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">#{idItem}
+            </foreach>
+        </if>
+        ) W
+        LEFT JOIN sys_users U ON w.AUTHOR_ID = u.USER_ID
+        LEFT JOIN fs_folder FFD ON W.fold_id = FFD.folder_id
+        LEFT JOIN (
+        SELECT
+        DFA.file_id file_id,
+        max(DfA.authority) authority
+        FROM
+        doc_file_authority DFA
+        WHERE
+        (
+        DFA.AUTHOR_ID IN (
+        SELECT TUA.A FROM (
+        SELECT
+        dgu.group_id A
+        FROM
+        doc_group_user dgu
+        WHERE
+        1 = 2
+        <if test="groupList != null and groupList.size() >0">
+            OR dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT
+        ur.GRANTED_ROLE A
+        FROM
+        sys_user_role ur
+        WHERE
+        1 = 2
+        <if test="roleList != null and roleList.size() >0">
+            OR ur.GRANTED_ROLE IN
+            <foreach item="idItem" collection="roleList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT #{userId} A FROM DUAL
+        UNION ALL
+        SELECT 'allpersonflag' A FROM DUAL
+        ) TUA )
+        OR (FIND_IN_SET(DFA.organ_id, #{orgId}) > 0)
+        )
+        GROUP BY
+        file_id
+        ) T1 ON T1.file_id = W.doc_id
+    </select>
+    <select id="getChildListForSuperAdmin" resultType="FsFolder">
+        SELECT
+        DF.Folder_ID folderId,
+        DF.Folder_NAME folderName,
+        DF.parent_folder_id parentFolderId
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="fileList != null and fileList.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="fileList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+
+        ORDER BY SHOW_ORDER,CREATE_TIME
+    </select>
+
+    <select id="getChildList" resultType="FsFolder">
+        SELECT
+        DF.folder_ID folderId,
+        DF.folder_NAME folderName,
+        DF.parent_folder_id parentFolderId
+        FROM
+        FS_folder DF
+        WHERE
+        1=1
+        <if test="fileList != null and fileList.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="fileList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND  ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.group_id
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        <if test="type==0 ">
+            or DF.visible_range = 0
+        </if>
+        )
+        ORDER BY SHOW_ORDER,CREATE_TIME
+
+    </select>
+
+
+
+    <select id="getChildCountList" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder DF
+        WHERE 1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        AND  ( EXISTS (
+        SELECT
+        DFA.FOLDER_ID
+        FROM
+        doc_fold_authority DFA
+        WHERE
+        DFA.operate_type=#{type}
+        and
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        AND DFA.FOLDER_ID = DF.folder_id
+        )
+        <if test="type==0 ">
+            or DF.visible_range = 0
+        </if>
+
+        or DF.create_user_id=#{userId}
+
+        )
+        GROUP BY parent_folder_id
+    </select>
+    <select id="getChildCountListForSuperAdmin" parameterType="list" resultType="Map">
+        SELECT parent_folder_id id,COUNT( parent_folder_id ) num
+        FROM
+        FS_folder
+        WHERE 1=1
+        <if test="list != null and list.size() >0">
+            AND parent_folder_id IN
+            <foreach item="idItem" collection="list" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        GROUP BY parent_folder_id
+    </select>
+
+
+    <select id="getDocId" resultType="Map">
+        SELECT DOC_ID id FROM DOC_INFO WHERE FILE_ID = #{id}
+    </select>
+    <select id="getChildFsFileType" parameterType="string" resultType="string">
+        SELECT GETCHILDFSFILETYPE(#{rootId})
+    </select>
+    <select id="getAuthority" resultType="Map">
+        select dfa.author_id authorId,dfa.author_type authorType, dfa.authority authority, SU.user_name userName,
+         g.group_name groupName,ss.stru_id organId ,SR.ROLE_NAME roleName  from (select * from doc_file_authority  where  file_id = #{fileId} ) dfa
+        left join doc_group  g on g.group_id = dfa.author_id
+           left join sys_roles  SR on SR.ROLE_ID= dfa.author_id
+           left join sys_users  SU on SU.user_id= dfa.author_id
+            left join sys_stru ss on ss.stru_id = dfa.organ_id
+    </select>
+    <select id="searchLevel" resultType="Map">
+        SELECT
+        S.VALUE value,
+        S.LABEL label
+        FROM
+        SYS_DICT_SINGLE S
+        WHERE
+        S.TYPE_ID = (SELECT ID FROM SYS_DICT_TYPE  T WHERE t.TYPE_NAME = 'level')
+        ORDER BY
+        S.SORT
+    </select>
+    <select id="downloadAble" resultType="Map">
+        SELECT
+        S.VALUE value,
+        S.LABEL label
+        FROM
+        SYS_DICT_SINGLE S
+        WHERE
+        S.TYPE_ID = (SELECT ID FROM SYS_DICT_TYPE  T WHERE t.TYPE_NAME = 'download_able')
+        ORDER BY
+        S.SORT
+    </select>
+
+    <select id="getFsFolderDetail" resultType="Map">
+ 		SELECT
+			F.FOLDER_ID  fileId,
+			F.FOLDER_NAME fileName,
+			F.LEVEL_CODE levelId,
+			F.PARENT_FOLDER_ID filePid,
+			'folder' fileType
+		 FROM FS_FOLDER F
+		 WHERE F.FOLDER_ID = #{fsFileId}
+    </select>
+
+    <select id="getFsfileDetail" resultType="Map">
+		SELECT
+			F.FILE_ID fileId,
+			F.FILE_NAME fileName,
+			'' levelId,
+			DI.FOLD_ID filePid,
+			F.FILE_TYPE fileType,
+			DI.AUTHOR_ID authorId,
+			DI.CONTACTS_ID contactsId,
+			AU.USER_NAME authorName,
+			CO.USER_NAME contactsName
+		FROM
+			FS_FILE F
+			LEFT JOIN DOC_INFO DI ON DI.FILE_ID = f.FILE_ID
+			LEFT JOIN SYS_USERS AU ON AU.USER_ID = DI.AUTHOR_ID
+			LEFT JOIN SYS_USERS CO ON CO.USER_ID = DI.CONTACTS_ID
+        WHERE
+        F.FILE_ID = #{fsFileId}
+    </select>
+
+    <update id="updateFileAuthor" parameterType="string">
+        UPDATE DOC_INFO D
+        SET D.AUTHOR_ID = #{authorId},
+        CONTACTS_ID = #{contactsId}
+        WHERE
+        DOC_ID = (
+        SELECT
+        DOC_ID
+        FROM
+        DOC_FILE
+        WHERE
+        FILE_ID = #{fileId}
+        )
+    </update>
+    <select id="getPersonList" resultType="Map">
+        SELECT
+        o.organ_name deptName,
+        u.user_name personName,
+        o.organ_Id deptId,
+        u.user_id personId
+        FROM
+        sys_users u
+        LEFT JOIN sys_organ o ON u.department_id = o.organ_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND u.user_name = #{name}
+        </if>
+        <if test="deptId != null and deptId != '' ">
+            AND o.organ_Id  = #{deptId}
+        </if>
+        AND o.organ_name != '离职人员'
+        AND u.department_id IS NOT NULL
+        AND u.department_id != ''
+        LIMIT #{pageNumber}, #{pageSize}
+    </select>
+    <select id="getPersonNum" resultType="int">
+        SELECT
+        count(u.user_id) num
+        FROM
+        sys_users u
+        LEFT JOIN sys_organ o ON u.department_id = o.organ_id
+        WHERE 1=1
+        <if test="name != null and name != '' ">
+            AND u.user_name = #{name}
+        </if>
+        <if test="deptId != null and deptId != '' ">
+            AND o.organ_Id  = #{deptId}
+        </if>
+        AND o.organ_name != '离职人员'
+        AND u.department_id IS NOT NULL
+        AND u.department_id != ''
+    </select>
+    <select id="getInfoByPdfPath" resultType="FsFile">
+        select FF.pdf_key pdfKey ,FF.source_key sourceKey,FF.file_id fileId,
+        FF.file_name fileName,
+        FF.file_type fileType,
+        FF.md5 md5
+        from fs_file FF
+        where
+        file_pdf_path= #{pdfPath}
+    </select>
+
+    <select id="getInfoByPath" resultType="FsFile">
+        select FF.source_key sourceKey ,
+        FF.file_name fileName,
+        FF.file_type fileType,FF.file_id fileId,
+        FF.md5 md5
+        from fs_file FF
+        where
+        file_path= #{path}
+    </select>
+
+    <select id="getInfoByMd5" resultType="FsFile">
+        select
+        FF.file_size fileSize,
+        FF.size size,
+        FF.file_id fileId,
+        FF.file_path filePath ,
+        FF.file_pdf_path filePdfPath,
+        FF.md5 md5,
+         FF.pdf_key pdfKey,
+          FF.source_key sourceKey
+        from fs_file FF
+        where
+       md5= #{md5}
+
+    </select>
+
+    <select id="getThumbByPath" resultType="FsFile">
+    select
+        FIT.source_key sourceKey ,
+        FF.file_name fileName,
+        FF.file_type fileType, FF.md5 md5
+    from doc_img_thumb FIT
+    LEFT JOIN fs_file FF
+    ON FF.FILE_ID=FIT.FILE_ID
+    where
+    FIT.SOURCE_PATH= #{path}
+    </select>
+    <select id="getVideoByPath" resultType="FsFile">
+    select
+        dvt.path_key sourceKey ,
+        FF.file_name fileName,
+        FF.file_type fileType, FF.md5 md5
+    from doc_video_thumb dvt
+    LEFT JOIN fs_file FF
+    ON FF.FILE_ID=dvt.doc_id
+    where
+    dvt.path= #{path}
+    </select>
+
+    <select id="getDeletedFiles" resultType="java.util.Map">
+        select i.doc_id docId,i.title title,s.user_name uploader,i.create_time uploadTime,f.size fileSize
+        from doc_info i
+        inner join doc_recycle r on i.doc_id=r.file_id
+        left join sys_users s on i.user_id=s.user_id
+        left join fs_file f on i.doc_id=f.file_id
+        where i.valid_flag='0'
+        and r.clear_flag='0'
+        <if test="params.title != null and params.title != ''">
+            and i.title like CONCAT('%',#{params.title},'%')
+        </if>
+        order by fileSize desc
+    </select>
+    <select id="getMd5" resultType="String">
+        select ff.md5 from fs_file ff
+        where ff.file_id = #{id}
+    </select>
+    <select id="getFileNum" resultType="int">
+        select count(*) from fs_file ff
+        where ff.md5 = #{md5}
+    </select>
+</mapper>

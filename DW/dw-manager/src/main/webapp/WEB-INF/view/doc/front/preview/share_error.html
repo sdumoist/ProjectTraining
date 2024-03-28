@@ -1,0 +1,50 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <!-- 分享显示的标题-->
+    <meta itemprop="name" content="查看分享" />
+    <!-- 分享显示的缩略图-->
+    <meta itemprop="image" content="" />
+    <!-- 分享显示的简介-->
+    <meta name="description" itemprop="description" content="更多精彩尽在金企文库" />
+    <title>${session.projectTitle}-预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/viewer.css?v=${h_version}">
+    <link rel="stylesheet" type="text/css"
+          href="${ctxPath}/static/doc/front/preview/css/share_verify.css?v=${h_version}"/>
+</head>
+<body id="top">
+<a name="goTop" id="goTop"></a>
+<input id="hash" type="hidden" class="hide" value="${hash}">
+<div class="verify-container">
+    <div class="verify-header">
+        <div class="logo-verify"></div>
+    </div>
+    <div class="error">
+        <div class="error-content">
+            <span>${error_msg}</span>
+        </div>
+        <div class="error-button-div">
+            <a href="/">
+                <button type="button" class="layui-btn wk-btn">逛逛文库</button>
+            </a>
+        </div>
+    </div>
+    <div class="share-bg">
+
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/docmanager/js/viewer.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/doc/front/preview/js/share_verify.js?v=${h_version}"></script>
+</html>
+

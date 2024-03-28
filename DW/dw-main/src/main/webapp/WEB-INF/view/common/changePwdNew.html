@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>修改密码（弹窗）</title>
+
+    <!--外部css和js开始-->
+    @include("/common/plugins.html"){}
+    <script src="${ctxPath}/static/js/common/pwd_verify.js"></script>
+    <link type="text/css" href="${ctxPath}/static/resources/css/changePwdNew.css?v=${h_version}" rel="stylesheet">
+</head>
+<body>
+<div class="weadmin-body" align="center">
+    <form id="pwdForm" class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label "><em class="must">*&nbsp;</em>原密码：</label>
+            <div class="layui-input-block">
+                <input id="old_pwd" placeholder="请输入原密码" type="password" class="layui-input" lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label "><em class="must">*&nbsp;</em>新密码：</label>
+            <div class="layui-input-block">
+                <input id="new_pwd" placeholder="请输入新密码" type="password" class="layui-input" lay-verify="required|password" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label "><em class="must">*&nbsp;</em>确认密码：</label>
+            <div class="layui-input-block">
+                <input id="c_pwd" placeholder="请再次输入新密码" type="password" class="layui-input" lay-verify="required|password" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item btn-box">
+            <!-- <button id="btnClose" type="button" class="layui-btn btn-close"><i class="iconfont">&#x1006;</i>取消</button> -->
+            <button lay-submit lay-filter="go" id="btnSave" type="button" class="layui-btn btn-save" >保存</button>
+        </div>
+    </form>
+</div>
+
+
+<script src="${ctxPath}/static/bsp/permit/js/selfService/changePwd.js"></script>
+</body>
+<link rel="stylesheet" href="${ctxPath}/static/css/bsp/project_ext.css">
+</html>

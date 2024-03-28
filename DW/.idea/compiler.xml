@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="dw-kms" />
+        <module name="dw-yyzc" />
+        <module name="dw-mobile" />
+        <module name="dw-client" />
+        <module name="dw-fastdfs" />
+        <module name="dw-common" />
+        <module name="dw-manager" />
+        <module name="dw-main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dw-client" target="1.8" />
+      <module name="dw-common" target="1.8" />
+      <module name="dw-fastdfs" target="1.8" />
+      <module name="dw-kms" target="1.8" />
+      <module name="dw-main" target="1.8" />
+      <module name="dw-manager" target="1.8" />
+      <module name="dw-mobile" target="1.8" />
+      <module name="dw-parent" target="1.8" />
+      <module name="dw-yyzc" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dw-client" options="-parameters" />
+      <module name="dw-common" options="-parameters -verbose -bootclasspath $PROJECT_DIR$/../../../jdk/jdk1.8.0_91/jre\lib\rt.jar;$PROJECT_DIR$/../../../jdk/jdk1.8.0_91/jre\lib\jce.jar" />
+      <module name="dw-fastdfs" options="-parameters" />
+      <module name="dw-kms" options="-parameters" />
+      <module name="dw-main" options="-parameters" />
+      <module name="dw-manager" options="-parameters -XDignore.symbol.file" />
+      <module name="dw-mobile" options="-parameters" />
+      <module name="dw-yyzc" options="-parameters" />
+    </option>
+  </component>
+</project>

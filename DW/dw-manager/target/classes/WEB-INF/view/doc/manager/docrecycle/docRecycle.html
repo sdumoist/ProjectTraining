@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>回收站管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/docrecycle/css/docRecycle.css?v=${h_version}">
+</head>
+<body>
+<div class="background">
+    <div class="content">
+        <form class="layui-form ">
+            <div class="layui-form-item clearfix" style="line-height: 30px">
+                <span style="color: #999;">提示：文件保存10天后将被自动清除</span>
+                <div class=" fr">
+                    <button id="btnRestore" type="button" class="layui-btn">
+                        <i class="layui-icon">&#xe669;</i>还原
+                    </button>
+                    <button id="btnEmpty" type="button" class="layui-btn">
+                        <i class="layui-icon">&#xea0f;</i>清空回收站
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="tableBox ">
+            <table class="layui-hide" id="recycleBinTable"></table>
+        </div>
+        <div id="filTree" style="display: none;" class="leftArea">
+            <div id="fileTree" class="jsTree"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/docrecycle/js/docRecycle.js?v=${h_version}"></script>
+</html>

@@ -1,0 +1,30 @@
+<div id="recommend">
+    <div id="recommendContainer" style="width: 289px;height:auto ">
+        <div class="rit-container">
+            @include("/common/front-rit.html"){}
+        </div>
+        <div class="item-panel">
+            <div class="item-panel-head">
+                <span>相关推荐</span>
+            </div>
+            <div class="article-recommend">
+                <ul id="showRecommendArticle">
+                </ul>
+            </div>
+<!--            <div class="more">查看更多内容 ></div>-->
+        </div>
+<!--        <div class="item-panel hide" id="guess">-->
+<!--            <div class="item-panel-head">-->
+<!--                <span>猜你喜欢</span>-->
+<!--            </div>-->
+<!--            <div class="article-recommend">-->
+<!--                <ul id="guessYouLike">-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</div>
+<style>
+    .noScroll{position: fixed;bottom: 0}
+</style>
+<script src="${ctxPath}/static/resources/js/front/front-recommend.js"></script>

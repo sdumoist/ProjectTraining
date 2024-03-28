@@ -1,0 +1,421 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.interfaces.system.dao.YYZCOrganiseMapper">
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.interfaces.system.model.YYZCOrganise">
+        <result column="ORGANISEID" property="organiseid" />
+        <result column="ORGANISENAME" property="organisename" />
+        <result column="ORGANISEKINDID" property="organisekindid" />
+        <result column="ORGANISELEVEL" property="organiselevel" />
+        <result column="PREORGANISEID" property="preorganiseid" />
+        <result column="ORGANISETYPE" property="organisetype" />
+        <result column="CREATEUSERID" property="createuserid" />
+        <result column="CREATEDATE" property="createdate" />
+        <result column="DATASTATUSID" property="datastatusid" />
+        <result column="SHOWORDER" property="showorder" />
+        <result column="SHORTNAME" property="shortname" />
+        <result column="STARTTIME" property="starttime" />
+        <result column="ENDTIME" property="endtime" />
+    </resultMap>
+
+    <!--<select id="getOrganList" resultMap="sysOrganMap">
+        SELECT ORGANISEID,ORGANISENAME,ORGANISELEVEL,PREORGANISEID FROM DOC_ORGAN WHERE ORGANISEKINDID = 0
+    </select>-->
+
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into jxd7_xt_organise
+        (
+        ORGANISEID,
+        ORGANISENAME,
+        ORGANISEKINDID,
+        ORGANISELEVEL,
+        PREORGANISEID,
+        ORGANISETYPE,
+        CREATEUSERID,
+        CREATEDATE,
+        DATASTATUSID,
+        SHOWORDER,
+        SHORTNAME,
+        STARTTIME,
+        ENDTIME,
+        MD5
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.organiseid},
+            #{item.organisename},
+            #{item.organisekindid},
+            #{item.organiselevel},
+            #{item.preorganiseid},
+            #{item.organisetype},
+            #{item.createuserid},
+            #{item.createdate},
+            #{item.datastatusid},
+            #{item.showorder},
+            #{item.shortname},
+            #{item.starttime},
+            #{item.endtime},
+            #{item.md5}
+            )
+        </foreach>
+
+    </insert>
+
+    <insert id="insertOrganList" parameterType="java.util.List">
+        INSERT INTO SYS_ORGAN
+        (
+        ORGAN_ID,
+        ORGAN_CODE,
+        ORGAN_NAME,
+        SHORT_NAME,
+        ORGAN_TYPE,
+        BEGIN_DATE,
+        END_DATE,
+        IN_USE,
+        CREATOR,
+        CREATE_TIME
+        )
+        VALUES
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            replace(#{item.organiseid},'-',''),
+            replace(#{item.organiseid},'-',''),
+            #{item.organisename},
+            #{item.shortname},
+            2,
+            #{item.starttime},
+            #{item.endtime},
+            #{item.datastatusid},
+            replace(#{item.createuserid},'-',''),
+            str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s')
+            )
+        </foreach>
+
+    </insert>
+
+    <insert id="insertStruList" parameterType="java.util.List">
+        INSERT INTO SYS_STRU
+        (STRU_ID,
+        STRU_TYPE,
+        ORGAN_ID,
+        ORGAN_ALIAS,
+        PARENT_ID,
+        STRU_LEVEL,
+        IN_USE,
+        CREATOR,
+        CREATE_TIME,
+        LAST_EDITOR,
+        LAST_TIME,
+        STRU_ORDER,
+        GLOBAL_ORDER
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            replace(#{item.organiseid},'-',''),
+            #{item.organisetype},
+            replace(#{item.organiseid},'-',''),
+            #{item.organisename},
+            replace(#{item.preorganiseid},'-',''),
+            1,
+            #{item.datastatusid},
+            replace(#{item.createuserid},'-',''),
+            str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s'),
+            replace(#{item.createuserid},'-',''),
+            str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s'),
+            #{item.showorder},
+            #{item.showorder}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateStruRoot">
+        UPDATE sys_stru SET  PARENT_ID = '11' WHERE PARENT_ID = ''
+    </update>
+
+    <update id="updateYYZC">
+        update jxd7_xt_organise
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="ORGANISENAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisename != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.organisename}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGANISEKINDID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisekindid != null">
+                        when ORGANISEID =  #{item.organiseid}then #{item.organisekindid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGANISELEVEL =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organiselevel != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.organiselevel}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PREORGANISEID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.preorganiseid != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.preorganiseid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGANISETYPE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisetype != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.organisetype}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATEUSERID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createuserid != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.createuserid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATEDATE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createdate != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.createdate}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="DATASTATUSID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SHOWORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.showorder != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.showorder}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SHORTNAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.shortname != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.shortname}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STARTTIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.starttime != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.starttime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ENDTIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.endtime != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.endtime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="MD5 =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.md5 != null">
+                        when ORGANISEID =  #{item.organiseid} then #{item.md5}
+                    </if>
+                </foreach>
+            </trim>
+
+        </trim>
+        <where>
+            ORGANISEID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                #{item.organiseid}
+            </foreach>
+        </where>
+    </update>
+
+
+    <update id="updateOrgan">
+        update SYS_ORGAN
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="ORGAN_CODE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organiseid != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then replace(#{item.organiseid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGAN_NAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisename != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then #{item.organisename}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="SHORT_NAME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.shortname != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then #{item.shortname}
+                    </if>
+                </foreach>
+            </trim>
+            ORGAN_TYPE = 2,
+            <trim prefix="BEGIN_DATE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.starttime != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then #{item.starttime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="END_DATE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.endtime != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then #{item.endtime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="IN_USE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATOR =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createuserid != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then replace(#{item.createuserid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATE_TIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createdate != null">
+                        when ORGAN_ID =  replace(#{item.organiseid},'-','') then str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s')
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            ORGAN_ID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                replace(#{item.organiseid},'-','')
+            </foreach>
+        </where>
+    </update>
+
+    <update id="updateStru">
+        update SYS_STRU
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="STRU_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organiseid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then replace(#{item.organiseid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STRU_TYPE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisetype != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then #{item.organisetype}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGAN_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organiseid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then replace(#{item.organiseid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ORGAN_ALIAS =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.organisename != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then #{item.organisename}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="PARENT_ID =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.preorganiseid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then replace(#{item.preorganiseid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            STRU_LEVEL = 1,
+            <trim prefix="IN_USE =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.datastatusid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then #{item.datastatusid}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATOR =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createuserid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then replace(#{item.createuserid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="CREATE_TIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createdate != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="LAST_EDITOR =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createuserid != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then replace(#{item.createuserid},'-','')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="LAST_TIME =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.createdate != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then str_to_date(#{item.createdate},'%Y-%m-%d %H:%i:%s')
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="STRU_ORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.showorder != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then #{item.showorder}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="GLOBAL_ORDER =(case" suffix="end),">
+                <foreach collection="list" item="item">
+                    <if test="item.showorder != null">
+                        when STRU_ID = replace(#{item.organiseid},'-','') then #{item.showorder}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            STRU_ID in
+            <foreach collection="list" item="item"  index="index" open="(" separator="," close=")">
+                replace(#{item.organiseid},'-','')
+            </foreach>
+        </where>
+    </update>
+
+    <update id="delLeave" >
+        UPDATE SYS_STRU SET IN_USE = '0' WHERE STRU_ID='9DD212BE9EAEA80748CC7938DFB84388'
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+

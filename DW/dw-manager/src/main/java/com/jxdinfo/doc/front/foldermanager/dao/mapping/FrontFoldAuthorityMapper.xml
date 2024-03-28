@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.foldermanager.dao.FrontFoldAuthorityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.foldermanager.model.DocFoldAuthority">
+        <id column="ID" property="id" />
+        <result column="FOLD_ID" property="foldId" />
+        <result column="AUTHOR_ID" property="authorId" />
+        <result column="AUTHOR_TYPE" property="authorType" />
+        <result column="IS_EDIT" property="isEdit" />
+    </resultMap>
+
+    <select id="findEdit" resultType="String">
+        SELECT
+        DFA.is_edit
+        FROM
+        doc_fold_authority DFA
+        LEFT  JOIN  fs_folder DF on  DF.FOLDER_ID=DFA.FOLDER_ID
+        WHERE
+        (	DFA.AUTHOR_ID IN (
+        SELECT
+        dgu.GROUP_ID
+        FROM
+        doc_group_user dgu
+        WHERE
+        1=2
+        <if test="groupList != null and groupList.size() >0">
+            OR  dgu.Group_ID IN
+            <foreach item="idItem" collection="groupList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        )
+        OR (DFA.AUTHOR_ID = #{userId}))
+        and DF.level_code IN
+        <foreach item="idItem" collection="levelCodeList" open="(" separator="," close=")">#{idItem}
+        </foreach>
+
+        and operate_type='1'
+
+    </select>
+</mapper>

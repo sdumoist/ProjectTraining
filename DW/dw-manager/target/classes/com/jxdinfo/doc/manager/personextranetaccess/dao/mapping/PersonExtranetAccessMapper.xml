@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxdinfo.doc.manager.personextranetaccess.dao.PersonExtranetAccessMapper" >
+  <resultMap id="BaseResultMap" type="com.jxdinfo.doc.manager.personextranetaccess.model.SysPersonnelNetworkPermissions" >
+    <result column="DEPARTMENT" property="department" />
+    <result column="USER_ID" property="userId"  />
+    <result column="USER_NAME" property="userName"/>
+    <result column="CREATE_TIME" property="createTime"  />
+    <result column="CREATE_USER_ID" property="createUserId"  />
+    <result column="CREATE_USER_NAME" property="createUserName"  />
+  </resultMap>
+
+
+  <select id="accessList" resultType="com.jxdinfo.doc.manager.personextranetaccess.model.SysPersonnelNetworkPermissions">
+    select USER_ID userId,
+    DEPARTMENT department,
+    USER_NAME userName,
+    CREATE_TIME createTime,
+    CREATE_USER_ID createUserId,CREATE_USER_NAME createUserName from sys_personnel_network_permissions
+    where 1=1
+    <if test="personName != ''and personName != null">
+      AND USER_NAME LIKE CONCAT('%',#{personName},'%')
+    </if>
+    LIMIT #{startIndex}, #{pageSize}
+  </select>
+  <select id="getAccessListCount" resultType="int">
+    select count(0)
+    from sys_personnel_network_permissions
+    where 1=1
+    <if test="personName != ''and personName != null">
+      AND USER_NAME LIKE CONCAT('%',#{personName},'%')
+    </if>
+  </select>
+
+  <select id="selectAllUserId" resultType="String">
+    select
+    user_id from  sys_personnel_network_permissions
+  </select>
+
+  <select id="getDepartmentName" resultType="String">
+    select ORGAN_ALIAS from sys_stru where PARENT_ID = #{parentId,jdbcType=VARCHAR}
+  </select>
+  <select id="getStruName" resultType="String">
+    select ORGAN_ALIAS from sys_stru where STRU_ID = #{struId,jdbcType=VARCHAR}
+  </select>
+  <select id="getParentId" resultType="String">
+    select PARENT_ID from sys_stru where STRU_ID = #{struId,jdbcType=VARCHAR}
+  </select>
+  <select id="existsUser" resultType="String">
+    select USER_NAME from sys_personnel_network_permissions where USER_NAME = #{userName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="existsUserId" resultType="String">
+    select USER_ID from sys_personnel_network_permissions where USER_ID = #{userId}
+  </select>
+</mapper>

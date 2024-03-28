@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>资源管理器</title> @include("/common/front-style.html"){}
+@include("/common/front-script.html"){}
+<link rel="stylesheet"
+	href="${ctxPath}/static/doc/front/docmanager/css/front-resource-manager.css?v=${h_version}">
+<script type="text/javascript" charset="utf-8"
+	src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<style type="text/css">
+#sharelinkdiv, #sharelink {
+	width: 380px;
+}
+
+#shareDiv {
+	margin-top: 20px;
+}
+</style>
+</head>
+<body>
+	<div style="display: none" id="sharelinkbody" class="weadmin-body">
+		<div class="layui-form ">
+			<div class="layui-form-item">
+				<div class=" layui-inline" id="shareDiv">
+					<label class="layui-form-label">分享链接 </label>
+					<div class="layui-input-inline" id="sharelinkdiv">
+						<input id="sharelink">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@include("/common/front-header-with-search.html"){}
+	@include("/common/front-rit.html"){}
+	<div class="mainCon container">
+		<div class="row mainCon-in">
+			<div class="col-sm-3 con-full-l leftBar">
+				<div class="pims-tree">
+					<div class="tree-box" style="overflow-x: auto">
+						<div id="fileTree" class="jsTree"></div>
+					</div>
+				</div>
+			</div>
+			<div class=" col-sm-9 con-full-r rightArea">
+				<div class="path-oper clearfix">
+					<div id="upDiv" class="left">
+						<!--<img class="btnIcon" src="${ctxPath}/static/resources/img/fsfile/uplevelicon.png"><span id="upLevel" style="cursor: pointer;color:#3C91FD">返回上级</span>
+                    &nbsp;|&nbsp;&nbsp;-->
+						<span id="upLevel">返回上级</span><label>|</label><i
+							class="layui-icon control-btn-l">&#xe603;</i>
+						<div class="outer-nav">
+							<span id="path"></span>
+						</div>
+					</div>
+					<i class="layui-icon control-btn-r">&#xe602;</i>
+					<!--<div id="path" class="path"></div>-->
+					<div class="search-wrapper">
+						<input class="search-input" id="searchInResult"
+							placeholder="在当前目录查找" value=""> <input type="hidden"
+							class="hide" id="searchInResultValue" value="">
+						<div class="search-btn" id="searchInResultBtn">&nbsp;</div>
+					</div>
+					<button class="mlBtn">显示目录</button>
+				</div>
+				@include("/common/front-file-type.html"){}
+				<div class="order-search clearfix">
+					<ul class="order-type clearfix" id="orderType">
+						<li><label><input type="radio" class="radio-class"
+								name="sortType" value="0" checked>按时间排序</label></li>
+						<li><label><input type="radio" class="radio-class"
+								name="sortType" value="1">按名称排序</label></li>
+						<li><label><input type="radio" class="radio-class"
+								name="sortType" value="2">按类型排序</label></li>
+					</ul>
+					<div class="docNum">
+						共<span id="amount"></span>篇
+					</div>
+				</div>
+				<!--排序完结-->
+				<div class="file-container-flatten ">
+					<div id="view"></div>
+				</div>
+				<!--<div id="pagelist" class="page-list"></div>-->
+				<div id="laypageAre" class="page-list"></div>
+			</div>
+		</div>
+		<input type="hidden" class="hide" id="initId" value="${id}" /> <input
+			type="hidden" class="hide" id="initName" value="${fileName}" />
+
+	</div>
+
+	<script id="demo" type="text/html">
+    <ul class="clearfix">
+        {{#  layui.each(d.list, function(index, item){ }}
+        <li class="file">
+            <div class="right">
+                {{#  if(item.fileType != 'folder'&&(item.authority.indexOf( '1')!=-1||d.adminFlag==1)){ }}
+                <button class="downloadBtn" onclick="sharelink('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')" >分享</button>
+                <a href="/files/fileDownNew?docName=&docIds={{ item.fileId }}">
+                     <button class="downloadBtn" >下载</button>
+                </a>
+                {{#  }else{ }}
+                <button class="downloadBtn visHide"  >分享</button>
+                <button class="downloadBtn visHide">下载</button>
+                {{#  } }}
+            </div>
+            {{# if(navigator.userAgent.indexOf('Android')!=-1||navigator.userAgent.indexOf('webOS')!=-1||navigator.userAgent.indexOf('iPhone')!=-1||navigator.userAgent.indexOf('iPod')!=-1||navigator.userAgent.indexOf('iPad')!=-1){   }}
+            <a  data-id="{{item.fileId}}" onclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')"  title="{{item.fileName}}">
+            {{#  }else{ }}
+            <a data-id="{{item.fileId}}"  title="{{item.fileName}}" ondblclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')" onclick="clickOneTime(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}')"  >
+            {{#  } }}
+
+                <div  class="file-selection" >
+                    <section class="icon">
+                        {{#  if(item.fileType === 'folder'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/folder.png">
+                        {{#  }else if(item.fileType === '.doc'||item.fileType === '.docx'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/word.png">
+                        {{#  }else if(item.fileType === '.txt'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/txt.png">
+                        {{#  }else if(item.fileType === '.ppt'||item.fileType === '.pptx'||item.fileType === '.ppsx'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/ppt.png">
+                        {{#  }else if(item.fileType === '.pdf'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/pdf.png">
+                        {{#  }else if(item.fileType === '.ceb'){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/ceb.png">
+                        {{#  }else if(['.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.fileType)!=-1){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/audio.png">
+                        {{#  }else if(['.mp4','.avi','.AVI', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.fileType)!=-1){ }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/video.png">
+                        {{#  }else if(item.fileType === '.xls'||item.fileType === '.xlsx') {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/excel.png">
+                        {{#  }else if(['.png','.gif','.jpg','.jpeg'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/picture.png">
+                        {{#  }else if(['.bpm'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-bpm26.png">
+                        {{#  }else if(['.psd'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-psd26.png">
+                        {{#  }else if(['.zip','.rar'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/zip.png">
+                        {{#  }else if(['.exe'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/exe.png">
+                        {{#  }else if(['.html'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/html.png">
+                        {{#  }else if(['.bmp'].indexOf(item.fileType)!=-1) {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/bmp.png">
+                        {{#  }else {  }}
+                        <img  src="${ctxPath}/static/resources/img/fsfile/other.png">
+                        {{#  } }}
+                    </section>
+                    <section class="profile">
+                        {{#
+                            var sub = function(){
+                                var result=item.fileName;
+                                if(result.length>15){
+                                    result=result.substring(0,14)+'...';
+                                }
+                                return result;
+                            };
+                        }}
+                        <h1 id="name{{index}}" class="" >{{ sub() }}</h1>
+                    </section>
+                </div>
+                 </a>
+                {{#  if(item.fileType != 'folder'){ }}
+                    <div class="condition">
+                        <img src="${ctxPath}/static/resources/img/fsfile/downPic.png"/><span id="downNum{{ item.fileId }}" class="vertical"></span>&nbsp;&nbsp;
+                        <img src="${ctxPath}/static/resources/img/fsfile/lookPic.png"/><span id="readNum{{ item.fileId }}" class="vertical"></span>&nbsp;&nbsp;
+                        <span id="person{{ item.fileId }}" class="vertical"></span>
+                    </div>
+                {{#  } }}
+            </a>
+        {{#  }); }}
+    </ul>
+</script>
+
+	<script type="text/javascript"
+		src="${ctxPath}/static/doc/front/docmanager/js/share-resource-manager.js?v=${h_version}"></script>
+	<script type="text/javascript"
+		src="${ctxPath}/static/doc/front/docmanager/js/clipboard.min.js?v=${h_version}"></script>
+</body>
+</html>

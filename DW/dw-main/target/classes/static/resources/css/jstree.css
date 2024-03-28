@@ -1,0 +1,8 @@
+.jstree-children li:first-child.jstree-closed>.jstree-ocl,.jstree-default .jstree-closed>.jstree-ocl{
+    background: url(../../resources/img/fsfile/right.png) no-repeat 7px center !important;
+}
+.jstree-children li:last-child.jstree-open>.jstree-ocl,.jstree-default  .jstree-open>.jstree-ocl,.jstree-children li:first-child.jstree-open>.jstree-ocl{
+    background: url(../../resources/img/fsfile/down.png) no-repeat left 8px center !important;
+}
+.jsTree>ul.jstree-container-ul>li.jstree-open>.jstree-ocl{background: url(../../resources/img/fsfile/down.png) no-repeat   center !important;}
+.jsTree>ul.jstree-container-ul>li.jstree-closed>.jstree-ocl{background: url(../../resources/img/fsfile/right.png)  no-repeat   center  !important;}

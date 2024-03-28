@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.answer.dao.AnswerMapper">
+
+    <select id="getExcellentAnswers" resultType="Map">
+        SELECT
+            COUNT(qqa.ANS_ID) AS ansNum,
+            qqa.ANS_USER_NAME
+        FROM
+            qa_question_answer qqa
+        WHERE
+            qqa.STATE = '0'
+        GROUP BY
+            qqa.ANS_USER_ID
+        ORDER BY
+            ansNum DESC
+        LIMIT 0,6
+    </select>
+
+    <select id="getAnswerToQuestion" resultType="Map">
+        SELECT * from (
+        (SELECT (@rank :=@rank + 1) AS rank, a.* from (
+        (SELECT DISTINCT
+        qqa.ANS_ID AS ansId,
+        qqa.ANS_CONTENT AS ansContent,
+        qt.CONTENT AS ansContentText,
+        qqa.ANS_TIME AS ansTime,
+        qqa.ANS_USER_ID AS userId,
+        qqa.ANS_USER_NAME AS userName,
+        qqa.BEST_ANSWER AS bestAnswer,
+        qqa.AGREE_NUM AS agreeNum,
+        CASE
+        WHEN ql.ID IS NOT NULL THEN
+        '1'
+        ELSE
+        '0'
+        END AS isAgree,
+        COUNT(DISTINCT qcr.COMMENT_REPLY_ID) AS commentNum
+        FROM
+        qa_question_answer qqa
+        LEFT JOIN
+        qa_log ql
+        ON
+        ql.DATA_ID = qqa.ANS_ID AND ql.OPERATION = '4' AND ql.STATE = '0' AND ql.USER_ID = #{userId}
+        AND ql.TIME = (SELECT max(L.TIME) FROM qa_log L WHERE L.DATA_ID = qqa.ANS_ID AND L.STATE = '0' AND L.USER_ID =
+        #{userId} )
+        LEFT JOIN
+        qa_comment_reply qcr
+        ON
+        qcr.BY_REPLY_ID = qqa.ANS_ID AND qcr.STATE = '0'
+        LEFT JOIN
+        qa_text qt
+        ON qqa.ANS_ID = qt.QA_ID
+        WHERE
+        qqa.QUE_ID = #{queId} AND qqa.STATE = '0'
+        GROUP BY
+        qqa.ANS_ID
+        ORDER BY
+        qqa.BEST_ANSWER DESC,
+        qqa.AGREE_NUM DESC,
+        qqa.ANS_TIME
+        LIMIT 0,5)a,
+        (SELECT @rank := 0) b ))
+        UNION ALL
+        (SELECT (@rank :=@rank + 1) AS rank, c.* from (
+        (SELECT DISTINCT
+        qqa.ANS_ID AS ansId,
+        qqa.ANS_CONTENT AS ansContent,
+        qt.CONTENT AS ansContentText,
+        qqa.ANS_TIME AS ansTime,
+        qqa.ANS_USER_ID AS userId,
+        qqa.ANS_USER_NAME AS userName,
+        qqa.BEST_ANSWER AS bestAnswer,
+        qqa.AGREE_NUM AS agreeNum,
+        CASE
+        WHEN ql.ID IS NOT NULL THEN
+        '1'
+        ELSE
+        '0'
+        END AS isAgree,
+        COUNT(DISTINCT qcr.COMMENT_REPLY_ID) AS commentNum
+        FROM
+        qa_question_answer qqa
+        LEFT JOIN
+        qa_log ql
+        ON
+        ql.DATA_ID = qqa.ANS_ID AND ql.OPERATION = '4' AND ql.STATE = '0' AND ql.USER_ID = #{userId}
+        AND ql.TIME = (SELECT max(L.TIME) FROM qa_log L WHERE L.DATA_ID = qqa.ANS_ID AND L.STATE = '0' AND L.USER_ID =
+        #{userId} )
+        LEFT JOIN
+        qa_comment_reply qcr
+        ON
+        qcr.BY_REPLY_ID = qqa.ANS_ID AND qcr.STATE = '0'
+        LEFT JOIN
+        qa_text qt
+        ON qqa.ANS_ID = qt.QA_ID
+        WHERE
+        qqa.QUE_ID = #{queId} AND qqa.STATE = '0'
+        AND qqa.ANS_ID NOT IN (
+        SELECT
+        T.ANS_ID
+        FROM
+        (SELECT
+        ANS_ID
+        FROM
+        qa_question_answer
+        WHERE
+        QUE_ID = #{queId} AND STATE = '0'
+        ORDER BY
+        BEST_ANSWER DESC ,
+        AGREE_NUM DESC ,
+        ANS_TIME
+        LIMIT 0,5) T
+        )
+        GROUP BY
+        qqa.ANS_ID
+        ORDER BY
+        qqa.ANS_TIME
+        <if test="onAll == 1">
+            LIMIT 0,5
+        </if>
+        )c,
+        (SELECT @rank := 0) d ))
+        ) e GROUP BY e.rank
+    </select>
+
+
+</mapper>

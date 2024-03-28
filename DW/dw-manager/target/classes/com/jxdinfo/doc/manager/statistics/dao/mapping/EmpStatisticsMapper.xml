@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.statistics.dao.EmpStatisticsMapper">
+
+
+    <!-- 根据部门ID查询文件占用空间 -->
+    <select id="getStatisticsDataByUserId" resultType="double">
+        SELECT
+        IFNULL(sum(fs.file_size),0) num
+        FROM
+        doc_info d,
+        fs_file fs,
+        SYS_USERS s
+        WHERE
+        d.author_id = s.USER_ID
+        AND fs.file_id = d.file_id
+        AND d.valid_flag = '1'
+        AND s.USER_ID = #{userId}
+    </select>
+
+    <select id="getEmpStatisticsData" resultType="java.util.Map">
+        SELECT
+        T1.	userName AS NAME,
+        IFNULL(t1.size, 0) AS NUM,
+        T1.userId AS USERID,
+        T1.orgName AS orgName
+        FROM
+        (
+        SELECT fileSize size,
+        U.USER_ID  userId,
+        U.USER_NAME userName,
+        O.ORGAN_ID deptId,
+        O.ORGAN_NAME orgName
+        FROM SYS_USERS U
+        LEFT JOIN SYS_ORGAN O ON O.ORGAN_ID = U.DEPARTMENT_ID
+        LEFT JOIN
+        (SELECT author_id authorId,sum(fs.file_size) fileSize FROM doc_info d
+        LEFT JOIN fs_file fs ON fs.file_id = d.file_id
+        WHERE d.valid_flag='1'
+        GROUP BY d.author_id
+        ) T2 on T2.authorId = U.USER_ID
+        WHERE u.user_id is not null
+        <if test="uerName != '' and uerName != null">
+            AND  U.USER_NAME LIKE CONCAT('%',#{uerName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="groupId != '' and groupId != null">
+            AND  U.DEPARTMENT_ID=#{groupId,jdbcType=VARCHAR}
+        </if>
+        )T1
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="getUserListCount" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        (
+        SELECT fileSize size,
+        U.USER_ID  userId,
+        U.USER_NAME userName,
+        O.ORGAN_ID deptId,
+        O.ORGAN_NAME orgName
+        FROM SYS_USERS U
+        LEFT JOIN SYS_ORGAN O ON O.ORGAN_ID = U.DEPARTMENT_ID
+        LEFT JOIN
+        (SELECT author_id authorId,sum(fs.file_size) fileSize FROM doc_info d
+        LEFT JOIN fs_file fs ON fs.file_id = d.file_id
+        WHERE d.valid_flag='1'
+        GROUP BY d.author_id
+        ) T2 on T2.authorId = U.USER_ID
+        WHERE u.user_id is not null
+        <if test="uerName != '' and uerName != null">
+            AND  U.USER_NAME LIKE CONCAT('%',#{uerName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="groupId != '' and groupId != null">
+            AND  U.DEPARTMENT_ID=#{groupId,jdbcType=VARCHAR}
+        </if>
+        )T1
+    </select>
+</mapper>

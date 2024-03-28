@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.front.entry.dao.EnrtyInfoMapper">
+
+    <!--获取词条列表-->
+    <select id="selectListByIds" resultType="com.jxdinfo.doc.front.entry.model.EntryInfo">
+        SELECT
+        info.id,
+        info.name,
+        info.summary_text summaryText,
+        info.tag,
+        info.create_time createTime,
+        jxd7.path url,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        eimg.img_url imgUrl,
+        eimg.img_title imgTitle
+        from entry_info info
+        left join entry_imgs eimg on info.id = eimg.entry_id
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        left join jxd7_xt_headpicture jxd7 on jxd7.userid = u.employee_id
+        where info.valid_flag = '1'
+        and info.state = '1'
+        <if test="idList != null and idList.size() >0">
+            and info.id IN
+            <foreach item="idItem" collection="idList" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        group by info.id
+        order by eimg.show_order asc
+    </select>
+
+    <!--获取词条列表-->
+    <select id="selectList" resultType="java.util.Map">
+        SELECT
+        info.id,
+        info.name,
+        info.summary_text summaryText,
+        info.tag,
+        info.create_time createTime,
+        jxd7.path url,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        eimg.img_url imgUrl,
+        eimg.img_title imgTitle
+        from entry_info info
+        left join entry_imgs eimg on info.id = eimg.entry_id
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        left join jxd7_xt_headpicture jxd7 on jxd7.userid = u.employee_id
+        where info.valid_flag = '1'
+        and info.state = '1'
+        <foreach item="tag" collection="tagList" open="and (" close=")" separator="or">
+            info.tag like CONCAT('%',#{tag},'%')
+        </foreach>
+        group by info.id
+        order by
+        <if test="order != null and order != '' and order== 2">
+            info.create_time desc,
+        </if>
+        <if test="order != null and order != '' and order== 3">
+            info.create_time asc,
+        </if>
+        eimg.show_order asc
+    </select>
+
+    <select id="getEntryDetail" resultType="com.jxdinfo.doc.front.entry.model.EntryInfo">
+         SELECT
+        info.id,
+        info.name,
+        info.summary,
+        info.summary_text summaryText,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        info.read_num readNum,
+        info.tag tag,
+        info.create_time createTime,
+        eimg.img_url imgUrl,
+        eimg.img_title imgTitle,
+        count(eimg.id) imgNum
+        from entry_info info
+        left join entry_imgs eimg on info.id = eimg.entry_id
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        where  info.id = #{id}
+        group by info.id
+        order by eimg.show_order asc
+    </select>
+
+    <!--查询待审核词条列表-->
+    <select id="getAuditList" resultType="com.jxdinfo.doc.front.entry.model.EntryInfo">
+        SELECT
+        info.id,
+        info.name,
+        info.summary_text summaryText,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        info.read_num readNum,
+        info.tag tag,
+        info.create_time createTime
+        from entry_info info
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        where  info.valid_flag = '1' and info.state = '0' and info.name like CONCAT('%',#{name},'%')
+        order by info.create_time desc
+    </select>
+
+    <!--获取热门词条：根据预览数量倒叙 获取前9条-->
+    <select id="getHotEntrys" resultType="com.jxdinfo.doc.front.entry.model.EntryInfo">
+        SELECT
+        info.id,
+        info.name,
+        jxd7.path url,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        info.read_num readNum
+        from entry_info info
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        left join jxd7_xt_headpicture jxd7 on jxd7.userid = u.employee_id
+        where info.valid_flag = '1'
+        and info.state = '1'
+        order by info.read_num desc
+        limit 0,8
+    </select>
+
+    <!--查询词条数据-->
+    <select id="getEntryInfoList" resultType="com.jxdinfo.doc.front.entry.model.EntryInfo">
+        SELECT
+        info.id,
+        info.name,
+        info.summary_text summaryText,
+        ss.organ_alias deptname,
+        u.user_name createUserName,
+        info.read_num readNum,
+        info.tag tag,
+        info.state state,
+        info.create_time createTime
+        from entry_info info
+        left join sys_users u on u.user_id = info.create_user_id
+        left join sys_stru ss on u.department_id = ss.stru_id
+        where  info.valid_flag = '1' and info.state like CONCAT('%',#{status},'%') and info.name like CONCAT('%',#{name},'%') and info.create_user_id = #{userId}
+        order by info.create_time desc
+    </select>
+
+</mapper>

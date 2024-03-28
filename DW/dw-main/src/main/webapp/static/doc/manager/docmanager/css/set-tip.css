@@ -1,0 +1,95 @@
+.name-list{padding: 0 10px}
+.name-item{position: relative;float: left;padding: 5px 6px;margin-right: 5px;height: 10px;background:#f5f5f5 ;cursor: pointer}
+.name-item p{line-height: 10px;color: #333 ;font-size: 12px}
+.name-item span{position: absolute;width: 30px;height: 32px;top: 0;right: 0;background: url(../../../../resources/img/fsfile/authority/del.png) no-repeat center;z-index: 2;cursor: pointer}
+.name-item.people{background: #fff url(../../../../resources/img/fsfile/authority/people.png) no-repeat left 6px center}
+.name-item.qz{background: #fff url(../../../../resources/img/fsfile/authority/qz.png) no-repeat left 6px center}
+.name-item.zzjg{background: #fff url(../../../../resources/img/fsfile/authority/zzjg.png) no-repeat left 6px center}
+.name-item.org{background: #fff url(../../../../resources/img/fsfile/authority/dept.png) no-repeat left 6px center}
+.edit-name-list-power{width: 600px}
+.layui-form-label{
+    width: 50px; clear: left;
+    font-size: 12px;
+}
+.layui-input-inline {
+    margin-left: 0;
+    margin-right: 0 !important;
+}
+.layui-input-inline input {
+    width: 400px;
+    height: 25px;
+}
+.layui-form-item {margin-bottom: 5px;}
+
+.bot-btns{
+    position: absolute;
+    bottom: 10px;
+    width: calc(100% - 20px);
+    text-align: right;
+}
+div#type_inline ,div#color_inline{
+    margin-left: 70px !important;
+}
+.weadmin-body{height: 80%;padding-top: 20px;box-sizing: border-box;}
+.layui-form{height: calc(100% - 52px)}
+.layui-tab-brief>.layui-tab-title .layui-this {color:#3C91FD; border-bottom:  1px solid #3C91FD!important;}
+.layui-btn{
+background-color:#3C91FD;
+outline: none;
+}
+.layui-btn::-moz-focus-inner{ border: 0; }
+.layui-btn:focus{outline: none}
+.bot-btns button{
+border: 1px solid #3C91FD;
+}
+.layui-input:focus, .layui-textarea:focus {
+border-color: #d1deed !important;
+}
+.layui-input:hover, .layui-textarea:hover {
+ border-color: #d1deed !important;
+}
+div#industry_type_inline {
+    margin-left: 70px !important;
+}
+button#saveBtn {
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    padding: 0;
+    text-align: center;
+    float: right;
+}
+.white-btn, button#cancel, button#cancelBtn{
+    width: 90px !important;
+    height: 32px !important;
+    line-height: 31px !important;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222 !important;
+    padding: 0;
+    text-align: center;
+}
+@media only screen and (max-width:1366px) {
+    .layui-input-inline input {
+        width: 400px;
+        height: 25px;
+    }
+
+}
+@media only screen and (max-width: 500px) {
+    .white-btn, button#cancel, button#cancelBtn, button#saveBtn{
+        width:64px !important;
+        height:26px !important;
+        line-height: 25px !important;
+        font-size: 12px;
+    }
+    .layui-form-label{
+        font-size: 12px;
+    }
+}
+

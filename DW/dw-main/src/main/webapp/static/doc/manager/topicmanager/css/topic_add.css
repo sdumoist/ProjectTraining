@@ -1,0 +1,17 @@
+.layui-form-item .layui-inline { margin-right: 8px;}
+.personSearch{
+    margin:5px 5px 0 18px;
+    width:85%;
+}
+/*.reject-btn {
+    background: #fff;
+    padding-left: 35px;
+    padding-right: 15px;
+    background-size: 16px auto;
+    border: #fc3f3f solid 1px;
+    color: #fc3f3f;
+    margin-right: 9px;}*/
+.layui-layer-content{font-size: 14px !important;}
+#pic{opacity: 1}
+.show_img{opacity: 1}
+#authorName{cursor:pointer;}

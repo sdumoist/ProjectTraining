@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.componentmanager.dao.ComponentApplyMapper">
+
+    <select id="componentList" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT distinct
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.component_desc_text componentDescText,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons,
+        a.component_origin componentOrigin,ifnull(mpc.component_id,0) isProject,
+        a.component_range componentRange,
+        ss.ORGAN_ALIAS organAlias,
+        a.appraise appraise,
+        a.publish_flag publishFlag,
+        a.collect_flag collectFlag
+        FROM
+        component_apply a left join sys_users su on su.user_id = a. user_id LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = a.component_id
+
+
+        WHERE 1=1
+        <if test="componentNameStr != ''and componentNameStr != null">
+            AND a.component_name LIKE CONCAT('%',#{componentNameStr},'%')
+        </if>
+        <if test=" componentType != null">
+            AND a.component_type = #{componentType}
+        </if>
+        <if test=" componentState != null">
+            AND a.component_state = #{componentState}
+        </if>
+        <if test=" componentOrigin != null">
+            AND a.component_origin = #{componentOrigin}
+        </if>
+        <if test="userId != ''and userId != null">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test="deptName != ''and deptName != null">
+            AND  ss.ORGAN_ALIAS=#{deptName}
+        </if>
+        <choose>
+            <when test="awardType == 1">
+                AND ((a.publish_flag is null or a.publish_flag = '0') and (a.collect_flag is null or a.collect_flag = '0'))
+            </when>
+            <when test="awardType == 2">
+                AND a.publish_flag = '1'
+            </when>
+            <when test="awardType == 3">
+                AND a.collect_flag = '1'
+            </when>
+            <when test="awardType == 4">
+                AND (a.publish_flag = '1' and a.collect_flag = '1')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ORDER BY a.create_time desc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+
+    <select id="componentListCount" resultType="int">
+        SELECT
+       count(*)
+        FROM
+       (SELECT distinct
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.component_desc_text componentDescText,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons,
+        a.component_origin componentOrigin,mpc.component_id,
+        a.component_range componentRange,
+        a.appraise appraise
+        FROM
+        component_apply a left join sys_users su on su.user_id = a. user_id LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = a.component_id
+        WHERE 1=1
+        <if test="componentNameStr != ''and componentNameStr != null">
+            AND a.component_name LIKE CONCAT('%',#{componentNameStr},'%')
+        </if>
+        <if test=" componentType != null">
+            AND a.component_type = #{componentType}
+        </if>
+        <if test=" componentState != null">
+            AND a.component_state = #{componentState}
+        </if>
+        <if test=" componentOrigin != null">
+            AND a.component_origin = #{componentOrigin}
+        </if>
+        <if test="userId != ''and userId != null">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test="deptName != ''and deptName != null">
+            AND  ss.ORGAN_ALIAS=#{deptName}
+        </if>
+        <choose>
+            <when test="awardType == 1">
+                AND ((a.publish_flag is null or a.publish_flag = '0') and (a.collect_flag is null or a.collect_flag = '0'))
+            </when>
+            <when test="awardType == 2">
+                AND a.publish_flag = '1'
+            </when>
+            <when test="awardType == 3">
+                AND a.collect_flag = '1'
+            </when>
+            <when test="awardType == 4">
+                AND (a.publish_flag = '1' and a.collect_flag = '1')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ) T
+
+    </select>
+
+
+    <select id="componentTopCount" resultType="string">
+
+       SELECT
+	count(component_id) AS A
+FROM
+	component_apply
+WHERE
+	date_format(create_time, '%y-%m-%d') = date_format(now(), '%y-%m-%d')
+AND component_state = 2
+AND user_id!='auditadmin'
+AND user_id!='reviewadmin'
+AND user_id!='superadmin'
+AND user_id!='systemadmin'
+AND user_id!='wkadmin'
+AND user_id!='4ca0c2a5bcec4107b5cb96db7e1cb5da'
+UNION ALL
+SELECT
+	count(component_id)AS A
+FROM
+	component_apply
+WHERE
+	component_state = 2
+
+AND user_id!='auditadmin'
+AND user_id!='reviewadmin'
+AND user_id!='superadmin'
+AND user_id!='systemadmin'
+AND user_id!='wkadmin'
+AND user_id!='4ca0c2a5bcec4107b5cb96db7e1cb5da'
+UNION ALL
+SELECT
+	count(multiplex_id)AS A
+FROM
+	multiplex_project_component mpc
+LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+WHERE
+	date_format(mp.create_time, '%y-%m-%d') = date_format(now(), '%y-%m-%d')
+
+AND mp.user_id!='auditadmin'
+AND mp.user_id!='reviewadmin'
+AND mp.user_id!='superadmin'
+AND mp.user_id!='systemadmin'
+AND mp.user_id!='wkadmin'
+AND mp.user_id!='4ca0c2a5bcec4107b5cb96db7e1cb5da'
+UNION ALL
+SELECT
+	count(multiplex_id)AS A
+FROM multiplex_project_component mpc
+LEFT JOIN multiplex_project mp ON mpc.project_id = mp.project_id
+WHERE 1=1
+
+AND mp.user_id!='auditadmin'
+AND mp.user_id!='reviewadmin'
+AND mp.user_id!='superadmin'
+AND mp.user_id!='systemadmin'
+AND mp.user_id!='wkadmin'
+AND mp.user_id!='4ca0c2a5bcec4107b5cb96db7e1cb5da'
+    </select>
+    <select id="componentCount" resultType="java.util.Map">
+
+       SELECT
+	ca.user_name userName,
+	ss.ORGAN_ALIAS deptName,
+	COUNT(ca.user_name) count
+FROM
+	component_apply ca LEFT JOIN sys_users su ON ca.user_name=su.user_name
+LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+WHERE ca.component_state=2
+AND  ss.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND ss.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+        and ss.IN_USE=1
+GROUP BY
+	ca.user_name
+ORDER BY
+	count DESC,ca.create_time
+ limit 0,8
+
+    </select>
+    <select id="componentDeptCount" resultType="java.util.Map">
+
+
+ SELECT
+su.USER_NAME userName,	ss.ORGAN_ALIAS deptName,count(*) count
+FROM
+	multiplex_project_component mpc LEFT JOIN component_apply ca  on ca.component_id=mpc.component_id LEFT JOIN sys_users su  on su.USER_ID=ca.user_id LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+WHERE 2=2
+AND  ss.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND ss.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+	GROUP BY
+su.USER_NAME
+ORDER BY
+	count DESC,ca.create_time  limit 0, 8;
+
+    </select>
+    <select id="componentDateCount" resultType="int">
+
+       SELECT
+	count(component_id)
+FROM
+	component_apply
+WHERE
+        component_state=2
+<if test="sum==1">  AND	date_format(create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d')</if>
+        ;
+
+    </select>
+    
+    <select id="componentGraphCount" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+
+        SELECT
+        ca.user_name,
+        so.SHORT_NAME organAlias,
+        COUNT(ca.component_id) AS 're_num'
+        FROM
+        component_apply ca
+        LEFT JOIN sys_users su ON ca.user_name = su.user_name
+        LEFT JOIN sys_stru ss ON su.DEPARTMENT_ID = ss.STRU_ID
+        LEFT JOIN sys_organ so ON so.ORGAN_ID = ss.ORGAN_ID
+        WHERE
+        1 = 1
+        AND  so.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND so.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+        and ss.IN_USE='1'
+        <if test="date==1">
+            AND date_format(ca.create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d')
+        </if>
+        <if test="state==1">
+            AND ca.component_state!=2
+        </if>
+        <if test="state==2">
+            AND ca.component_state=2
+        </if>
+        <if test="date==3">
+            AND     DATE_SUB(CURDATE(), INTERVAL 3 DAY) &lt; ca.create_time
+        </if>
+        <if test="date==7">
+            AND   DATE_SUB(CURDATE(), INTERVAL 7 DAY)  &lt; ca.create_time
+        </if>
+        <if test="date==30">
+            AND    DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; ca.create_time
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND ca.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+
+    </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND ca.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND ca.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+
+        GROUP BY
+	organAlias
+        <if test=" order==null or order=='' or order=='dept'">
+            ORDER BY ss.STRU_ORDER
+        </if>
+        <if test=" order=='account'">
+            ORDER BY re_num desc
+        </if>
+    </select>
+    <select id="componentGraphCountBg" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+
+        SELECT
+        ca.user_name,
+        IFNULL(soo.SHORT_NAME,so.SHORT_NAME) organAlias ,
+        COUNT(ca.component_id) AS 're_num'
+        FROM
+        component_apply ca LEFT JOIN sys_users su ON ca.user_name=su.user_name
+        LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        LEFT JOIN sys_stru sss on sss.STRU_ID=ss.PARENT_ID and sss.STRU_TYPE=5
+        LEFT JOIN sys_organ so on so.ORGAN_ID = ss.ORGAN_ID
+        LEFT JOIN sys_organ soo on soo.ORGAN_ID = sss.ORGAN_ID
+        WHERE 1=1
+        AND  so.ORGAN_ID!='5A154DE6E1F94FBA9D7C48A11EF7F1C6'
+        AND so.ORGAN_ID!='5AA3D70B14F94A4486523C29DACB70DE'
+        and ss.IN_USE='1'
+        <if test="date==1">
+            AND date_format(ca.create_time,'%y-%m-%d')=date_format(now(),'%y-%m-%d')
+        </if>
+        <if test="state==1">
+            AND ca.component_state!=2
+        </if>
+        <if test="state==2">
+            AND ca.component_state=2
+        </if>
+        <if test="date==3">
+            AND     DATE_SUB(CURDATE(), INTERVAL 3 DAY) &lt; ca.create_time
+        </if>
+        <if test="date==7">
+            AND   DATE_SUB(CURDATE(), INTERVAL 7 DAY)  &lt; ca.create_time
+        </if>
+        <if test="date==30">
+            AND    DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; ca.create_time
+        </if>
+        <if test="dateStart!=null and dateEnd!=null and dateStart!='' and dateEnd!=''">
+            AND ca.create_time BETWEEN str_to_date(#{dateStart}, '%Y-%m-%d') AND str_to_date(#{dateEnd}, '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test=" dateEnd==''and dateStart!='' and dateStart!=null ">
+            AND ca.create_time BETWEEN str_to_date(#{dateStart},'%Y-%m-%d') AND str_to_date(now(),'%Y-%m-%d %H:%i:%s')
+
+        </if>
+        <if test="  dateStart=='' and dateEnd!='' and dateEnd!=null">
+            AND ca.create_time BETWEEN str_to_date('1970-01-01','%Y-%m-%d') AND str_to_date(#{dateEnd},'%Y-%m-%d %H:%i:%s')
+
+        </if>
+
+        GROUP BY
+        organAlias
+        <if test=" order==null or order=='' or order=='dept'">
+        ORDER BY ss.STRU_ORDER
+        </if>
+        <if test=" order=='account'">
+            ORDER BY re_num desc
+        </if>
+    </select>
+
+    <select id="componentListStates" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT distinct
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.component_desc_text componentDescText,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons,
+        a.component_origin componentOrigin,ifnull(mpc.component_id,0) isProject,
+        a.component_range componentRange,
+         ifnull(ss.ORGAN_ALIAS ,'金现代') organAlias ,
+        a.tags tags,
+        su.DEPARTMENT_ID orgId,
+        a.appraise appraise
+        FROM
+        component_apply a left join sys_users su on su.user_id = a. user_id LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = a.component_id
+
+
+        WHERE 1=1
+        <if test="componentNameStr != ''and componentNameStr != null">
+            AND a.component_name LIKE CONCAT('%',#{componentNameStr},'%')
+        </if>
+        <if test=" componentType != null">
+            AND a.component_type = #{componentType}
+        </if>
+        <if test=" componentState != null">
+            AND a.component_state = #{componentState}
+        </if>
+        <if test=" componentOrigin != null">
+            AND a.component_origin = #{componentOrigin}
+        </if>
+        <if test="userId != ''and userId != null">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test="states != null and states.length >0">
+            AND a.component_state IN
+            <foreach collection="states" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="dept != null and dept.length >0">
+            AND su.DEPARTMENT_ID IN
+            <foreach collection="dept" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="order==null">
+            ORDER BY a.create_time desc
+        </if>
+        <if test="order==0">
+            ORDER BY a.component_state desc,a.create_time desc
+        </if>
+        <if test="order==1">
+            ORDER BY a.component_state,a.create_time desc
+        </if>
+
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+
+    <select id="componentListStatesCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        (SELECT distinct
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.component_desc_text componentDescText,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons,
+        a.component_origin componentOrigin,mpc.component_id,
+        a.component_range componentRange,
+        a.appraise appraise
+        FROM
+        component_apply a left join sys_users su on su.user_id = a. user_id
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = a.component_id
+        WHERE 1=1
+        <if test="componentNameStr != ''and componentNameStr != null">
+            AND a.component_name LIKE CONCAT('%',#{componentNameStr},'%')
+        </if>
+        <if test=" componentType != null">
+            AND a.component_type = #{componentType}
+        </if>
+        <if test=" componentState != null">
+            AND a.component_state = #{componentState}
+        </if>
+        <if test=" componentOrigin != null">
+            AND a.component_origin = #{componentOrigin}
+        </if>
+        <if test="userId != ''and userId != null">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test="states != null and states.length >0">
+            AND a.component_state IN
+            <foreach collection="states" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        <if test="dept != null and dept.length >0">
+            AND su.DEPARTMENT_ID IN
+            <foreach collection="dept" item="idItem" open="(" separator="," close=")">
+                #{idItem}
+            </foreach>
+        </if>
+        ) T
+
+    </select>
+
+    <select id="componentListMobile" resultType="com.jxdinfo.doc.manager.componentmanager.model.ComponentApply">
+        SELECT distinct
+        a.component_id componentId,
+        a.component_name componentName,
+        a.component_desc componentDesc,
+        a.component_desc_text componentDescText,
+        a.user_name userName,
+        a.user_id userId,
+        a.create_time createTime,
+        a.component_type componentType,
+        a.component_state componentState,
+        a.return_reasons returnReasons,
+        a.component_origin componentOrigin,ifnull(mpc.component_id,0) isProject,
+        a.component_range componentRange,
+        so.short_name organAlias,
+        a.appraise appraise
+        FROM
+        component_apply a left join sys_users su on su.user_id = a. user_id LEFT JOIN sys_stru ss on su.DEPARTMENT_ID=ss.STRU_ID
+        LEFT JOIN sys_organ so on so.organ_id=ss.organ_id
+        LEFT JOIN multiplex_project_component mpc ON mpc.component_id = a.component_id
+
+
+        WHERE 1=1
+        <if test="componentNameStr != ''and componentNameStr != null">
+            AND a.component_name LIKE CONCAT('%',#{componentNameStr},'%')
+        </if>
+        <if test=" componentType != null">
+            AND a.component_type = #{componentType}
+        </if>
+        <if test=" componentState != null">
+            AND a.component_state = #{componentState}
+        </if>
+        <if test=" componentOrigin != null">
+            AND a.component_origin = #{componentOrigin}
+        </if>
+        <if test="userId != ''and userId != null">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="orgId != ''and orgId != null">
+            AND su.DEPARTMENT_ID = #{orgId}
+        </if>
+        <if test="deptName != ''and deptName != null">
+            AND  ss.ORGAN_ALIAS=#{deptName}
+        </if>
+        ORDER BY a.create_time desc
+        LIMIT #{beginIndex}, #{limit}
+    </select>
+</mapper>

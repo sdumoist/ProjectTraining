@@ -1,0 +1,194 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-预览</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/fileQuery.css?v=${h_version}"/>
+    <link rel="stylesheet" href="${ctxPath}/static/doc/front/docmanager/css/viewer.css?v=${h_version}">
+
+    <style>
+        body#top .container-new{overflow: hidden;height: auto;}
+        body#top .divtop,.layui-col-sm9{height: 100%!important;}
+        .img-container .img-con{max-height: 100%!important;text-align: center;height: calc(100% - 125px);position: absolute;top: 50%;left:50px;transform: translate(0, -50%);z-index: 2}
+        body#top .viewContent{position: relative;max-height:100%!important;padding-top: 0;padding-left:0;background: none}
+        body.img-body .viewContent{min-height: 100%!important;}
+        .photo-list .photo-item{width: 50%;transition: all .3s linear;float: left;position: absolute !important;}
+        .img-container .img-con img {height: auto;width: auto;max-width: 100%;max-height: 100%;cursor: pointer;}
+
+        .img-container {padding: 30px 30px 30px 30px;background: #fff;box-shadow: 0 1px 9px 0 #dde2e9;min-height: 515px;}
+        .btn-ritlayui-layer-title{background-color: #eaeff0 !important;}
+
+        .btn-rit{display: none}
+        .item-panel .item-panel-head span:after {width: calc(100% - 130px);}
+        .layui-layer-hui .layui-layer-content{padding: 0 8px;background: rgba(43,35,36,0.4);color: #fff;line-height: 25px;height: 50px;font-size: 12px;width: fit-content;border: 0;max-width: none;white-space: nowrap}
+        div#outerContainer {
+            /*height: calc(100% - 109px);*/
+            margin-top: 49px;
+        }
+        .translate{top: 50%}
+        .content-bottom {
+            height: calc(100% - 120px);
+        }
+        .layui-col-sm9_5{height: 100%;min-height: 0}
+        .img-container{height: 100%;min-height: 0}
+        .header-with-search.header-with-search-2 {
+            position: fixed;
+        }
+        .layui-col-sm2_5{overflow: auto}
+        .watermark{
+            z-index: 100;
+            position: absolute;
+            top: 35%;
+            left: 40%;
+            transform: rotate( -16deg);
+            text-align: center;
+            font-size: 310%;
+            padding-left: 38px;
+            letter-spacing: 18px;
+            color: rgba(191, 191, 192, 0.5)
+        }
+        .watermark>div{
+            height: 50px;
+            text-align: center;
+            font-size: 100%;
+            padding-left: 38px;
+            letter-spacing: 18px;
+            color: rgba(191, 191, 191, 0.5)
+        }
+        #search,#user-message{
+            display: none
+        }
+        #title{
+            margin-top: 10px;
+        }
+        .btn-div{
+            top: 8px !important;
+        }
+    </style>
+</head>
+<body id="top" class="img-body">
+<a name="goTop" id="goTop"></a>
+@include("/common/front-header_new2.html"){}
+@include("/common/front-rit2.html"){}
+
+<input  type="hidden" class="hide"  id="docType" value="${fileType}"/>
+<input  type="hidden" class="hide"  id="folderId" value="${folderId}"/>
+<input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType}"/>
+<input  type="hidden" class="hide"  id="docId" value="${id}"/>
+<input  type="hidden" class="hide"  id="category" value="${category}"/>
+<input  type="hidden" class="hide"  id="watermark_user_flag" value="${watermark_user_flag}"/>
+<input  type="hidden" class="hide"  id="watermark_company_flag" value="${watermark_company_flag}"/>
+<input type="hidden" class="hide" id="tags" value="${tags}"/>
+<input type="hidden" class="hide" id="showType" value="${showType}"/>
+<input type="text" class="hide"  id="username" value="${userName}"/>
+<input type="hidden" class="hide" id="companyValue" value="${companyValue}"/>
+<div id="outerContainer">
+    <div class="container-new">
+        <div class="container">
+<!--            <div class="breadCrumbs">-->
+<!--                <div style="overflow: hidden"><div class="pathes" style="margin-left: 0!important;"></div></div>-->
+<!--                <i class="layui-icon control-btn-r"></i>-->
+<!--            </div>-->
+            <div id="title" class="viewTitle"></div>
+            <div class="docView">
+                <span class="textOver" id="owner"></span>
+                <span class="textOver" id="uploadTime"></span>
+                <span class="textOver" id="fileSize"></span>
+                <span class="textOver" id="downloadNum"></span>
+                <span class="textOver" id="previewNum"></span>
+            </div>
+        </div>
+        @include("/common/front-operation.html"){}
+        <div class="content-bottom">
+            <div class="layui-row divtop container">
+                <div class="layui-col-sm12">
+                    <div class="img-container ">
+
+                        <div class="viewContent" >
+                            <div class="img-con" id="viewer" >
+                                <div class="cover2" style="font-size: 23.2773px; width: 250px;z-index: 101;left: 32%;color: rgba(191, 191, 192, 1)">
+                                     <br>${userName}</br>${companyValue}
+                                </div>
+                                <img id="showImg" docId="${id}"  src="${ctxPath}/preview/list?fileId=${imgPath}" onerror="javascript:this.src='${ctxPath}/static/img/img-default.png';" oncontextmenu = "return false;">
+
+                            </div>
+<!--                            <div class="translate">-->
+<!--                                <div id="last" class="last"  style="float: left;height: 75px;width: 40px;cursor: pointer" ></div>-->
+<!--                                <div id="next"  class="next"  style="float: right;height: 75px;width: 50px;cursor: pointer"></div>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="layui-col-sm2_5 ">-->
+<!--                    <div class="item-panel hide" id="projectIMG">-->
+<!--                        <div class="item-panel-head">-->
+<!--                            <span>项目图集</span><a href="${ctxPath}/preview/folderViewerFlow?docId=${id}&&folderId=${folderId}&&fileName=${fileName}" target="_blank" id="more">更多>></a>-->
+<!--                        </div>-->
+<!--                        <div class="item-panel-body">-->
+<!--                            <ul class="photo-list grid clearfix" id="showFolderIMG">-->
+
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="item-panel hide" id="showImgTags">-->
+<!--                        <div class="item-panel-head">-->
+<!--                            <span>图片标签</span>-->
+<!--                        </div>-->
+<!--                        <div class="item-panel-body tag">-->
+<!--                            <script id="imgTags" type="text/html">-->
+<!--                                {{#  layui.each(d, function(index, tag){ }}-->
+<!--                                <span>{{tag}}</span>-->
+<!--                                {{#  }); }}-->
+<!--                            </script>-->
+
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="item-panel hide" id="recommendIMG">-->
+<!--                        <div class="item-panel-head">-->
+<!--                            <span>相关推荐</span>-->
+<!--                        </div>-->
+<!--                        <div class="item-panel-body">-->
+<!--                            <ul class="photo-list grid clearfix" id="showRecommendIMG">-->
+
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+        <!--点击图片查看大图-->
+        <div class="bottomTab">
+            <div class="text-center"><div class="page-list" id='footDiv'></div></div>
+        </div>
+    </div>
+    <div class="showImg">
+        <i class="iconfont">&#x1006;</i>
+
+        <img id="showImg-" src="" alt="" oncontextmenu = "return false;">
+
+    </div>
+    <div class="hide" id="toSwitch">
+    </div>
+    <div class="integral"  ><span class="num" id="num"></span><span class="point">积分</span></div>
+    <div id="filTree" style="display: none;overflow: auto" class="leftArea">
+        <div id="fileTree2" class="jsTree"></div>
+    </div>
+</div>
+@include("/common/front-footer.html"){}
+</body>
+<script type="text/javascript">
+    projectTitle = "${session.projectTitle}";
+</script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/masonry.pkgd.min.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/imagesloaded.pkgd.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/viewer.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/extendPagination.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/front/previewunstruct/js/showIMG.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/pdf/build/pdf.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/assets/lib/jsTree/jstree.js?v=${h_version}"></script>
+</html>
+

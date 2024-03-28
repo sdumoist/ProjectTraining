@@ -1,0 +1,101 @@
+.weadmin-body{padding: 0;height: 100%;}
+.layui-form.content{height: calc(100% - 52px);padding: 10px 20px;box-sizing: border-box}
+.buttonDiv {
+    padding: 10px 15px 8px;
+    height: 52px;
+    border-top: 1px solid #E3ECEC;
+    text-align: center;
+    box-sizing: border-box;
+}
+.layui-form-item {
+    margin-bottom: 0;
+}
+.layui-table-view{
+    padding-bottom: 5px !important;
+    box-sizing: content-box;
+}
+.layui-form-item .layui-form{padding: 0}
+.layui-form-label{width: 60px;line-height: 33px; }
+/*.layui-col-md6{padding-left: 60px;}*/
+.labels{margin-bottom: 10px}
+.layui-btn{height:30px;line-height:30px;}
+.delete-span{display: inline-block;width: 20px;height: 100%;background: url(../../../../resources/img/fsfile/authority/delete.png) no-repeat center center;cursor: pointer}
+.layui-layer-ico1 {
+    background: url(../../../../resources/img/icon1-blue.png) no-repeat!important;
+}
+button#saveBtn,.layui-layer-btn0{
+    width: 90px;
+    height: 32px;
+    line-height: 31px;
+    color: #fff;
+    border: 1px solid #2980FF !important;
+    border-radius: 1px;
+    background: #2980FF !important;
+    text-align: center;
+    float: right;
+    margin-right: 20px;
+    padding: 0 10px;
+    font-size: 14px;
+}
+.bot-btns{text-align: right;position: relative;top: 11px;font-size: 14px}
+button#cancel,.layui-layer-btn1 {
+    width: 90px !important;
+    height: 32px !important;
+    line-height: 31px !important;
+    border: 1px solid #DBDBDB !important;
+    background: #fff !important;
+    border-radius: 1px;
+    color: #222;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+.bot-btns button#cancel{color: #222}
+.move-confirm .layui-layer-content {
+    height: calc(100% - 110px);
+    font-size: 16px !important;
+    text-indent: 18%;
+    background-size: 23px;
+    line-height: 50px !important;
+}
+.move-confirm {
+    width: 400px;
+    height: 200px;
+}
+.move-confirm .layui-layer-btn{width: 90px;height: 32px;line-height: 32px}
+@media only screen and (max-width:500px) {
+    button#saveBtn,.layui-layer-btn0{
+        width:64px;
+        height:26px;
+        line-height: 25px;
+    }
+    button#cancel,.layui-layer-btn1{
+        width:64px !important;
+        height:26px !important;
+        line-height: 25px !important;
+    }
+    .bot-btns button{top: 11px;font-size: 12px !important;}
+    .layui-col-md8 *{
+        font-size: 12px !important;
+    }
+    .move-confirm .layui-layer-content {
+        height: calc(100% - 80px);
+        font-size: 12px !important;
+        text-indent: 18%;
+        background-size: 20px;
+        line-height: 20px !important;
+    }
+    .move-confirm {
+        width: 280px !important;
+        height: 140px;
+    }
+    .move-confirm *{font-size: 12px}
+    .move-confirm .layui-layer-btn{width: 60px;height: 26px;line-height: 26px}
+}
+@media screen and (max-width: 1600px){
+    .layui-layer .layui-layer-title{font-size: 13px}
+    .layui-layer-dialog .layui-layer-content{font-size: 12px}
+}
+.layui-layer .layui-layer-title{font-size: 16px}
+.layui-layer-dialog .layui-layer-content{font-size: 14px}

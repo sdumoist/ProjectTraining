@@ -1,0 +1,37 @@
+/*old*/
+
+.we-red {
+    color: red;
+}
+.addFont{
+    font-size:13px
+}
+.table-top{padding: 0 10px;background: #fff}
+.search-wrapper{float: left;margin-top: 10px;}
+.toolBar{float: right}
+.search-wrapper input{display: inline-block;margin-right: 8px;width: 220px;}
+#uploadBtn{margin-right: 0}
+.radio-power{
+    width: 130px;float: left;
+}
+
+.view-range{
+    float: left;margin-top: 3px
+}
+.textarea-div {
+    width: calc(100% - 90px) !important;
+}
+.check-pow{float: left;position: relative;left: 0;right: 0;margin-left: 50px;margin-top: 10px}
+
+/*new*/
+.rit-menu{float: right;padding: 15px 10px 6px;padding-left: 12px !important;vertical-align: middle !important;height: 26px !important;line-height: 26px !important;}
+.rit-menu {float: right;width: 10%;padding: 15px 20px 6px 0px;box-sizing: content-box;vertical-align: middle !important;height: 26px !important;}
+.active {border: 1px solid #69e6ff;background-color: #d5ffff;}
+.rit-menu>div{width: 20px;height: 20px;cursor: pointer}
+.rit-menu1{background: url(../../../../resources/img/resourceManager/left.png) no-repeat center;}
+.rit-menu1.active{background: url(../../../../resources/img/resourceManager/left-on.png) no-repeat center; border: 0;background-color: inherit}
+.rit-menu2{background: url(../../../../resources/img/resourceManager/rit.png) no-repeat center;margin-left: 15px}
+.rit-menu2.active{background: url(../../../../resources/img/resourceManager/rit-on.png) no-repeat center;border: 0;background-color: inherit}
+.view table{width: 100%}
+
+

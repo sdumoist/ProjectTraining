@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.answer.dao.QaInviteAnswerMapper">
+
+
+    <select id="getQaInviteAnswer" resultType="com.jxdinfo.doc.question.model.QaInviteAnswer">
+        SELECT
+            qia.ID id,
+            qia.QUE_ID queId,
+            qia.INVITE_USER_ID inviteUserId,
+            qia.INVITE_USER_NAME inviteUserName,
+            qia.INVITE_TIME inviteTime,
+            qia.BY_INVITE_USER_ID ByInviteUserId,
+            qia.BY_INVITE_USER_NAME ByInviteUserName,
+            qia.ANSWER_FLAG answerFlag,
+            qia.TIMELY_FLAG timelyFlag
+        FROM
+            qa_invite_answer qia
+        WHERE
+            qia.QUE_ID = #{queId}
+        AND FIND_IN_SET(#{userId}, qia.BY_INVITE_USER_ID) > 0
+    </select>
+
+    <select id="getQaAnswer" resultType="com.jxdinfo.doc.answer.model.QaQuestionAnswer">
+        SELECT DISTINCT
+            qqa.ANS_ID AS ansId,
+            qqa.QUE_ID queId,
+            qqa.ANS_CONTENT AS ansContent,
+            qt.CONTENT AS ansContentText,
+            qqa.ANS_TIME AS ansTime,
+            qqa.ANS_USER_ID AS userId,
+            qqa.ANS_USER_NAME AS userName,
+            qqa.STATE state,
+            qqa.BEST_ANSWER AS bestAnswer,
+            qqa.AGREE_NUM AS agreeNum
+        FROM
+            qa_question_answer qqa
+        LEFT JOIN
+            qa_text qt
+        ON qqa.ANS_ID = qt.QA_ID
+        WHERE
+            qqa.STATE = '0'
+        AND qqa.QUE_ID = #{queId}
+        AND qqa.ANS_USER_ID = #{userId}
+        ORDER BY qqa.ANS_TIME
+    </select>
+
+    <select id="getQuestionTime" resultType="string">
+        SELECT qq.QUE_TIME  FROM qa_question qq WHERE qq.QUE_ID = #{queId}
+    </select>
+
+    <select id="getQaAnswerById" resultType="com.jxdinfo.doc.answer.model.QaQuestionAnswer">
+        SELECT
+            qqa.ANS_ID AS ansId,
+            qqa.QUE_ID queId,
+            qqa.ANS_CONTENT AS ansContent,
+            qt.CONTENT AS ansContentText,
+            qqa.ANS_TIME AS ansTime,
+            qqa.ANS_USER_ID AS userId,
+            qqa.ANS_USER_NAME AS userName,
+            qqa.STATE state,
+            qqa.BEST_ANSWER AS bestAnswer,
+            qqa.AGREE_NUM AS agreeNum
+        FROM
+          qa_question_answer qqa
+        LEFT JOIN
+            qa_text qt
+        ON qqa.ANS_ID = qt.QA_ID
+        WHERE
+          qqa.ANS_ID = #{ansId}
+    </select>
+
+</mapper>

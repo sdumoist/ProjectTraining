@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>专题信息维护</title>
+    @include("/common/plugins.html"){}
+    <link href="${ctxPath}/static/resources/css/topic.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/doc/manager/topicmanager/css/topic_edit.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+<style>
+    button#saveBtn{background: #018cff !important;float: none;border:1px solid #018cff !important;}
+</style>
+</head>
+
+<body style="height: 100%">
+<div class="weadmin-body">
+    <input type="hidden" id="id" value="${specialTopic.topicId}">
+
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="we-red">*</span>专题封面
+            </label>
+            <div class="layui-upload-list" >
+                <div class="img-div">
+                    <img class="layui-upload-img"  id="pic" src="${ctxPath}/preview/list?fileId=${specialTopic.topicCover}">
+                    <div class="none-img" style="display: none">
+                        <div class="add-img" id="choosePic">上传封面</div>
+
+                    </div>
+                    <div class="have-img">
+                        <button type="button" id="choosePic2">替换图片</button>
+
+                    </div>
+                    <p>建议尺寸263x147像素</p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label for="topicName" class="layui-form-label">
+                    <span class="we-red">*</span>专题名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="topicName" name="topicName" value="${specialTopic.topicName}"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class=" layui-inline">
+                <label  class="layui-form-label">
+                    <span class="we-red">*</span>专题作者
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="authorName" name="authorName" value="${users}" readonly="readonly"  class="layui-input">
+                    <input type="hidden" id="authorId" name="authorId"  value="${specialTopic.authorId}">
+                </div>
+            </div>
+        </div>
+        <!--<div class="layui-form-item checks-div">
+            <div class="layui-inline">
+                <label class="layui-form-label">是否立即发布</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" id="topicShow" name="topicShow" lay-filter="topicShow"lay-skin="switch" checked lay-text="是|否">
+                </div>
+            </div>
+        </div>-->
+        <!--<div class="layui-form-item">
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>专题启用时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="startTime" name="startTime"  autocomplete="off"  value="${specialTopic.enableTime,'yyyy-MM-dd HH:mm:ss'}" readonly="readonly"  class="layui-input laydata-input">
+                </div>
+
+            </div>
+            <div class=" layui-inline">
+                <label class="layui-form-label">
+                    <span class="we-red">*</span>专题失效时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="endTime" name="endTime"   autocomplete="off"  readonly="readonly"  value="${specialTopic.disableTime,'yyyy-MM-dd HH:mm:ss'}"  class="layui-input laydata-input">
+                </div>
+            </div>
+        </div>-->
+        <div class=" layui-inline" style="display: none">
+            <label class="layui-form-label">
+                <span class="we-red">*</span>排序
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="showOrder" name="showOrder"  value="${specialTopic.showOrder}"   autocomplete="off" class="layui-input">
+            </div>
+            <span class="orderP">当前最大排序为${lastNum}</span>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                专题描述
+            </label>
+            <div class="layui-input-inline textarea-div">
+                <textarea id="topicDesc" name="topicDesc"   class="layui-textarea">${specialTopic.topicDesc}</textarea>
+            </div>
+        </div>
+
+        <!-- 人员树 -->
+        <div id="employeeTreeDiv" style="display: none;"  class="formmargin">
+            <div class="layui-input-inline personSearch">
+                <input id="personSearch" placeholder="请输入你想查询的作者" class="layui-input" style="width: 283px;">
+            </div>
+            <div class="search-results"></div>
+            <div id="showEmployeeTree" class="jsTree"></div>
+        </div>
+    </div>
+    <div class="bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+<script type="text/html" id="delDoc">
+    <a class="layui-btn layui-btn-xs layui-btn-danger {{d.option == '1' ? 'layui-hide' : ''}}" lay-event="delete">删除</a>
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/topicmanager/js/topic_edit.js?v=${h_version}"></script>
+</body>
+</html>

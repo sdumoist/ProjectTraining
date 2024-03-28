@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.docintegral.dao.IntegralRuleMapper">
+    <!--新增积分规则-->
+    <insert id="newIntegralRule">
+        INSERT INTO doc_integral_rules(
+        RULE_ID,
+        RULE_CODE,
+        RULE_NAME,
+        RULE_INTEGRAL,
+        RULE_DES,
+        CREATE_TIME,
+        SHOW_ORDER,
+        VALID,
+        REMARK,
+        MAX_TIMES
+        )VALUES (
+        #{ruleId},
+        #{ruleCode},
+        #{ruleName},
+        #{ruleIntegral},
+        #{ruleDes},
+        SYSDATE(),
+        (SELECT * FROM (SELECT MAX(SHOW_ORDER) FROM doc_integral_rules)t) + 1,
+        <if test="defaultValid != null and defaultValid != ''">
+            #{defaultValid},
+        </if>
+        <if test="defaultValid == null or defaultValid == ''">
+            '1',
+        </if>
+        #{remark},
+        #{maxTimes}
+        )
+    </insert>
+
+    <!-- 更新积分规则 -->
+    <update id="updateIntegralRule">
+        UPDATE doc_integral_rules
+        SET RULE_ID=RULE_ID
+        <if test="ruleName != null and ruleName !=''">
+            ,RULE_NAME=#{ruleName}
+        </if>
+        <if test="ruleIntegral != null and ruleIntegral != ''">
+            ,RULE_INTEGRAL=#{ruleIntegral}
+        </if>
+        <if test="ruleDes != null and ruleDes != ''">
+            ,RULE_DES=#{ruleDes}
+        </if>
+        <if test="valid != null and valid != ''">
+            ,VALID=#{valid}
+        </if>
+        <if test="remark != null and remark != ''">
+            ,REMARK=#{remark}
+        </if>
+        <if test="maxTimes != null and maxTimes != ''">
+            ,MAX_TIMES=#{maxTimes}
+        </if>
+        WHERE
+        RULE_ID=#{ruleId}
+    </update>
+
+    <!-- 获取所有的积分规则 -->
+    <select id="getIntegralRule" resultType="java.util.Map">
+        SELECT
+          RULE_ID ruleId,
+          RULE_CODE ruleCode,
+          RULE_NAME ruleName,
+          RULE_INTEGRAL integral,
+          RULE_DES des,
+          CREATE_TIME createTime,
+          VALID valid,
+          REMARK remark,
+          MAX_TIMES maxTimes
+        FROM
+          doc_integral_rules
+        ORDER BY SHOW_ORDER,CREATE_TIME DESC
+        LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <!-- 通过积分规则id获取规则 -->
+    <select id="getIntegralRuleById" resultType="java.util.Map">
+        SELECT
+          RULE_ID ruleId,
+          RULE_CODE ruleCode,
+          RULE_NAME ruleName,
+          RULE_INTEGRAL integral,
+          RULE_DES des,
+          CREATE_TIME createTime,
+          VALID valid,
+          REMARK remark,
+          MAX_TIMES maxTimes
+        FROM
+          doc_integral_rules
+        WHERE
+          RULE_ID=#{ruleId}
+    </select>
+
+    <!-- 通过积分编码获取规则 -->
+    <select id="getRuleByCode" resultType="Map">
+        select max_times,rule_name ruleName,rule_integral ruleIntegral,valid valid,rule_des ruleDes from doc_integral_rules where rule_code = #{code}
+    </select>
+
+    <!--检查要新增的规则是否存在规则名和规则编码重复-->
+    <select id="inputCheck" resultType="int">
+        SELECT COUNT(*) FROM doc_integral_rules
+        WHERE
+        RULE_NAME=#{ruleName}
+        <if test="ruleCode != null and ruleCode != ''">
+            OR
+            RULE_CODE=#{ruleCode}
+        </if>
+        <if test="ruleId != null and ruleId != ''">
+            AND RULE_ID != #{ruleId}
+        </if>
+    </select>
+
+    <!--查出总共的积分规则的数量-->
+    <select id="getIntegralRuleCount" resultType="int">
+        SELECT COUNT(*) FROM doc_integral_rules
+    </select>
+
+    <!--根据id数组删除积分规则 -->
+    <delete id="deleteIntegralRule">
+        DELETE FROM doc_integral_rules
+        WHERE RULE_ID IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过id获取积分规则-->
+    <select id="getIntegralRuleByIds" resultType="java.util.Map">
+        SELECT
+          RULE_ID ruleId,
+          RULE_CODE ruleCode,
+          RULE_NAME ruleName,
+          RULE_INTEGRAL integral,
+          RULE_DES des,
+          CREATE_TIME createTime,
+          VALID valid,
+          REMARK remark,
+          MAX_TIMES maxTimes
+        FROM
+          doc_integral_rules
+        WHERE
+          1=2 OR
+        <if test="null != ids">
+            RULE_ID IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+</mapper>

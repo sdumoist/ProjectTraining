@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>用户组人员管理</title>
+    @include("/common/plugins.html"){}
+    @include("/common/plugins_ext.html"){}
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+
+
+<body>
+<div class="weadmin-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class=" layui-inline">
+                <label for="sortName" class="layui-form-label">
+                    <span class="we-red">*</span>分组名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="sortName" name="sortName" value="${sortName}" maxlength="40" autocomplete="off" class="layui-input">
+                    <input type="hidden" id="sortId" name="sortId" value="${sortId}">
+                </div>
+            </div>
+            <div class=" layui-inline">
+                <label  class="layui-form-label">
+                    <span class="we-red">*</span>所属分组
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="parentSortName" name="parentSortName" value="${parentSortName}" readonly="readonly"  unselectable="on" class="layui-input">
+                    <input type="hidden" id="parentSortId" name="parentSortId" value="${parentSortId}">
+                </div>
+            </div>
+            <!-- 分组树 -->
+            <div id="employeeTreeDiv" style="display: none;"  class="formmargin">
+                <div class="search-results"></div>
+                <div id="sortTree" class="jsTree"></div>
+            </div>
+        </div>
+    </form>
+    <div class="bot-btns">
+        <button id="saveBtn" type="button" class="layui-btn" lay-filter="add" lay-submit="">确定</button>
+        <button id="cancel" class="white-btn" lay-filter="cancel" type="button">取消</button>
+    </div>
+</div>
+</body>
+<script src="${ctxPath}/static/doc/manager/personalgroupmanager/js/personal_sort_add.js?v=${h_version}"></script>
+</html>

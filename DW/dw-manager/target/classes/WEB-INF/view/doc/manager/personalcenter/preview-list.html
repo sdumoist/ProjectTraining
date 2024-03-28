@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的预览记录</title>
+    @include("/common/plugins.html"){}
+    <link rel="stylesheet" href="${ctxPath}/static/doc/manager/personalcenter/css/personal_upload.css?v=${h_version}"/>
+    <link href="${ctxPath}/static/doc/manager/docmanager/css/uplod.css?v=${h_version}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="${ctxPath}/static/assets/lib/webuploader0.1.5/webuploader.css">
+    <link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<input class="hide" type="hidden" id="opType" value="3">
+<div class="background" style="height: 100%">
+    <div class="content">
+        <div class="layui-col-md9 layui-col-sm9 con-full-r rightArea">
+            <div id="marg" style="overflow: auto">
+                <div class="table-top clearfix">
+                    <div class="search-wrapper">
+                        <input class="layui-input" id="searchName" placeholder="按名称查找文件" value="">
+                        <button class="layui-btn" id="searchBtn"><i class="layui-icon">&#xe615;</i>查询</button>
+                        <!--<div class="search-btn" id="searchBtn">&nbsp;</div>-->
+                    </div>
+                    <div class="toolBar"  style="min-height: 50px">
+                        <div id="uploader" class="wu-example">
+                            <div class="shadow">
+
+                            </div>
+                            <div id="dndArea">
+                                <div class="file-container-flatten" id="">
+                                    <div id="view"></div>
+                                </div>
+                            </div>
+                            <div class="layui-card popWin success" style="display: none" >
+                                <div class="layui-card-header">
+                                    <span>预览记录</span>
+                                    <div class="fr">
+                                        <i class="iconfont controls-down">&#xe61a;</i>
+                                        <i class="iconfont controls-close">&#x1006;</i>
+                                    </div>
+                                    <span id="setFileAuthority" class="setFileAuthority"> 权限设置</span>
+                                </div>
+                                <div class="layui-card-body">
+                                    <div class="success-msg"></div>
+                                    <div class="btns">
+                                        <div class="uploader-list upload-head">
+                                            <div  class="item">
+                                                <h4 class="info">文件名</h4>
+                                                <h4 class="state">文件状态</h4>
+                                                <h4   class="operation" href="javascript:void(0);" class="file_btn_head " style="text-align: center">操作</h4>
+                                            </div>
+                                        </div>
+                                        <!-- 文件列表：选择文件后在该div显示 -->
+                                        <div id="thelist" class="uploader-list uploader-body list-group-item clearfix ng-hide"></div>
+                                        <label class="text-right"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="delHistoryBtn" class="layui-btn hideBtn clickBtn" ><i class="layui-icon">&#xea0f;</i>删除记录</button>
+                        <button id="clearHistoryBtn" class="layui-btn"><i class="layui-icon">&#xea0f;</i>清空记录</button>
+                    </div>
+                </div>
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="demo1" type="text/html">
+    <div class="fixed-table-header view-table">
+        <table class="layui-table table_list">
+            <colgroup>
+                <col>
+                <col  width="180">
+                <col width="180">
+                <col  width="180">
+                <col width="180">
+                <col width="180">
+            </colgroup>
+            <thead>
+            <tr>
+                <th lay-data="{field:'filename'}" style="text-align: center">
+                    <input  type="checkbox" class="checkAll" style="position: absolute;opacity: 0">
+                    <div class="layui-unselect layui-form-checkbox" onclick="checkAll(this)"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                        <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                    </div>
+                    文件名</th>
+                <th lay-data="{field:'optime'}" style="text-align: center">预览时间</th>
+                <th lay-data="{field:'size'}" style="text-align: center">大小</th>
+                <th lay-data="{field:'author'}" style="text-align: center">上传人</th>
+                <th lay-data="{field:'uploadTime'}" style="text-align: center">上传时间</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <table class="layui-table table_list" >
+        <colgroup>
+            <col>
+            <col  width="180">
+            <col width="180">
+            <col  width="180">
+            <col width="180">
+            <col width="180">
+        </colgroup>
+        <thead>
+        <tr>
+            <th lay-data="{field:'fileName'}" style="text-align: center">
+                <input  onclick="checkAll()"  type="checkbox" class="checkAll"  style="float: left" >
+                <div class="layui-unselect layui-form-checkbox" onclick="checkAll()"  style="float: left;font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px">
+                    <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                </div>
+                文件名</th>
+
+            <th lay-data="{field:'optime'}" style="text-align: center">预览时间</th>
+            <th lay-data="{field:'size'}" style="text-align: center">大小</th>
+            <th lay-data="{field:'author'}" style="text-align: center">上传人</th>
+            <th lay-data="{field:'uploadTime'}" style="text-align: center">上传时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#  layui.each(d.list, function(index, item){ }}
+        {{# if(null != item.fileName){}}
+        <tr  ondblclick="dbclick('{{item.fileId}}','{{item.fileType}}','{{item.fileName}}')" title="{{item.fileName}}"  onclick="clickCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+            <td>
+                <input type="checkbox" class="checkbox"  name="checkboxname"  onclick="tryPop(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')" style="position: absolute;opacity: 0" >
+                <div class="layui-unselect layui-form-checkbox"  style="font-size: 12px;line-height: 12px;width: 14px;height: 14px;padding-right:12px" onclick="clickIconCheck(this,'{{item.fileId}}','{{item.fileType}}','{{item.fileName}}','{{index}}','{{item.createUserId}}')">
+                    <i class="iconfont" style="width: 12px;font-size: 12px;" >&#xe605;</i>
+                </div>
+                <input  class="checkFileId" hidden value="{{item.fileId}}">
+                <input  class="checkFileType" hidden value="{{item.fileType}}">
+                <input  class="checkFileName" hidden value="{{item.fileName}}">
+                <input  class="chooseFileAuthor" hidden value="{{item.createUserId}}">
+                {{#  if(item.fileType === 'folder'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-folder26.png">
+                {{#  }else if(item.fileType === '.doc'||item.fileType === '.docx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-word26.png">
+                {{#  }else if(item.fileType === '.txt'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-txt26.png">
+                {{#  }else if(item.fileType === '.ppt'||item.fileType === '.pptx'||item.fileType === '.ppsx'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-ppt26.png">
+                {{#  }else if(item.fileType === '.pdf'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-pdf26.png">
+                {{#  }else if(item.fileType === '.ceb'){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-ceb26.png">
+                {{#  }else if(['.mp3','.real','.cd','.ogg','.asf','.wav','.ape','.module','.midi'].indexOf(item.fileType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-audio26.png">
+                {{#  }else if(['.mp4','.avi', '.wma', '.rmvb','.rm', '.flash'].indexOf(item.fileType)!=-1){ }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-video26.png">
+                {{#  }else if(item.fileType === '.xls'||item.fileType === '.xlsx') {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-excel26.png">
+                {{#  }else if(['.png','.jpeg','.gif','.jpg'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-img26.png">
+                {{#  }else if(['.bmp'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-bmp26.png">
+                {{#  }else if(['.psd'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-psd26.png">
+                {{#  }else if(['.html'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-html26.png">
+                {{#  }else if(['.exe'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-exe26.png">
+                {{#  }else if(['.zip','.rar'].indexOf(item.fileType)!=-1) {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-zip26.png">
+                {{#  }else {  }}
+                <img  src="${ctxPath}/static/resources/img/front/file-icon/ic-other26.png">
+                {{#  } }}
+                <!--{{#
+                var sub = function(){
+                var result=item.fileName;
+                if(width<1600){
+                if(result.length>15){
+                result=result.substring(0,15)+'...';
+                }
+                }else{
+                if(result.length>30){
+                result=result.substring(0,30)+'...';
+                }
+                }
+
+                return result;
+                };
+
+                }}-->
+                <span id="name{{index}}" class="" style="cursor: default" >{{ item.fileName }}</span>
+                <input type="text" id="inputName{{index}}" style="width:78%;float:right"  maxlength="130"  value="{{item.fileName}}" class="layui-input hide">
+            </td>
+            <td>
+                {{item.optime}}
+            </td>
+            <td>
+                {{item.fileSize}}
+            </td>
+            <td>
+                {{item.author}}
+            </td>
+            <td>
+                {{item.uploadTime}}
+            </td>
+            <span id="person{{ item.fileId }}" style="display: none;" class="vertical"></span>
+            <span id="authority{{ item.fileId }}" style="display: none;" class="vertical"></span>
+        </tr>
+        {{#  }}}
+        {{#  }); }}
+        </tbody>
+    </table>
+
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/doc/manager/personalcenter/js/operate.js?v=${h_version}"></script>
+<script>
+    var width = $(window).width();
+</script>
+</body>
+</html>

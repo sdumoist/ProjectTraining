@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文件系统-文件上传统计</title> @include("/common/plugins.html"){}
+@include("/common/plugins_ext.html"){}
+<link rel="stylesheet"
+	href="${ctxPath}/static/doc/manager/statistics/css/statistics.css?v=${h_version}"/>
+	<link href="${ctxPath}/static/resources/css/front/common_doc.css?v=${h_version}" type="text/css" rel="stylesheet">
+</head>
+<style type="text/css">
+#selectDiv {
+	width: 25%;
+	margin:0 auto;
+}
+</style>
+<body>
+	<div class="background layui-fluid weadmin-body">
+		<form class="layui-form" action="">
+			<div class="layui-form-item" id="selectDiv">
+				<label class="layui-form-label">类别</label>
+				<div class="layui-input-block">
+					<select name="opType" lay-filter="opType">
+						<option value="dept">按部门统计</option>
+						<option value="user">按人员统计</option>
+					</select>
+				</div>
+			</div>
+		</form>
+		<div class="content">
+			<div id="main" class="main"></div>
+		</div>
+	</div>
+
+
+	<script
+		src="${ctxPath}/static/resources/js/common/echarts.common.min.js"></script>
+	<script
+		src="${ctxPath}/static/doc/manager/statistics/js/fileUploadStatistics.js?v=${h_version}"></script>
+</body>
+</html>

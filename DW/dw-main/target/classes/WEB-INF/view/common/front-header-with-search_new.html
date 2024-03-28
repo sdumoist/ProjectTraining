@@ -1,0 +1,110 @@
+<head>
+    <script src="${ctxPath}/static/resources/lib/jquery/jquery-1.10.2.min.js?v=${h_version}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+        theme = "${session.theme}";
+    </script>
+
+    <script type="text/javascript">
+        hussar_path="${ctxPath}";
+    </script>
+    <script src="${ctxPath}/static/assets/lib/layui2.5.5/layui.extend.js?v=${h_version}"></script>
+    <link href="${ctxPath}/static/resources/css/front/front_header_new.css?v=${h_version}" rel="stylesheet" >
+    <style>
+        #changeHeadIcon{
+            background:rgba(125,125,125,.5);
+            border-radius: 50%;
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 20px;
+            top: 23px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 12px;
+            display: none;
+            cursor: pointer;
+            color: white;
+        }
+        .photo-area img:hover + #changeHeadIcon,#changeHeadIcon:hover{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="header-with-search" style="top:0">
+    <div class="container">
+        <div class="soundView">
+            <a href="${ctxPath}/" target="_blank"><img class="logo" src="${ctxPath}/static/logo/logo-search.png" style="width:130px"></a>
+            <li class="user-wrapper" id="user">
+                <a target="_blank" href="${ctxPath}/personalcenter/" class="user-wrapper-new changeIcon">
+                    @if(session.url==null||session.url==""){
+                    <img src="${ctxPath}/static/resources/img/front/index/photo.png " style="border-radius: 50%">
+                    @}else {
+                    <img src="${session.url}" style="border-radius: 50%">
+                    @}
+                    <span target="_blank" class="user-photo" id="loginName" href="#">
+                            ${userName}
+                </span>
+                    <i class="layui-icon layui-icon-triangle-d"></i>
+                </a>
+                <div class="user-dropdown">
+                    <div class="photo-area changeIcon">
+                        @if(session.url==null||session.url==""){
+                        <img src="${ctxPath}/static/resources/img/front/index/photo.png " style="background:rgba(213,235,255,1);border-radius: 50%">
+                        @}else {
+                        <img src="${session.url}" style="border-radius: 50%">
+                        @}
+                        @if(session.projectFlag==true){
+                        <div id="changeHeadIcon">更换头像</div>
+                        @}
+                        <div class="userName">${userName}</div>
+                        <a href="${ctxPath}/personalcenter?menu=6" onclick="void(0)" target="_blank">
+                        <div class="userPoint">积分&nbsp<span id="totalIntegral"></span></div>
+                        </a>
+                        @if(session.projectFlag==true){
+                        <a id="changePwd"><img src="/static/img/updatepwd.png" style="width: 20px;height: 20px" title="修改密码"></a>
+                        @}
+                    </div>
+                    <div class="function-area">
+                        <a href="${ctxPath}/personalcenter/" target="_blank"><div  class="personal">个人中心</div></a>
+                        @if(shiro.hasPermission("sys:manager")){
+                        <a target="_blank"  href="${ctxPath}/jqwkmanager/" ><div class="management">后台管理</div></a>
+                        @}else{
+                        <a target="_blank"   class="dsiableManagement"><div class="management">后台管理</div></a>
+                        @}
+                    </div>
+                    <div class="logout-area"><a  id="loginout">退出登录</a></div>
+                    <s><i></i></s>
+                </div>
+
+            </li>
+            <li class="user-wrapper2">
+                <div class="layui-form search-wrapper-select">
+                    <select  id="select">
+                        <option value="0" >全部</option>
+                        <option value="7">文档</option>
+                        <option value="8">图片</option>
+                        <option value="9">视频</option>
+                        <option value="10">音频</option>
+                        <option value="14">词条</option>
+                        <option value="15">作者</option>
+                        @if(session.projectFlag!=true){
+                        <option value="12">成果</option>
+                        @}
+                    </select>
+                </div>
+                <input id="headerSearchInput" class="search"  value="${key!}" placeholder="请输入搜索内容" onfocus="placeholder=''" onblur="placeholder='请输入搜索内容'"  autocomplete="off"  maxlength="30">
+                <img id="headerSearchBtn" src="${ctxPath}/static/resources/img/front/search.png" style="position: absolute;right: 36px;top:13px;height: 15px">
+                <input type="hidden" class="hide"  id="headerSearchInputValue" value="${key!}">
+                <div class="keywords-association-box" id="keywordsAssociation" style=" display: none;top: 41px;">
+                    <ul>
+                    </ul>
+                </div>
+            </li>
+        </div>
+    </div>
+</div>
+<div class="curtain"></div>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/resources/js/front/front-header-with-search.js?v=${h_version}"></script>
+</body>

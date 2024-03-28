@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit">
+    <title>${session.projectTitle}-检索</title>
+    @include("/common/front-style.html"){}
+    @include("/common/front-script.html"){}
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/assets/lib/swiper/css/swiper.min.css?v=${h_version}"/>
+    <link rel="stylesheet" type="text/css" href="${ctxPath}/static/resources/css/front/search_new.css?v=${h_version}"/>
+</head>
+<body style="position: relative;">
+@include("/common/front-header_new.html"){}
+<!--搜索框-->
+
+<div class="search-boxs ">
+    <div class="search-box container clearfix">
+        <div class="wrapper-left-top">
+            <div class="global-search-input">
+                <div class="layui-form search-wrapper-select">
+                    <select id="select">
+                        <option value="0">全部</option>
+                        <option value="7">文档</option>
+                        <option value="8">图片</option>
+                        <option value="9">视频</option>
+                        <option value="10">音频</option>
+                        <option value="14">词条</option>
+                        <option value="15">作者</option>
+                        @if(session.projectFlag!=true){
+                        <option value="12">成果</option>
+                        @}
+                    </select>
+                </div>
+                <input class="search-input" id="headerSearchInput" placeholder="搜索文档名称、关键词等，多个关键词用空格隔开"
+                       onblur="placeholder='搜索文档名称、关键词等，多个关键词用空格隔开'" onfocus="placeholder=''"
+                       value="${key!}"  maxlength="150" autocomplete="off">
+                <div id="headerSearchBtn">查一下</div>
+                <div class="keywords-association-box" id="keywordsAssociation" style="display: none">
+                    <ul>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="hot-search ">
+                热门搜索：
+            </div>
+        </div>
+        <div class="layui-col-sm12 ">
+            @if(fileType == "9" || fileType == "10"|| fileType == "12"){
+            <div class="hide search-box-type hide-search">
+                <div id="all">
+                    @include("/common/front-file-type.html"){}
+                </div>
+                <div id="word" style="display: none">
+                    @include("/common/front-file-type-word.html"){}
+                </div>
+            </div>
+            @}else{
+            <div class="search-box-type ">
+                <div id="all">
+                    @include("/common/front-file-type.html"){}
+                </div>
+                <div id="word" style="display: none">
+                    @include("/common/front-file-type-word.html"){}
+                </div>
+            </div>
+            @}
+        </div>
+
+        <!--<form class="layui-col-sm12 layui-form">
+            <div class="wrapper-left-top layui-row  layui-col-space15">
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">时间不限</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+                <div class="layui-col-sm2">
+                    <select class="time">
+                        <option value="">搜索条件</option>
+                    </select>
+                </div>
+            </div>
+            <div class="wrapper-right-top"><button type="reset" class="no-border-btn">清空筛选条件</button></div>
+        </form>-->
+    </div>
+</div>
+
+<div class="main-box">
+    <div class="container clearfix">
+
+        <div class="left-container">
+            @if(fileType == "0"){
+                <div class="search-result-desc result-img clearfix row" id="picList">
+                <div class="col-sm-6 doc-num-title"><span> ${key!} </span>相关图片</div>
+                    <div class="col-sm-3 doc-num" id="orderPicByTime" style="cursor: pointer">按时间排序
+                        <i class="layui-icon" id="orderPic" style="cursor: pointer ;font-size: 13px;display: none">
+                            <img style="width:8px;height: auto"  src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                        </i>
+                        <i class="layui-icon" id="orderPic1"  style="cursor: pointer ;font-size: 13px;display: none">
+                            <img style="width:8px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                        </i>
+                    </div>    
+                <div class="col-sm-3 doc-num ">
+                    <a href="/searchPic?keyWords=${key!}&fileType=8" target="_blank"><span>查看全部</span><span id="number"></span><span >张图片</span></a>
+                </div>
+
+                <!--轮播--图片为示意图片-->
+                <div class="swiper-container swiper-container-self ">
+                    <div class="swiper-wrapper" id="picItem">
+
+
+                    </div>
+                </div>
+            </div>
+            @}
+            @if(fileType == "0"||fileType == "14"){
+            <div class="search-result-desc result-img clearfix row" id="entryPicList">
+                <div class="col-sm-6 doc-num-title"><span> ${key!} </span>相关词条</div>
+                <div class="col-sm-3 doc-num" id="entryOrderPicByTime" style="cursor: pointer">按时间排序
+                    <i class="layui-icon" id="entryorderPic" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"  src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                    </i>
+                    <i class="layui-icon" id="entryorderPic1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                    </i>
+                </div>
+                <div class="col-sm-3 doc-num">
+                    <a href="/entry/allEntryList?keyWords=${key!}&fileType=14" target="_blank"><span>查看全部</span><span id="entryNumber"></span><span >个词条</span></a>
+                </div>
+
+                <!--轮播--图片为示意图片-->
+                <div class="swiper-container swiper-container-self ">
+                    <div class="swiper-wrapper" id="entrypicItem">
+                                                <div class="entryMoreMain">
+                                                    <div class="entryMoreMainTitle"><span>科学</span>技术</div>
+                                                    <div class="entryMoreText">
+                                                        <img src="${ctxPath}/static/doc/front/entry/img/technology.jpeg" alt="" class="entryMoreImg">
+                                                        <div class="entryMoreTextRight">
+                                                            <div>
+                                                                今日，一则消息“三亚凤凰岛房价由每平15万跌至4.2万”登上了热搜。
+                                                                　　据海南房产中介表示，“以一套58平的凤凰岛内房产为例，在2012年底至2013年中的时候，房价到达约12万元/平。而这套房子目前挂牌总价为245万元，单价约为4.22万元/平。”
+                                                                　　此外，三亚凤凰岛背后的主体公司为三亚凤凰岛国际邮轮港发展有限公司。截至去年年末，该公司资产总额约为50.40亿元，
+                                                            </div>
+                                                            <div><span>含义</span><span>思想</span><span>方法</span><span>分类</span><span>作用</span><span>大事记</span><span>主要科学界</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                    </div>
+                </div>
+            </div>
+            @}
+
+            <input type="hidden" class="hide" id="count">
+            <input type="hidden" class="hide" id="adminFlag" value="${adminFlag}">
+            <input type="hidden" class="hide" id="picCommond" value="${picCommond}">
+            <input type="hidden" class="hide"  id="headerSearchInputValue" value="${key!}">
+            <input  type="hidden" class="hide"  id="fileTypeValue" value="${fileType!}">
+            <!--排序完结-->
+            <div class="layui-row row">
+                <div class="col-sm-6 doc-num-title"><span> ${key!} </span><label class="before">相关文档</label></div>
+                <div class="col-sm-3 doc-num" id="orderByTime" style="cursor: pointer">按时间排序
+                    <i class="layui-icon" id="orderTime" style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto"  src="${ctxPath}/static/resources/img/fsfile/authority/front-order1-blue.png">
+                    </i>
+                    <i class="layui-icon" id="orderTime1"  style="cursor: pointer ;font-size: 13px;display: none">
+                        <img style="width:8px;height: auto" src="${ctxPath}/static/resources/img/fsfile/authority/front-order2-blue.png">
+                    </i>
+                </div>
+                <div class="col-sm-3 doc-num ">
+                    <span >为您找到</span><span id="totalCount"></span><span class="after">个文档</span>
+                </div>
+            </div>
+            <div class="searchList">
+                <script id="articleItem" type="text/html">
+                    {{#  layui.each(d.items, function(index, item){ }}
+
+                    <div class='doc-item'>
+                        <div class='doc-title' >
+                            <span class="doc-type type-{{item.fileSuffixName}}"></span>
+                            <a class='doc-name ellipse' title="{{item.fileName}}" onclick='showDoc("{{item.docType}}","{{item.docId}}")'>
+                                {{item.fileName}}
+                            </a>
+                            <div class="right-btn-box">
+                            {{# if(item.docType!='component'){ }}
+                                {{# if(item.collection==0){ }}
+
+                                <span  class="collection-btn no_{{item.docId}}" onclick="iconCollect('{{item.docId}}','0')" >收藏</span>
+                                <span class="cancel-collect-btn active" onclick="iconCollect('{{item.docId}}','1')"  style="display: none">已收藏</span>
+                               {{#  }else { item.collection==1 }}
+                                <span class="collection-btn no_{{item.docId}}" onclick="iconCollect('{{item.docId}}','0')"  style="display: none">收藏</span>
+                                <span class="cancel-collect-btn active" onclick="iconCollect('{{item.docId}}','1')" >已收藏</span>
+                                {{# } }}
+
+                                {{# if(item.authority=='1'||d.adminFlag==1||item.authority=='2'){ }}
+                                    <span class="download-btn" onclick="iconDownLoad('{{item.docId}}','{{item.fileName}}')">下载</span>
+                                {{# } }}
+
+                                {{# if(item.shareFlag=='1'){ }}
+                                <span class="share-btn" onclick="iconShare('{{item.docId}}','{{item.docType}}','{{item.fileName}}')">分享</span>
+                                {{# } }}
+                            {{# } }}
+                            </div>
+                        </div>
+                        {{# if(item.content != ''||item.content != null){ }}
+                        <div class="doc-content">{{item.content}}</div>
+                        {{# } }}
+                        <div class="doc-detail">
+                            {{# if(item.url != ''||item.url != null){ }}
+                            <img src="{{item.url}}" />
+                            {{#  }else {  }}
+                            <img src="${ctxPath}/static/resources/img/front/index/photo.png ">
+                            {{#  } }}
+                            <span>
+                               {{item.deptName}}
+                            </span>
+                            <span>
+                             {{# if(item.author==''||item.author==null){  }}
+                              {{item.authorId}}
+                                {{#  }else {  }}
+                              {{item.author}}
+                                 {{#  } }}
+                            </span>
+                            {{# var a = item.createTime;}}
+                            <span>{{a.substring(0,10)}}</span>
+                            {{# if(item.docType!='component'){ }}
+                            <span>{{item.downloadNum}}&nbsp;次下载</span>
+                            {{# } }}
+                            {{# if(item.docType!='component'){ }}
+                            <span>{{item.readNum}}&nbsp;次预览</span>
+                            {{# }else { }}
+                            <span>{{item.readNumComponent}}&nbsp;次预览</span>
+
+                            {{# } }}
+                        </div>
+                    </div>
+                    {{#  }); }}
+                </script>
+            </div>
+            <div class="text-center pageBox">
+                <div id="laypageAre"></div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="rit-container">
+                @include("/common/front-rit.html"){}
+            </div>
+          <!--  <div class="history">
+                <div class="title">搜索历史</div>
+                <div class='history-total'>
+                </div>
+            </div>-->
+            <div class="hot hide">
+                <div class="title">热搜词条</div>
+                <div class="hot-entryTotal"></div>
+                <div class="title">热搜文章</div>
+                <div class="hot-total">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@include("/common/front-footer.html"){}
+<div class="integral"><span class="num" id="num"></span><span class="point">积分</span></div>
+
+<script>
+    var timer;
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 0) {
+                $("#goToTop").show()
+            } else {
+                $("#goToTop").hide()
+            }
+        });
+
+    })
+    $("#goToTop").click(function () {
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(function fn() {
+            var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+            if (oTop > 0) {
+                scrollTo(0, oTop - 50);
+                timer = requestAnimationFrame(fn);
+            } else {
+                $("#goToTop").hide(1000);
+                cancelAnimationFrame(timer);
+            }
+        });
+    })
+</script>
+</body>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/assets/lib/swiper/js/swiper.min.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/file-type-filter.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/ajaxfileupload.js?v=${h_version}"></script>
+<script type="text/javascript" charset="utf-8"
+        src="${ctxPath}/static/resources/js/front/search_new.js?v=${h_version}"></script>
+<script src="${ctxPath}/static/doc/front/docmanager/js/front-showfeedback.js?v=${h_version}"></script>z
+</html>

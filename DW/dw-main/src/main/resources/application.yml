@@ -1,0 +1,391 @@
+############################## 项目启动信息配置 开始  ##############################
+server:
+  servlet:
+    context-path: /
+  port: 8001
+  tomcat:
+    port-header: HEAD,DELETE,OPTIONS,TRACE,COPY,SEARCH,PROPFIND       #禁止这些请求头
+    min-spare-threads: 20
+    max-threads: 500
+    max-connections: 10000
+    max-http-header-size: 1024000
+############################## 项目启动信息配置 结束  ##############################
+############################## spring配置 开始  ##############################
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+  mvc:
+    dispatch-options-request: true          # 启用 port-header控制
+    static-path-pattern: /static/**         # 静态资源路径
+    view:
+      prefix: /WEB-INF/view                 # 页面文件路径
+  http:
+    converters:
+      preferred-json-mapper: fastjson       # Json转换器
+  servlet:
+    multipart:
+      max-request-size: 100MB               # 最大请求大小
+      max-file-size: 100MB                  # 最大文件大小
+  devtools:
+    restart:
+      enabled: true                         # 是否开启开发者工具（true/false）
+      additional-paths:
+      exclude: static/**
+  aop:
+    proxy-target-class: true                #false为启用jdk默认动态代理,true为cglib动态代理
+  activiti:
+    check-process-definitions: false
+############################## spring配置 结束  ##############################
+
+##词条审核角色
+entryAudit: 5431cf50b999e47d9c50313c8dcc8087
+
+############################## mybatis-plus配置 开始  ##############################
+mybatis-plus:
+  mapper-locations: classpath*:com/**/mapping/*.xml
+  typeAliasesPackage: om.jxdinfo.hussar.**.model,com.jxdinfo.**.model,com.xxxx.**.model
+  typeEnumsPackage: com.jxdinfo.hussar.common.constant.enums
+  global-config:
+    banner: false                     # 是否开启 LOGO
+    db-config:
+      id-type: assign_uuid            # 主键类型  auto: 数据库ID自增， none:该类型为未设置主键类型(注解里等于跟随全局,全局里约等于 INPUT)，input:用户输入ID(该类型可以通过自己注册自动填充插件进行填充)，assign-id: 分配ID (主键类型为number或string,雪花算法)，assign-uuid: 分配UUID (主键类型为 string,UUID.replace("-",""))
+      logic-delete-value: 1           # 逻辑删除全局值（默认 1、表示已删除）
+      logic-not-delete-value: 0       # 逻辑未删除全局值（默认 0、表示未删除）
+    enable-sql-runner: true           #是否初始化 SqlRunner， SqlRunner为SQL增强工具，用于在代码中使用原生SQL
+  configuration:
+    map-underscore-to-camel-case: false
+    cache-enabled: true                                     # 配置的缓存的全局开关
+    lazyLoadingEnabled: true                                # 延时加载的开关
+    multipleResultSetsEnabled: true                         # 开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    #jdbc-type-for-null: 'null'                             #Oracle数据库开启，否则使用updateAllColumnById()这种方法，如果列值为空，就会报错
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印sql语句,调试用
+############################## mybatis-plus配置 结束  ##############################
+
+############################## quartz配置 结束  ##############################
+org:
+  quartz:
+    jobStore:
+      class: org.quartz.impl.jdbcjobstore.JobStoreTX              # 持久化
+      dataSource: hussar                                          # 定时任务数据源别名，非数据库别名
+      misfireThreshold: 5000                                      # 容许的最大作业延长时
+      tablePrefix: SYS_QRTZ_                                      # 表的前缀
+    threadPool:
+      threadCount: 5                                              # 并发个数
+      threadPriority: 5                                           # 优先级
+      threadsInheritContextClassLoaderOfInitializingThread: true  # 自创建父线程
+############################## quartz配置 结束  ##############################
+
+############################## 日志配置 开始  ##############################
+logging:
+  config: classpath:log4j2.xml          # 详细日志配置文件
+  level:
+    root: INFO                          # 日志默认输出级别
+############################## 日志配置 结束  ##############################
+
+############################## hussar配置 开始  ##############################
+hussar:
+  packaged: '@project.packaging@'             # 打包后是war包还是jar包，自动从pom文件获取，该配置为核心配置，不要擅自修改
+  static-version: 1.0                      #项目自定义静态文件版本  在引入静态文件后加上 XXX.js?v=${h_version}
+  login-upper-open: true                    # 是否区分登录账号大小写 (true/false)
+  muti-datasource-open: false               # 是否开启多数据源
+  swagger-open: true                        # 是否开启swagger (true/false)
+  kaptcha-open: false                       # 是否开启登录时验证码 (true/false)
+  file-upload-path-windows: d:/tmp  	      #文件上传目录(不配置的话为java.io.tmpdir目录)
+  file-upload-path-linux: /tmp/hussar
+  file-date-split: true                     # 上传路径日期区分
+  totp-open: false                          # 是否开启登录时动态密码验证 (true/false)
+  totp-offset-min: 0                        # totp 验证允许时间偏差 ，单位 min 分钟， 默认0，无偏差验证，必须保证手机端和服务器时间误差在30s之内才能准确验证
+  spring-session-open: false                # 是否开启spring session,如果是多机环境需要开启(true/false)
+  session-invalidate-time: 1800             # session失效时间(只在单机环境下生效，多机环境在SpringSessionConfig类中配置) 单位：秒
+  session-validation-interval: 900          # 多久检测一次失效的session(只在单机环境下生效) 单位：秒
+  remeberme-days: 7                         # N 天免登录，默认7天
+  shiro-cookie:                             # shiroCookie的其他设置，可自行扩展设置
+    same-site: lax                          #cookie的SameSite属性,用来防止 CSRF 攻击和用户追踪 ，使用统一权限需要把该项配置改为lax。 可配置项说明: 以设置三个值, Strict、LAX、NONE； Strict最为严格，完全禁止第三方 Cookie，跨站点时，任何情况下都不会发送 Cookie。换言之，只有当前网页的 URL 与请求目标一致，才会带上 Cookie。 Lax规则稍稍放宽，大多数情况也是不发送第三方 Cookie，但是导航到目标网址的 Get 请求除外。 Chrome 计划将Lax变为默认设置。这时，网站可以选择显式关闭SameSite属性，将其设为None。不过，前提是必须同时设置Secure属性（Cookie 只能通过 HTTPS 协议发送），否则无效。
+    secure: false                           # 使用https协议，此处设置为true
+  use-separation: false                       # 是否使用前后分离，开启前后分离与不开启前后分离使用的数据库初始化文件不同
+  refer-whitelist: http:// # 使用前后分离，需要配置前端请求的白名单，防止跨域请求后台，例如前台请求地址为：http://192.168.6.14:8081/ 此处就配置为http://192.168.6.14:8081/
+
+  check-csrf-open: true                    #是否可以跨域访问，前后分离需要改为false
+  firewall-xss-level: B                     # XSS过滤级别，共ABC三级，过滤严格程度依次增强，建议默认开启B级
+  xss-whitelist:                                #XSS过滤白名单
+#    - /notice/update
+    - /component/*
+    - /component/componentApplySave
+    - /component/componentApplyUpdate
+    - /middlegroundConsulation/*
+    - /EditorServlet
+    - /downLocalFile
+    - /IndexServlet
+  stand-alone: true                         # true 为单机环境  false 是集群环境
+  welcome-page: /jqwkmanager                    # 配置项目访问路径
+  shiro:                                    # shiro 通用配置
+    login-url: /login                       # 登录页面URL
+    unauthorized-url: /global/403           # 授权失败跳转地址
+    security-whitelist:                     # 权限拦截白名单（可以配置多项）
+    - /static/**
+    - /login
+    - /LoginCheck/login
+    - /export/**
+    - /sharefile/**
+    - /s/**
+    - /preview/listForShare
+    - /wyyServices/**
+    - /apiDocPreview/**
+    - /downloadServices/**
+    - /JqxUpload/**
+    - /YYZCUpload/**
+    - /component/componentViewShare
+    - /fsFile/cacheViewNum
+    - /client/**
+    - /files/**
+    - /docConfigure/getConfigureData
+    - /yozoOnlineEdit/**
+    - /EditorServlet
+    - /downLocalFile
+    - /IndexServlet
+    - /unstruct/**
+    - /shareLogin
+    - /mobile/**
+    - /preview/excel/**
+  ############################## 以下配置为系统默认配置  可根据实际项目情况自行修改##############################
+  csrf-whitelist:       # 天斧需要开启的白名单，该白名单仅限在开发模式下开启，生产模式下建议不要开启
+  - /client/*
+  - /JqxUpload/*
+  - /export/*
+  - /
+  - /yozoOnlineEdit/*
+  - /*
+
+  ############## 登录密码传输加密的加密方式 默认提供三种加密方式  非对称RSA、对称AES 、Base64；存储加密方式默认提供SM4（国密4算法）、MD5哈希算法，可自行扩展其他算法
+  encryptType:
+    type: AES   		#登录传输加密的加密方式 不区分大小写
+    secret-free-ip: 192.168.1.1 #免密登录用
+    #############			# 登录密码传输加密的加密方式 默认提供两种加密方式   MD5、SM4   <自行扩展加密算法 ospwd>
+    db-encrypt-type: ospwd   	#登录存储加密的加密方式ospwd
+
+  ############## JWT认证所需参数
+  jwt:
+    auth-path: /auth                # 认证请求的路径
+  #    header: Authorization           # http请求头所需要的字段
+  #    secret: mySecret                # jwt秘钥
+  #    expiration: 604800              # 7天 单位:秒
+  #    md5-key: randomKey              # md5加密混淆key
+  #  muti-datasource-open: false              # 是否开启多数据源
+  #  useJNDI: false                            # 是否开启JNDI（默认为false）
+  #  swagger-open: true                        # 是否开启swagger (true/false)
+  #  file-upload-path-windows: e:/hussar          # 文件上传目录(不配置的话为java.io.tmpdir目录)
+  #  file-upload-path-linux: /usr/local/hussar
+  #  file-upload-path-mac:   /tmp/hussar
+  #  file-date-split: true                     # 上传路径日期区分
+  #firewall-xss-level: B                     # XSS过滤级别，共ABC三级，过滤严格程度依次增强，建议默认开启B级
+  #  xss-whitelist:                                #XSS过滤白名单
+  #  - /notice/update
+  #  - /notice/add
+  #  login-html: /login.html                  # 登录页html
+  #  index-config: false                        #是否开启欢迎页配置 true开启 false不开启
+  #  default-index: /default/index      #默认欢迎页访问路径
+  #  shiro:                                    # shiro 通用配置
+  #    login-url: /login                       # 登录页面URL
+  #    unauthorized-url: /global/403           # 授权失败跳转地址
+  #    security-whitelist:                     # 权限拦截白名单（可以配置多项）
+  #    - /static/**
+  #    - /login
+
+  ############## rest请求 jwt认证开关 默认关闭rest请求认证，开启后，需要认证
+  #rest:
+  #  auth-open: true                 # jwt鉴权机制是否开启(true或者false)
+  #  sign-open: true                 # 签名机制是否开启(true或false)
+  #  swagger-open: true              # 是否开启swagger (true/false)
+  #  url-pattern: /hussarrest/*      # rest请求路径 : 默认/rest/*
+  #  token-header-code: Hussar       # 请求头识别码
+
+
+############################## hussar配置 结束  ##############################
+
+############################## 系统监控配置 开始  ##############################
+#  monitor:
+#    stat-view-servlet:
+#      hosts: 127.0.0.1:8080
+#      enabled: true
+#      local: 127.0.0.1:8080
+#      url-pattern: /smon
+#    web-stat-filter:
+#      enabled: true
+#      url-pattern: /smon
+############################## 系统监控配置 结束  ##############################
+
+############################## beetl配置 开始  ##############################
+
+#beetl:
+#  delimiter-statement-start: \@   # 开始结束标签(yaml不允许@开头)
+#  delimiter-statement-end: null
+#  resource-tagroot: common/tags   # 自定义标签文件Root目录和后缀
+#  resource-tagsuffix: tag
+#  resource-auto-check: true       # 是否检测文件变化,开发用true合适，但线上要改为false
+############################## beetl配置 结束  ##############################
+
+############################## global配置开始  该部分配置和安全测试要求相关，可根据安全测试级别进行对应的修改调整  ##############################
+global:
+  ############################## 登录限制设置配置  ##############################
+  login-time-limit: true                    # 是否开启登录时间限制
+  login-ip-limit: true                      # 是否开启登录ip限制
+  domain: HUSSAR_V8                         # 可配置为项目的域名
+  create-user-send-email: false             # 创建用户时是否发送邮件
+  create-user-use-default-pass: true        # 创建用户是否使用默认密码，true使用默认密码，false使用密码规则生成的密码。为方式生成的密码无法得知，当create_user_send_email==false时也使用默认密码
+  title: HussarV8                          # 当前项目名，当在一台服务器上部署多个V8项目时，务必修改此配置以防止cookie冲突
+  default-password: Wkjf@123456                  # 用户默认密码
+    #系统缺省密码规则（"最小长度，最大长度，密码强度"）,缺省规则是( 8,16,1 )最小不能小于4位，最大不能大于16位，强度为1
+    #密码强度规则分1-3级，各级的含义如下：
+    #级别1：如果密码只由数字、小写字母、大写字母或其它特殊符号当中的一种组成,则认为这是一个弱密码.
+    #级别2：如果密码由数字、小写字母、大写字母或其它特殊符号当中的两种组成,则认为这是一个中度安全的密码
+  #级别3：如果密码由数字、小写字母、大写字母或其它特殊符号当中的三种以上组成,则认为这是一个比较安全的密码.
+  pwd-rule: 8,16,3
+  #pwd-rule-message: 密码最小不能小于%s位，最大不能大于%s位，强度需符合级别%s要求!
+  #pwd-rule-custom:  false                              # 用户自定义密码复杂度，true 自定义,pwd-complexity-regular 自定义正则表达式，unmatched-hint 自定义返回消息；false 使用平台自带规则
+  #pwd-complexity-regular: /^[\S]{6,12}$/               # 密码复杂度正则
+  #unmatched-hint: 密码必须6到12位，且不能出现空格              # 不满足时的提示信息
+  force-change-pwd: true                               # 是否在第一次登录或一段时间后强制用户修改密码
+  #password-hist: 90                                    # 密码生命周期 多少天后强制修改密码  单位（天）
+  #pwd-repeat-time: 2                                   # 密码不能和前几次相同
+  #try-login-time: 3                                    # 用户尝试登陆次数
+  #lock-time: 1                                         # 多次登陆失败后锁定时间（单位：小时）
+  session-limit: false         # 是否开启会话限制，默认true
+  kickout-after: false         # 会话超出限制时，是否踢出后者（true剔除后者即新登录用户不能登录，，false，剔除最先登录的）
+  system-max-session: -1      # 系统最大会话数,session-limit: true、kickout-after: true 同时配置时才生效，配置为-1为不限制会话数量，不配置默认是1000000L
+  default-theme: blue      # 默认皮肤主题，目前已有的主题（default生命绿，blue科技蓝）
+  #change-theme: true          # 是否允许用户更换皮肤
+  critical-operations-audit: true    # 关键操作是否需要审核，总开关，只有开启后，下面几个开关才分别生效
+  organ-audit: true                  # 组织机构操作是否需要审核
+  user-audit: true                   # 用户操作是否需要审核
+  role-audit: true                   # 用户角色是否需要审核
+  #tree-lazy-load: true               # jsTree是否为懒加载
+  #user-on-one-emp: false             # 用户人员一对一，默认一个人员可建多个用户
+  #operate-staff-with-user: false     # 操作人员同时操作用户（新增、修改、删除、转移）
+  anti-replay-timeout: -1         # 默认-1 ，不开启防止重复提交，设置为毫秒数 例如10则表示10毫秒内重复提交相同数据认为是冲突提交，进行拦截
+  anti-replay-scan-package: com.**.controller #防止重复提交主动扫描包结构配置，默认只扫描com.jxdinfo.hussar.**.controller,添加自定义包结构，用英文逗号(,)隔开
+  #encrypt-sign-open: false           # 加密传输是否开启签名验证，为了性能，默认不开启，三级安全测试建议开启
+  #exception-alert: false             # 是否开启异常报警
+  #securitylog-count-alert: 100000    # 审计日志报警条数，超过此条数时报警，只能输入正整数，默认不发送，配置后才发送
+  #exception-alert-email:             # 异常报警接收邮件邮箱，多个使用,隔开
+############################## global配置 结束  ##############################
+
+############################## 连接池监控配置 开始  ##############################
+#druid:
+#  merge-sql: false
+#  need-login: true               #连接池监控页面是否需要登陆
+#  login-username: druid          #连接池监控页面用户名（需要登陆时有效）
+#  login-password: hussar         #连接池监控页面密码（需要登陆时有效）
+#  slow-sql-millis:  2000         #慢SQL时间（单位:毫秒；执行时间超过此时间的sql会被标红）
+#  log-slow-sql: false            #慢SQL是否记录日志
+############################## 连接池监控配置 结束  ##############################
+############################## 表单设计器配置项 开始  ##############################
+#form-design:
+#  project-path: D:\workspace\idea\hussar-v8-beta-0.7.0_V20190829
+#  is-axe-mode: true
+#  project-name: /code
+#  project-store-path: /.project-store  #项目文件存放地址
+#  module-store-path: /.project-store   #
+#  template-store-path: /.tem-store
+#  custom-component-store-path: /editor/.custom-component-store
+#  static-store-path: /static # 静态资源路径
+#  css-code-store-path: /src/main/webapp/static/css
+#  java-code-store-path: /src/main/java/
+#  page-code-store-path: /src/main/webapp/WEB-INF/view
+#  page-template: page-layui.html
+#  controller-template: controllerTemplate.tjava
+#  meta-suffix: meta
+#  image-type: .png,.jpg,.gif
+#  exclude-css: /static/css,/static/bsp,/static/assets,/static/activitidemo #排除扫描的css 多个用逗号隔开
+#  exclude-image: /static/css,/static/bsp,/static/assets,/static/activitidemo #排除扫描的css 多个用逗号隔开
+#  exclude-js: /static/js,/static/bsp,/static/assets,/static/activitidemo   #排除扫描的js  多个用逗号隔开
+############################## 表单设计器配置项 结束  ##############################
+############################## 线程池配置 开始  ##############################
+thread:
+  core-pool-size: 5
+  max-pool-size: 20
+  keep-alive-time: 100000
+############################## 线程池配置 结束  ##############################
+
+############################## 接入CAS相关配置 开始  ##############################
+########### 开启CAS客户端 (CASClient)  start ###########
+#cas:
+#  active-type: CASClient  #开启类型 CASClient:开启CAS客户端
+#  server-url-prefix: http://192.168.2.108:8080  #统一认证服务器地址
+#  server-login-url: http://192.168.2.108:8080  #统一认证服务器登陆地址
+#  server-logout-url: http://192.168.2.108:8080/logout #CAS统一认证服务器登出地址
+#  local-url: http://192.168.6.69:8080 #本服务业务应 用访问地址
+#  client-name: wyrtest #本服务业务应用名称 回调的时候会用到 不要有空格之类的符号
+#  login-account: userAccount #CAS对应登录账户参数名
+#  mq-prefix: server #CAS消息推送返回消息队列前缀
+#  client-token: GGISFNBDILJF46POVRGXJ6UMM2N4RJ344WIYCOIHKUWT5272KYKA   #客户端的token
+#  front-url: http://192.168.6.69:8080 #前后端分离模式下前端地址
+########### 开启CAS客户端 (CASClient)  end ###########
+########### 开启CAS服务端 (CASServer)  start ###########
+#cas:
+#  active-type: CASServer  #开启类型  CASServer:开启CAS服务端
+#  server-url-prefix: http://127.0.0.1:8080  #统一认证服务器地址
+#  server-login-url: http://127.0.0.1:8080  #统一认证服务器登陆地址
+#  server-logout-url: http://127.0.0.1:8080/logout #CAS统一认证服务器登出地址
+#  local-url: http://127.0.0.1:8081 #本服务业务应用访问地址
+#  client-name: Hussar #本服务业务应用名称 回调的时候会用到 不要有空格之类的符号 (
+#  login-account: userAccount #CAS单点登录对应登录账户参数名
+#  mq-prefix: server #CAS消息推送返回消息队列前缀
+########### 开启CAS服务端 (CASServer)  ###########
+###########  开启ISC start ###########
+#cas:
+#  active-type: ISC  #开启类型 开启ISC
+#  server-url-prefix: http://sso.isc.com:8989/isc_sso/  #统一认证服务器地址
+#  server-login-url: http://sso.isc.com:8989/isc_sso/login  #统一认证服务器登陆地址
+#  local-url: http://127.0.0.1:8081 #本服务业务应用访问地址
+#  client-name: Hussar #本服务业务应用名称
+#  welcome-page: /iscapp/index.html #isc登录后欢迎页面，可以根据实际业务需要进行自定义
+#  sm-uri: http\://sm.isc.com\:9898/isc_sm #统一权限平台接口服务器地址
+#  app-id: 2c9280856660e8120166621c2a320004 #统一权限应用平台业务应用ID
+########### 开启ISC end ###########
+############################## 接入CAS相关配置 结束  ##############################
+
+token:
+  invalid: 3600  #默认秒
+  default-path: /client/** #扫描的路径  多个用逗号隔开
+  white-path: /client/login,/client/synchronous/**,/client/export/**,/mobile/login,/mobile/file/download #排除扫描的路径  多个用逗号隔开
+  key: 123456      #token密码
+############################## 文件审核配置 开始  ##############################
+fileAudit:
+  using: false        #是否开启文件审核：true-需要，false-不需要
+  auditType: 3      #审核类型：1-所有文件夹下上传文件都需要审核，2-可单独设置每一个文件夹是否审核，3-根据上级决定，上级需要审核下级一定需要审核，上级不需要审核，下级可以审核
+  auditorRange: 3   #审核人选择范围：1-审核角色审核，2-同一部门的审核角色审核，3-文件夹管理权限的人审核
+  auditRole: ee8cffbde08f444f9432f324b6f8bda7      #审核角色主键
+  workflowUsing: true #是否开启工作流审核  true: 工作流审核  false: 普通字段控制审核
+  processDefinitionKey: key-20220315172527215 # 工作流程定义id
+
+############################## 文件审核配置 结束  ##############################
+############################## 语义分析配置 开始  ##############################
+semanticAnalysis:
+  collectionUsing: false        #是否使用收集数据功能：true-是，false-否
+  analysisUsing: false          #是否使用生成标签功能：true-是，false-否
+  httpUrl: http://192.168.6.161:5000      #服务地址
+############################## 语义分析配置 结束  ##############################
+extendedFunctions:
+  newState: true #最新动态是否按照权限展示
+  top: true #置顶是否按照权限展示
+  addAuth: true #是否开启添加权限功能
+  copyFold: true #是否开启复制目录功能
+  shareUserConfig: false   # 分享时是否开启选择分享人员功能
+
+############################## 个人群组配置 开始  ##############################
+personalGroup:
+  maintain: false                        # 是否开启个人群组维护功能
+  query: false                           # 查询时是否查询个人群组
+############################## 个人群组配置 结束  ##############################
+############################## 同名文件配置 开始  ##############################
+sameName:
+  newVersion: false                      # 上传同名文件是否提示上传新版本
+############################## 同名文件配置 结束  ##############################
+############################## 手机端 开始  ##############################
+openExtranetLimit: false
+############################## 手机端 结束  ##############################
+############################## 非结构化对外接口配置 开始  ##############################
+unstructUrl: http://127.0.0.1:8001    #对外接口分享链接地址
+############################## 非结构化对外接口配置 结束  ##############################

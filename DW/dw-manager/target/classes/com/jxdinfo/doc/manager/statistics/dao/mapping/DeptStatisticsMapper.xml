@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxdinfo.doc.manager.statistics.dao.DeptStatisticsMapper">
+
+    <!-- 根据类型id获取字典数据-->
+    <select id="getStatisticsData" resultType="java.util.Map">
+		SELECT
+			T1.	ORGAN_Name AS NAME,
+			IFNULL(T2.NUM, 0) AS NUM, T1.ORGAN_ID
+		FROM
+			(
+				SELECT
+					so.ORGAN_ID,
+					so.ORGAN_Name,
+		ss.STRU_ORDER
+				FROM
+					sys_organ so
+		LEFT JOIN  sys_stru ss on ss.ORGAN_ID=so.ORGAN_ID
+				WHERE
+				so.ORGAN_TYPE != '9'
+				AND so.ORGAN_ID != '5AA3D70B14F94A4486523C29DACB70DE'
+				and so.ORGAN_ID!='C5A7D17E5D204760628787731E3B4C81'
+				AND so.IN_USE = '1'
+			) T1
+		LEFT JOIN (
+			SELECT
+				s.PARENT_ID,
+		  sum(fs.file_size) num,
+		 STRU_ORDER
+			FROM
+				sys_stru s
+			LEFT JOIN doc_info d ON d.author_id = s.ORGAN_ALIAS
+			LEFT JOIN fs_file fs ON fs.file_id = d.file_id
+			where d.valid_flag='1'
+			GROUP BY
+				s.PARENT_ID
+		) T2 ON T1.ORGAN_ID = T2.PARENT_ID
+		ORDER BY
+				T1.STRU_ORDER
+    </select>
+    
+    <!-- 根据部门ID查询文件占用空间 -->
+	<select id="getStatisticsDataByOrganId" resultType="double">
+		SELECT
+			IFNULL(sum(fs.file_size),0) num
+		FROM
+			doc_info d,
+			fs_file fs,
+			sys_stru s
+		WHERE
+			d.author_id = s.ORGAN_ALIAS
+		AND fs.file_id = d.file_id
+		AND d.valid_flag = '1'
+		AND s.parent_id = #{organId}
+	</select>
+</mapper>
